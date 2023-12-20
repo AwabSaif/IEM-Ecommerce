@@ -1,33 +1,49 @@
-const dotenv = require('dotenv').config()
+const dotenv = require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
-const bodyParer = require("body-parser");
+const bodyParser = require("body-parser");
 const cors = require("cors");
+const userRoute = require("./routes/userRoute");
+const errorHandler = require('./middleWare/errerMiddleWare')
+
 
 const app = express();
 
-const PORT = process.env.PORT || 5000;
+//Middlewares
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
+
+//Routes Middleware
+app.use("/api/user", userRoute)
+
+
+//Routes
+app.get("/", (req, res) => {
+  res.send("home page");
+});
+
+//Errer MiddleWare 
+app.use(errorHandler);
 
 //Connrct to DB and start server
+const PORT = process.env.PORT || 5000;
 
-mongoose.connect(process.env.MONGODB_URI, {
-   
-  });
+mongoose.connect(process.env.MONGODB_URI, {});
 const db = mongoose.connection;
 
-db.on('error',()=>{
-    console.log("Connection Error");
-})
-db.once('open',()=>{
-    console.log("Connected to DB !");
-})
+db.on("error", () => {
+  console.log("Connection Error");
+});
+db.once("open", () => {
+  console.log("Connected to DB !");
+});
 
-
-app.listen(PORT,()=>{
-    try {
-        console.log(`IEM Server Running on port ${PORT}...`);
-        
-    } catch (err) {
-        console.log(err);
-    }
-})
+const server = app.listen(PORT, () => {
+  try {
+    console.log(`IEM Server Running on port ${PORT}...`);
+  } catch (err) {
+    console.log(err);
+  }
+});
