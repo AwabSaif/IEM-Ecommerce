@@ -45,15 +45,14 @@ const userSchema = mongoose.Schema(
 
 // Encrypt passeword
 userSchema.pre("save", async function (next) {
-  if(!this.isModified("password")){
-    return next()
+  if (!this.isModified("password")) {
+    return next();
   }
-
   //Hash password
   const salt = await bcrypt.genSalt(10);
   const hasedPassword = await bcrypt.hash(this.password, salt);
-  this.password = hasedPassword
-  next()
+  this.password = hasedPassword;
+  next();
 });
 
 const User = mongoose.model("User", userSchema);
