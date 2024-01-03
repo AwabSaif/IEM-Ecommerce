@@ -49,7 +49,7 @@ export const ForGotPassword = () => {
       {success ? (
         <section className="flex flex-col items-center justify-center h-screen mx-5 my-2 space-y-10 md:flex-row md:space-y-0 md:space-x-16 md:mx-0 md:my-0">
           <div className="flex-row  items-center">
-            <h2 className="mb-4 text-lg font-medium">تم إرسال إعادة تعيين كلمة المرور</h2>
+            <h3 className="mb-4 text-lg font-medium">تم إرسال إعادة تعيين كلمة المرور</h3>
 
             <p>
               <a
@@ -68,7 +68,7 @@ export const ForGotPassword = () => {
           </div>
           <form onSubmit={handleSubmit} className="max-w-sm md:w-1/3">
           <div className="flex-row  items-center">
-            <h2 className="mb-4 text-lg font-medium">نسيت كلمة المرور</h2></div>
+            <h3 className="mb-4 text-lg font-medium">نسيت كلمة المرور</h3></div>
             <div
               ref={errRef}
               className={

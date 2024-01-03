@@ -1,7 +1,8 @@
 import { Register } from "./Register";
 import { Login } from "./Login";
-import { User } from "./User";
+import { Verify } from "./Verify";
 import { ForGotPassword } from "./ForGotPassword";
 import { ResetPassword } from "./ResetPassword";
+import { ChangrPassword } from "./ChangrPassword";
 
-export { Register, Login, User, ForGotPassword ,ResetPassword };
+export { Register, Login, Verify, ForGotPassword ,ResetPassword,ChangrPassword };

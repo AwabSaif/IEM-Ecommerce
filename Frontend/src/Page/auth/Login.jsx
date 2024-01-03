@@ -71,9 +71,10 @@ export const Login = () => {
       ) : (
         <section className="flex flex-col items-center justify-center h-screen mx-5 my-2 space-y-10 md:flex-row md:space-y-0 md:space-x-16 md:mx-0 md:my-0">
           <div className="max-w-sm md:w-1/3">
-            <img src={image} alt="Sample image" />
+            <img src={image} alt={image}/>
           </div>
           <form onSubmit={handleSubmit} className="max-w-sm md:w-1/3">
+            <h3 className="mb-4 text-lg font-medium ">تسجيل الدخول</h3>
             <div
               ref={errRef}
               className={
@@ -126,7 +127,7 @@ export const Login = () => {
                   className="text-red-600 hover:underline hover:underline-offset-4"
                   href="/register"
                 >
-                  تسجيل
+                  انشاء حساب  
                 </a>
               </div>
             </div>

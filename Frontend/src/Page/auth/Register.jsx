@@ -93,7 +93,7 @@ export const Register = () => {
       {success ? (
         <section className="flex flex-col items-center justify-center h-screen mx-5 my-2 space-y-10 md:flex-row md:space-y-0 md:space-x-16 md:mx-0 md:my-0">
           <div className="flex-row  items-center">
-            <h2 className="mb-4 text-lg font-medium">تم التسجيل</h2>
+            <h3 className="mb-4 text-lg font-medium">تم انشاء حساب</h3>
 
             <p>
               <a
@@ -108,9 +108,10 @@ export const Register = () => {
       ) : (
         <section className="flex flex-col items-center justify-center h-screen mx-5 my-2 space-y-10 md:flex-row md:space-y-0 md:space-x-16 md:mx-0 md:my-0">
           <div className="max-w-sm md:w-1/3">
-            <img src={image} alt="Sample image" />
+          <img src={image} alt={image}/>
           </div>
           <form onSubmit={handleSubmit} className="max-w-sm md:w-1/3">
+          <h2 className="text-gray-900 font-bold py-2 px-4 ">انشاء حساب</h2>
             <div
               ref={errRef}
               className={errMsg ? "bg-red-100 border border-red-400 text-red-700 px-2 py-2 mb-2  rounded relative" : "hidden"}
@@ -231,7 +232,7 @@ export const Register = () => {
                   !validMail || !validPassword || !validMatch ? true : false
                 }
               >
-                تسجيل
+                انشاء حساب  
               </button>
             </div>
           </form>

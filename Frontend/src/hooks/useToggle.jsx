@@ -3,7 +3,7 @@ import useEffectOnUpdate from "./useEffectOnUpdate"
  
 
 
-export default function useToggle(
+export default function UseToggle(
     initialValue = false,
     onToggle = () => { }
 ) {

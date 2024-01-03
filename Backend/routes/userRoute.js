@@ -10,6 +10,7 @@ const {
   changePassword,
   forgotPassword,
   resetPassword,
+// } = require("../controllers/userController copy");
 } = require("../controllers/userController");
 const protect = require("../middleWare/authMiddleWare");
 
@@ -19,7 +20,7 @@ router.post("/register", registerUser);
 // login route
 router.post("/login", loginUser);
 router.get("/logout", logout);
-
+con
 // User pofile
 router.get("/getuser", protect, getUser);
 router.get("/loggedin", loggedinStatus);
