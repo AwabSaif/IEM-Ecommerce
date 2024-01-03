@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import image from "../../assets/image/Awab Saif-logos_transparent.png";
+import image from "../../assets/image/IEM Ecommerce-logo.png";
 import { FaInfoCircle } from "react-icons/fa";
 import axios from "../../api/axios";
 
