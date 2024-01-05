@@ -20,8 +20,8 @@ const userSchema = mongoose.Schema(
     password: {
       type: String,
       required: [true, "Please add a password"],
-      minLength: [6, "Password must be uo to 6 characters"],
-      // maxLength: [23, "Password must not be more then  23 characters"],
+      minLength: [6, "Password must be up to 6 characters"],
+  
     },
     photo: {
       type: String,
@@ -58,3 +58,4 @@ userSchema.pre("save", async function (next) {
 const User = mongoose.model("User", userSchema);
 
 module.exports = User;
+

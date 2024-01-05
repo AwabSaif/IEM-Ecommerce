@@ -7,7 +7,7 @@ export const PageMenu = () => {
   return (
     <header className="bg-white drop-shadow-md border-b-4 border-blue-400">
       <nav
-        className="mx-auto flex max-w-7xl items-center justify-between p-6 px-8"
+        className="mx-auto flex max-w-7xl  items-center justify-center p-6 px-8"
         aria-label="Global"
       >
 
@@ -19,7 +19,7 @@ export const PageMenu = () => {
             })} text-sm font-semibold leading-6 text-gray-900  hover:bg-gray-200 hover:font-bold py-2 px-4 rounded-t-2xl`}
             aria-current="page"
           >
-           الملف الشخصي
+          Profile
           </NavLink>
           <NavLink
             to="/changepassword"
@@ -28,7 +28,7 @@ export const PageMenu = () => {
             })} text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-200 hover:font-bold py-2 px-4 rounded-t-2xl`}
             aria-current="page"
           >
-            تغيير كلمة المرور
+         Change password
           </NavLink>
           <NavLink
             to="#"
@@ -37,7 +37,7 @@ export const PageMenu = () => {
             })} text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-200 hover:font-bold py-2 px-4 rounded-t-2xl`}
             aria-current="page"
           >
-                المسخدمين
+                Users
           </NavLink>
         </div>
       </nav>

@@ -1,7 +1,9 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useContext } from "react";
+import { useAuthContext } from "../../hooks/useAuthContext";
+import axios from "../../api/axios";
 import image from "../../assets/image/IEM Ecommerce-logo.png";
 import { FaInfoCircle } from "react-icons/fa";
-import axios from "../../api/axios";
 
 const USER_REGEX =
   /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -28,6 +30,9 @@ export const Register = () => {
 
   const [errMsg, setErrMsg] = useState("");
   const [success, setSuccess] = useState(false);
+  const [isLoading, setIsLoading] = useState(null);
+  const { dispatch } = useAuthContext();
+  console.log(useAuthContext());
 
   useEffect(() => {
     userRef.current.focus();
@@ -56,10 +61,12 @@ export const Register = () => {
     const v1 = USER_REGEX.test(email);
     const v2 = PWD_REGEX.test(password);
     if (!v1 || !v2) {
-      setErrMsg("دخول غير صالح");
+      setErrMsg("Invalid login");
       return;
     }
     try {
+      setIsLoading(true);
+      setErrMsg(null);
       const response = await axios.post(
         REGISTER_URL,
         JSON.stringify({
@@ -68,39 +75,44 @@ export const Register = () => {
           password,
         }),
         {
-          headers: { "Content-Type": "application/json"},
-       
+          headers: { "Content-Type": "application/json" },
         }
       );
-      console.log(response.data);
-      console.log(response.accessToken);
-      console.log(JSON.stringify(response));
+      console.log(response.datatoken);
+      // const accessToken = response?.data.token;
+      const json = await response.json();
+
       setSuccess(true);
+      if (response.ok) {
+        localStorage.setItem("user", JSON.stringify(json));
+
+        dispatch({ type: "LOGIN", payload: json });
+        setIsLoading(false);
+      }
     } catch (err) {
-    if(!err?.response){
-        setErrMsg('الخادم لا يستجايب')
-      } else if (err.response?.Status === 409) {
-        setErrMsg(" البريد الإلكتروني غير متاح");
+      if (!err.response) {
+        setIsLoading(false);
+        setErrMsg("Server not responding");
       } else {
-        setErrMsg("فشل في التسجيل");
+        setIsLoading(false);
+        setErrMsg(err.response.data.message);
       }
       errRef.current.focus();
     }
   };
-
   return (
     <>
       {success ? (
         <section className="flex flex-col items-center justify-center h-screen mx-5 my-2 space-y-10 md:flex-row md:space-y-0 md:space-x-16 md:mx-0 md:my-0">
           <div className="flex-row  items-center">
-            <h3 className="mb-4 text-lg font-medium">تم انشاء حساب</h3>
+            <h3 className="mb-4 text-lg font-medium">Account created</h3>
 
             <p>
               <a
                 className="items-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4   rounded-full"
                 href="/login"
               >
-                تسجيل الدخول
+                sign in
               </a>
             </p>
           </div>
@@ -108,20 +120,25 @@ export const Register = () => {
       ) : (
         <section className="flex flex-col items-center justify-center h-screen mx-5 my-2 space-y-10 md:flex-row md:space-y-0 md:space-x-16 md:mx-0 md:my-0">
           <div className="max-w-sm md:w-1/3">
-          <img src={image} alt={image}/>
+            <img src={image} alt={image} />
           </div>
           <form onSubmit={handleSubmit} className="max-w-sm md:w-1/3">
-          <h2 className="text-gray-900 font-bold py-2 px-4 ">انشاء حساب</h2>
+            <h2 className="text-gray-900 font-bold py-2 px-4 ">Register</h2>
             <div
               ref={errRef}
-              className={errMsg ? "bg-red-100 border border-red-400 text-red-700 px-2 py-2 mb-2  rounded relative" : "hidden"}
+              className={
+                errMsg
+                  ? "bg-red-100 border border-red-400 text-red-700 px-2 py-2 mb-2  rounded relative"
+                  : "hidden"
+              }
               aria-live="assertive"
-              role="alert">
-                <span className="block sm:inline">{errMsg}</span>
+              role="alert"
+            >
+              <span className="block sm:inline">{errMsg}</span>
             </div>
             <input
               className="w-full px-4 py-2 text-sm border border-gray-300 border-solid rounded"
-              placeholder="الاسم الكامل"
+              placeholder="Full Name"
               type="text"
               id="name"
               onChange={(e) => setName(e.target.value)}
@@ -129,7 +146,7 @@ export const Register = () => {
             />
             <input
               className="w-full px-4 py-2 mt-4 text-sm border border-gray-300 border-solid rounded"
-              placeholder="البريد الاكتروني"
+              placeholder="Email"
               type="email"
               id="email"
               ref={userRef}
@@ -150,7 +167,7 @@ export const Register = () => {
             >
               <p id="uidnote">
                 <FaInfoCircle />
-                يجب ان يحتوي على @
+                Must contain @
                 <br />
                 user@example.com
               </p>
@@ -159,7 +176,7 @@ export const Register = () => {
             <input
               className="w-full px-4 py-2 mt-4 text-sm border border-gray-300 border-solid rounded"
               type="password"
-              placeholder="كلمة المرور"
+              placeholder="password"
               id="password"
               onChange={(e) => setPassword(e.target.value)}
               required
@@ -178,11 +195,12 @@ export const Register = () => {
             >
               <p>
                 <FaInfoCircle />
-                من 8 إلى 24 حرفًا.
+                8 to 24 characters.
                 <br />
-                يجب أن تتضمن أحرفًا كبيرة وصغيرة ورقمًا وحرفًا خاصًا.
+                Must include uppercase and lowercase letters, a number, and a
+                special character.
                 <br />
-                الأحرف الخاصة المسموح بها:
+                Allowed special characters:
                 <span aria-label="exclamation mark">!</span>
                 <span aria-label="at code">@</span>
                 <span aria-label="hashtag">#</span>
@@ -192,7 +210,7 @@ export const Register = () => {
             </div>
             <input
               className="w-full px-4 py-2 mt-4 text-sm border border-gray-300 border-solid rounded"
-              placeholder="تاكيد كلمة المرور"
+              placeholder="confirm password"
               type="password"
               id="confirm-Pass"
               onChange={(e) => setMatchPassword(e.target.value)}
@@ -212,27 +230,27 @@ export const Register = () => {
             >
               <p>
                 <FaInfoCircle />
-                يجب أن يتطابق مع حقل إدخال كلمة المرور .
+                Must match the password entry field.
               </p>
             </div>
 
-            <div className="mt-4 text-sm font-semibold text-slate-500 md:text-right">
-              هل لديك حساب؟{" "}
+            <div className="mt-4 text-sm font-semibold text-slate-500 md:text-left">
+              Do you have account?{" "}
               <a
                 className="text-red-600 hover:underline hover:underline-offset-4"
                 href="/login"
               >
-                تسجيل الدخول
+                sign in
               </a>
             </div>
-            <div className="text-center m-4 md:text-left">
+            <div className="text-center m-4 md:text-right">
               <button
                 className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4   rounded-full"
-                disabled={
-                  !validMail || !validPassword || !validMatch ? true : false
+                disabled={ 
+                  !validMail || !validPassword || !validMatch  || isLoading ? true : false
                 }
               >
-                انشاء حساب  
+                register
               </button>
             </div>
           </form>
@@ -241,4 +259,3 @@ export const Register = () => {
     </>
   );
 };
-

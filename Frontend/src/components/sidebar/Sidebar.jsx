@@ -9,14 +9,14 @@ import { Link } from "react-router-dom";
 export default function Sidebar() {
   return (
     <>
-      <div className="min-h-screen ltr:ml-3 rtl:mr-3 flex flex-col flex-auto flex-shrink-0 antialiased bg-gray-50 text-gray-800">
-        <div className="fixed flex flex-col  top-0 right-0 w-64 bg-white h-full border-r ">
+      <div className="min-h-screen flex flex-col flex-auto flex-shrink-0 antialiased bg-gray-50 text-gray-800">
+        <div className="fixed flex flex-col  top-0 lift-0 w-64 bg-white h-full border-r ">
           <div className="overflow-y-auto overflow-x-hidden flex-grow">
             <ul className="flex flex-col py-4 space-y-1">
               <li className="px-5">
                 <div className="flex flex-row items-center h-8">
                   <div className="text-sm font-light tracking-wide text-gray-500">
-                    القائمة
+                  Menu
                   </div>
                 </div>
               </li>
@@ -29,7 +29,7 @@ export default function Sidebar() {
                     <AiOutlineHome />
                   </span>
                   <span className="ml-2 text-sm tracking-wide truncate">
-                  الصفحه الرئيسيه
+                  Home
                   </span>
                 </Link>
               </li>
@@ -43,10 +43,10 @@ export default function Sidebar() {
                   </span>
 
                   <span className="ml-2 text-sm tracking-wide truncate">
-                    صندوق الوارد
+                  Inbox
                   </span>
                   <span className="px-2 py-0.5 ml-auto text-xs font-medium tracking-wide text-indigo-500 bg-indigo-50 rounded-full">
-                    جديد
+                  new
                   </span>
                 </Link>
               </li>
@@ -59,7 +59,7 @@ export default function Sidebar() {
                     <BiMessageDetail />
                   </span>
                   <span className="ml-2 text-sm tracking-wide truncate">
-                    الرسائل
+                  Messages
                   </span>
                 </Link>
               </li>
@@ -72,7 +72,7 @@ export default function Sidebar() {
                     <IoIosNotificationsOutline />
                   </span>
                   <span className="ml-2 text-sm tracking-wide truncate">
-                    إشعارات
+                  Notifications
                   </span>
                   <span className="px-2 py-0.5 ml-auto text-xs font-medium tracking-wide text-red-500 bg-red-50 rounded-full">
                     1.2k
@@ -82,7 +82,7 @@ export default function Sidebar() {
               <li className="px-5">
                 <div className="flex flex-row items-center h-8">
                   <div className="text-sm font-light tracking-wide text-gray-500">
-                    المهام
+                  Tasks
                   </div>
                 </div>
               </li>
@@ -95,7 +95,7 @@ export default function Sidebar() {
                     <PiNotepadBold />
                   </span>
                   <span className="ml-2 text-sm tracking-wide truncate">
-                    المهام المتاحة
+                  Available tasks
                   </span>
                 </Link>
               </li>
@@ -117,7 +117,7 @@ export default function Sidebar() {
               <li className="px-5">
                 <div className="flex flex-row items-center h-8">
                   <div className="text-sm font-light tracking-wide text-gray-500">
-                    إعدادات
+                  Settings
                   </div>
                 </div>
               </li>
@@ -130,7 +130,7 @@ export default function Sidebar() {
                     <HiOutlineUser />
                   </span>
                   <span className="ml-2 text-sm tracking-wide truncate">
-                    الملف الشخصي
+                  Profile 
                   </span>
                 </Link>
               </li>
@@ -143,7 +143,7 @@ export default function Sidebar() {
                     <IoSettingsOutline />
                   </span>
                   <span className="ml-2 text-sm tracking-wide truncate">
-                    إعدادات
+                  Settings
                   </span>
                 </Link>
               </li>
@@ -156,7 +156,7 @@ export default function Sidebar() {
                     <IoIosLogOut />
                   </span>
                   <span className="ml-2 text-sm tracking-wide truncate">
-                    تسجيل الخروج
+                  Sign out
                   </span>
                 </Link>
               </li>

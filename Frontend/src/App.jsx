@@ -17,7 +17,6 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/dashboard" element={<Dashbord />} />
         <Route
           index
           element={
@@ -42,6 +41,7 @@ export default function App() {
             </Layout>
           }
         />
+          <Route path="/dashboard" element={<Dashbord />} />
       </Routes>
     </BrowserRouter>
   );

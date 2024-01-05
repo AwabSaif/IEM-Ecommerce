@@ -51,7 +51,7 @@ export const Header = () => {
 
         <div className="flex lg:flex-1">
           <Link to="/" className="-m-1.5 p-1.5">
-            <img className="h-16 w-auto " src={logoImage} alt={logoImage} />
+            <img className="h-auto w-[110px] " src={logoImage} alt={logoImage} />
           </Link>
         </div>
 
@@ -63,7 +63,7 @@ export const Header = () => {
             })} text-sm font-semibold leading-6 text-gray-900  hover:bg-gray-200 hover:font-bold py-2 px-4 rounded-t-2xl`}
             aria-current="page"
           >
-            الصفحه الرئيسيه
+           Home
           </NavLink>
           <NavLink
             to="/profile"
@@ -72,16 +72,16 @@ export const Header = () => {
             })} text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-200 hover:font-bold py-2 px-4 rounded-t-2xl`}
             aria-current="page"
           >
-            الملف الشخصي
+           Profile
           </NavLink>
           <NavLink
-            to="/dashboard"
+            to="/empte"
             className={`${activeNavLink({
-              isActive: pathname === "/dashboard",
+              isActive: pathname === "/empte",
             })} text-sm font-semibold leading-6 text-gray-900  hover:bg-gray-200 hover:font-bold py-2 px-4 rounded-t-2xl`}
             aria-current="page"
           >
-            فارغ
+            empte
           </NavLink>
           <div className="relative">
             <button
@@ -93,7 +93,7 @@ export const Header = () => {
               aria-expanded={isMenuOpen}
               onClick={toggleMenu}
             >
-              المزيد
+              More
               <IoIosArrowDown />
             </button>
             {isMenuOpen && (
@@ -103,10 +103,10 @@ export const Header = () => {
                     <MdSpaceDashboard  className="text-xl -ml-4" />
                     <div className="flex-auto">
                       <Link
-                        to="/profile"
+                        to="/dashboard"
                         className="block font-semibold text-gray-900"
                       >
-                        لوحة التحكم
+                        Dashboard
                         <span className="absolute inset-0"></span>
                       </Link>
                     </div>
@@ -118,7 +118,7 @@ export const Header = () => {
                         to="#"
                         className="block font-semibold text-gray-900"
                       >
-                        تسجيل الخروج
+                       sign out
                         <span className="absolute inset-0"></span>
                       </Link>
                     </div>
@@ -130,7 +130,7 @@ export const Header = () => {
                   className="flex items-center justify-center gap-x-2.5 p-3 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-100"
                 >
                   <HiOutlinePhone className="text-xl" />
-                  تواصل معنا
+                  Connect us
                 </Link>
               </div>
             )}
@@ -146,7 +146,7 @@ export const Header = () => {
             className="text-sm flex    items-center justify-items-center font-semibold leading-6 text-gray-900  hover:bg-gray-200 hover:font-bold py-2 px-4 rounded-t-2xl"
           >
             <HiOutlineLogin className="mt-1 text-xl pl-1" />
-            تسجيل الدخول
+            Sign in
           </NavLink>
         </div>
       </nav>
@@ -184,7 +184,7 @@ export const Header = () => {
                   })} -mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-200`}
                   aria-current="page"
                 >
-                  الصفحه الرئيسيه
+                  Home
                 </NavLink>
                 <NavLink
                   to="/profile"
@@ -193,13 +193,13 @@ export const Header = () => {
                   })} -mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-200`}
                   aria-current="page"
                 >
-                  الملف الشخصي
+                 Profile
                 </NavLink>
                 <NavLink
                   to="#"
                   className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-200"
                 >
-                 فارغ
+                 Empte
                 </NavLink>
               </div>
               <div className="-mx-3">
@@ -213,7 +213,7 @@ export const Header = () => {
                   aria-expanded={isMenuOpen}
                   onClick={toggleMenu}
                 >
-                  المزيد
+                  More
                   <IoIosArrowDown />
                 </button>
                 {isMenuOpen && (
@@ -223,21 +223,21 @@ export const Header = () => {
                       className="flex  items-center justify-items-center rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-gray-900 hover:bg-gray-200"
                     >
                       <MdSpaceDashboard  className="mt-1 text-xl pl-1" />
-                      لوحة التحكم
+                      Dashboard
                     </NavLink>
                     <NavLink
                       to="#"
                       className=" flex  items-center justify-items-center  rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-gray-900 hover:bg-gray-200"
                     >
                       <IoIosLogOut className="mt-1 text-xl pl-1 " />
-                      تسجيل الخروج
+                      Sign out
                     </NavLink>
                     <NavLink
                       to="#"
                       className=" flex  items-center justify-items-center  rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-gray-900 hover:bg-gray-200"
                     >
                       <HiOutlinePhone className="mt-1 text-xl pl-1  " />
-                      تواصل معنا
+                      Connect us
                     </NavLink>
                   </div>
                 )}
@@ -247,7 +247,7 @@ export const Header = () => {
                   to="/login"
                   className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-200"
                 >
-                  تسجيل الدخول
+                    Sign in
                 </NavLink>
               </div>
             </div>

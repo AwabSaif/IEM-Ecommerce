@@ -16,7 +16,7 @@ export const Footer = () => {
              color="blue-gray"
              className="font-normal transition-colors hover:text-blue-500 focus:text-blue-500"
            >
-               من نحن     
+             About us   
            </div>
          </li>
          
@@ -27,7 +27,7 @@ export const Footer = () => {
              color="blue-gray"
              className="font-normal transition-colors hover:text-blue-500 focus:text-blue-500"
            >
-             السياسات
+            Policies
            </div>
          </li>
          <li>
@@ -37,7 +37,7 @@ export const Footer = () => {
              color="blue-gray"
              className="font-normal transition-colors hover:text-blue-500 focus:text-blue-500"
            >
-            اتصل بنا
+            Contact us
            </div>
          </li>
        </ul>

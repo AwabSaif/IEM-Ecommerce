@@ -35,11 +35,11 @@ export const ForGotPassword = () => {
       setSuccess(true);
     } catch (err) {
       if (!err?.response) {
-        setErrMsg("الخادم لا يستجايب");
+        setErrMsg("Server not responding");
       } else if (err.response?.status === 404) {
-        setErrMsg("لم يتم العثور على المستخدم! الرجاء التسجيل");
+        setErrMsg("User not found! Please register");
       } else {
-        setErrMsg("فشل تسجيل الدخول");
+        setErrMsg("Sign in failed");
       }
       errRef.current.focus();
     }
@@ -49,14 +49,14 @@ export const ForGotPassword = () => {
       {success ? (
         <section className="flex flex-col items-center justify-center h-screen mx-5 my-2 space-y-10 md:flex-row md:space-y-0 md:space-x-16 md:mx-0 md:my-0">
           <div className="flex-row  items-center">
-            <h3 className="mb-4 text-lg font-medium">تم إرسال إعادة تعيين كلمة المرور</h3>
+            <h3 className="mb-4 text-lg font-medium">Password reset has been sent</h3>
 
             <p>
               <a
                 className="items-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4   rounded-full"
                 href="/login"
               >
-                تسجيل الدخول
+                sign in
               </a>
             </p>
           </div>
@@ -68,7 +68,7 @@ export const ForGotPassword = () => {
           </div>
           <form onSubmit={handleSubmit} className="max-w-sm md:w-1/3">
           <div className="flex-row  items-center">
-            <h3 className="mb-4 text-lg font-medium">نسيت كلمة المرور</h3></div>
+            <h3 className="mb-4 text-lg font-medium">Forgot password</h3></div>
             <div
               ref={errRef}
               className={
@@ -83,7 +83,7 @@ export const ForGotPassword = () => {
             </div>
             <input
               className="w-full px-4 py-2 mt-4 text-sm border border-gray-300 border-solid rounded"
-              placeholder="البريد الاكتروني"
+              placeholder="Email"
               type="email"
               id="email"
               ref={userRef}
@@ -91,19 +91,19 @@ export const ForGotPassword = () => {
               onChange={(e) => setEmail(e.target.value)}
               required
             />
-            <div className="mt-4 text-sm font-semibold text-slate-500 md:text-right">
-             الرجوع الى صفحة {' '}
+            <div className="mt-4 text-sm font-semibold text-slate-500 ">
+            Go back to Login page {'  '}
               <a
                 className="text-red-600 hover:underline hover:underline-offset-4"
                 href="/login"
               >
-                تسجيل الدخول
+                sign in
               </a>
             </div>
 
-            <div className="text-center m-4 md:text-left">
-              <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4   rounded-full">
-              ارسال
+            <div className="text-center m-4 md:text-right">
+              <button className=" bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4   rounded-full">
+              send
               </button>
             </div>
           </form>

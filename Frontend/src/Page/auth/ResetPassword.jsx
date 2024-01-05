@@ -4,13 +4,11 @@ import { FaInfoCircle } from "react-icons/fa";
 import axios from "../../api/axios";
 import { useParams } from "react-router-dom";
 
-
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 
 const RESETPASSWORD_URL = "api/user/resetpassword/";
 
 export const ResetPassword = () => {
-    
   const errRef = useRef();
   const token = useParams();
 
@@ -24,7 +22,6 @@ export const ResetPassword = () => {
 
   const [errMsg, setErrMsg] = useState("");
   const [success, setSuccess] = useState(false);
-
 
   useEffect(() => {
     const result = PWD_REGEX.test(password);
@@ -44,14 +41,14 @@ export const ResetPassword = () => {
 
     const v2 = PWD_REGEX.test(password);
     if (!v2) {
-      setErrMsg("دخول غير صالح");
+      setErrMsg("Invalid login");
       return;
     }
-  console.log(token.resetToken);
+    console.log(token.resetToken);
     try {
       const response = await axios.put(
-        RESETPASSWORD_URL+token.resetToken, 
-        JSON.stringify({password,resetToken: token.resetToken  }),
+        RESETPASSWORD_URL + token.resetToken,
+        JSON.stringify({ password, resetToken: token.resetToken }),
         {
           headers: { "Content-Type": "application/json" },
         }
@@ -61,10 +58,10 @@ export const ResetPassword = () => {
       setSuccess(true);
     } catch (err) {
       if (!err?.response) {
-        setErrMsg("الخادم لا يستجايب");
+        setErrMsg("Server not responding");
       } else {
         console.log(err);
-        setErrMsg("فشل في التسجيل");
+        setErrMsg("Failed to register");
       }
       errRef.current.focus();
     }
@@ -75,7 +72,7 @@ export const ResetPassword = () => {
         <section className="flex flex-col items-center justify-center h-screen mx-5 my-2 space-y-10 md:flex-row md:space-y-0 md:space-x-16 md:mx-0 md:my-0">
           <div className="flex-row  items-center">
             <h3 className="mb-4 text-lg font-medium">
-              تم إعادة تعيين كلمة المرور
+              Your password has been reset
             </h3>
 
             <p>
@@ -83,7 +80,7 @@ export const ResetPassword = () => {
                 className="items-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4   rounded-full"
                 href="/login"
               >
-                تسجيل الدخول
+                Sign in
               </a>
             </p>
           </div>
@@ -95,7 +92,7 @@ export const ResetPassword = () => {
           </div>
           <form onSubmit={handleSubmit} className="max-w-sm md:w-1/3">
             <div className="flex-row  items-center">
-              <h2 className="mb-4 text-lg font-medium">استعادة كلمة المرور</h2>
+              <h2 className="mb-4 text-lg font-medium">Password Reset</h2>
             </div>
             <div
               ref={errRef}
@@ -113,7 +110,7 @@ export const ResetPassword = () => {
             <input
               className="w-full px-4 py-2 mt-4 text-sm border border-gray-300 border-solid rounded"
               type="password"
-              placeholder="كلمة المرور الجديدة"
+              placeholder="New Password"
               id="password"
               onChange={(e) => setPassword(e.target.value)}
               required
@@ -132,11 +129,12 @@ export const ResetPassword = () => {
             >
               <p>
                 <FaInfoCircle />
-                من 8 إلى 24 حرفًا.
+                8 to 24 characters.
                 <br />
-                يجب أن تتضمن أحرفًا كبيرة وصغيرة ورقمًا وحرفًا خاصًا.
+                Must include uppercase and lowercase letters, a number, and a
+                special character.
                 <br />
-                الأحرف الخاصة المسموح بها:
+                Allowed special characters:
                 <span aria-label="exclamation mark">!</span>
                 <span aria-label="at code">@</span>
                 <span aria-label="hashtag">#</span>
@@ -146,7 +144,7 @@ export const ResetPassword = () => {
             </div>
             <input
               className="w-full px-4 py-2 mt-4 text-sm border border-gray-300 border-solid rounded"
-              placeholder="تاكيد كلمة المرور"
+              placeholder="confirm password"
               type="password"
               id="confirm-Pass"
               onChange={(e) => setMatchPassword(e.target.value)}
@@ -166,13 +164,13 @@ export const ResetPassword = () => {
             >
               <p>
                 <FaInfoCircle />
-                يجب أن يتطابق مع حقل إدخال كلمة المرور .
+                Must match the password entry field.
               </p>
             </div>
 
-            <div className="text-center m-4 md:text-left">
+            <div className="text-center m-4 md:text-right">
               <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4   rounded-full">
-                ارسال
+                Submit
               </button>
             </div>
           </form>

@@ -5,80 +5,77 @@ import axios from "../../api/axios";
 import { useParams } from "react-router-dom";
 import { PageMenu } from "../../components/pageMenu/PageMenu";
 
-
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 
 const CHANGEPASSWORD_URL = "api/user/changepassword";
 
-
 export const ChangrPassword = () => {
-    const errRef = useRef();
-    const token = useParams();
-  
-    const [oldPassword, setOldPassword] = useState("");
-    const [password, setPassword] = useState("");
-    const [validPassword, setValidPassword] = useState(false);
-    const [passwordFocus, setPasswordFocus] = useState(false);
-  
-    const [matchPassword, setMatchPassword] = useState("");
-    const [validMatch, setValidMatch] = useState(false);
-    const [matchFocus, setMatchFocus] = useState(false);
-  
-    const [errMsg, setErrMsg] = useState("");
-    const [success, setSuccess] = useState(false);
-  
-  
-    useEffect(() => {
-      const result = PWD_REGEX.test(password);
-      setValidPassword(result);
-      const match = password === matchPassword;
-      setValidMatch(match);
-    }, [password, matchPassword]);
-  
-    useEffect(() => {
-      setErrMsg("");
-    }, [password, matchPassword]);
-  
-    const handleSubmit = async (e) => {
-      e.preventDefault();
-  
-      //if button enabled with js hack
-  
-      const v2 = PWD_REGEX.test(password);
-      if (!v2) {
-        setErrMsg("دخول غير صالح");
-        return;
-      }
+  const errRef = useRef();
+  const token = useParams();
+
+  const [oldPassword, setOldPassword] = useState("");
+  const [password, setPassword] = useState("");
+  const [validPassword, setValidPassword] = useState(false);
+  const [passwordFocus, setPasswordFocus] = useState(false);
+
+  const [matchPassword, setMatchPassword] = useState("");
+  const [validMatch, setValidMatch] = useState(false);
+  const [matchFocus, setMatchFocus] = useState(false);
+
+  const [errMsg, setErrMsg] = useState("");
+  const [success, setSuccess] = useState(false);
+
+  useEffect(() => {
+    const result = PWD_REGEX.test(password);
+    setValidPassword(result);
+    const match = password === matchPassword;
+    setValidMatch(match);
+  }, [password, matchPassword]);
+
+  useEffect(() => {
+    setErrMsg("");
+  }, [password, matchPassword]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    //if button enabled with js hack
+
+    const v2 = PWD_REGEX.test(password);
+    if (!v2) {
+      setErrMsg("Invalid login");
+      return;
+    }
     console.log(token.resetToken);
-      try {
-         const response = await axios.patch(
-            CHANGEPASSWORD_URL, 
-          JSON.stringify({oldPassword, password  }),
-          {
-            headers: { "Content-Type": "application/json" },
-          }
-        );
-        console.log(response.data);
-        console.log(JSON.stringify(response));
-        setSuccess(true);
-      } catch (err) {
-        if (!err?.response) {
-          setErrMsg("الخادم لا يستجيب");
-        } else {
-          console.log(err);
-          setErrMsg("خطأ في التسجيل");
+    try {
+      const response = await axios.patch(
+        CHANGEPASSWORD_URL,
+        JSON.stringify({ oldPassword, password }),
+        {
+          headers: { "Content-Type": "application/json" },
         }
-        errRef.current.focus();
+      );
+      console.log(response.data);
+      console.log(JSON.stringify(response));
+      setSuccess(true);
+    } catch (err) {
+      if (!err?.response) {
+        setErrMsg("Server not responding");
+      } else {
+        console.log(err);
+        setErrMsg("Registration error");
       }
-    };
+      errRef.current.focus();
+    }
+  };
   return (
     <>
       <PageMenu />
-    {success ? (
+      {success ? (
         <section className="flex flex-col items-center justify-center h-screen mx-5 my-2 space-y-10 md:flex-row md:space-y-0 md:space-x-16 md:mx-0 md:my-0">
           <div className="flex-row  items-center">
             <h2 className="mb-4 text-lg font-medium">
-              تم إعادة تعيين كلمة المرور
+              Your password has been reset
             </h2>
 
             <p>
@@ -86,7 +83,7 @@ export const ChangrPassword = () => {
                 className="items-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4   rounded-full"
                 href="/login"
               >
-                تسجيل الدخول
+                sign in
               </a>
             </p>
           </div>
@@ -98,7 +95,7 @@ export const ChangrPassword = () => {
           </div>
           <form onSubmit={handleSubmit} className="max-w-sm md:w-1/3">
             <div className="flex-row  items-center">
-              <h3 className="mb-4 text-lg font-medium">تغير كلمة المرور</h3>
+              <h3 className="mb-4 text-lg font-medium">Change Password</h3>
             </div>
             <div
               ref={errRef}
@@ -115,16 +112,15 @@ export const ChangrPassword = () => {
             <input
               className="w-full px-4 py-2 mt-4 text-sm border border-gray-300 border-solid rounded"
               type="password"
-              placeholder="كلمة المرور القديمة "
+              placeholder="Old Password"
               id="oldPassword"
               onChange={(e) => setOldPassword(e.target.value)}
               required
-         
             />
             <input
               className="w-full px-4 py-2 mt-4 text-sm border border-gray-300 border-solid rounded"
               type="password"
-              placeholder="كلمة المرور الجديدة"
+              placeholder="New Password"
               id="password"
               onChange={(e) => setPassword(e.target.value)}
               required
@@ -143,11 +139,12 @@ export const ChangrPassword = () => {
             >
               <p>
                 <FaInfoCircle />
-                من 8 إلى 24 حرفًا.
+                8 to 24 characters.
                 <br />
-                يجب أن تتضمن أحرفًا كبيرة وصغيرة ورقمًا وحرفًا خاصًا.
+                Must include uppercase and lowercase letters, a number, and a
+                special character.
                 <br />
-                الأحرف الخاصة المسموح بها:
+                Allowed special characters:
                 <span aria-label="exclamation mark">!</span>
                 <span aria-label="at code">@</span>
                 <span aria-label="hashtag">#</span>
@@ -157,7 +154,7 @@ export const ChangrPassword = () => {
             </div>
             <input
               className="w-full px-4 py-2 mt-4 text-sm border border-gray-300 border-solid rounded"
-              placeholder="تاكيد كلمة المرور"
+              placeholder="confirm password"
               type="password"
               id="confirm-Pass"
               onChange={(e) => setMatchPassword(e.target.value)}
@@ -177,18 +174,18 @@ export const ChangrPassword = () => {
             >
               <p>
                 <FaInfoCircle />
-                يجب أن يتطابق مع حقل إدخال كلمة المرور .
+                Must match the password entry field.
               </p>
             </div>
 
-            <div className="text-center m-4 md:text-left">
+            <div className="text-center m-4 md:text-right">
               <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4   rounded-full">
-                ارسال
+                Submit
               </button>
             </div>
           </form>
         </section>
       )}
     </>
-  )
-}
+  );
+};
