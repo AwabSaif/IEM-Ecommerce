@@ -8,7 +8,9 @@ const {
   updateCategory,
 } = require("../controllers/categoryController");
 const router = express.Router();
+const {authJwt } = require("../middleWare/authMiddleWare");
 
+router.use(authJwt);
 router.get("/", getallCategorys);
 router.get("/:id", getCategory);
 router.post("/", createCategory);

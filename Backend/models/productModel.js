@@ -60,7 +60,18 @@ const productSchema = mongoose.Schema({
             type: Date, 
             default: Date.now 
         },
+},
+{
+  timestamps: true,
 });
 
+
+productSchema.virtual('id').get(function () {
+    return this._id.toHexString();
+});
+
+productSchema.set('toJSON', {
+    virtuals: true,
+});
 
 exports.Product = mongoose.model('Product', productSchema);

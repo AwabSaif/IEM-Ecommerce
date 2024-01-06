@@ -1,48 +1,60 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 
-const userSchema = mongoose.Schema(
-  {
-    name: {
-      type: String,
-      required: [true, "Please add a name"],
+const userSchema = new mongoose.Schema({
+      name: {
+        type: String,
+        required: [true, "Please add a name"],
+      },
+      email: {
+        type: String,
+        required: [true, "Please add a email"],
+        unique: true,
+        trim: true,
+        match: [
+          /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+          "Please enter a valid email",
+        ],
+      },
+      password: {
+        type: String,
+        required: [true, "Please add a password"],
+        minLength: [6, "Password must be up to 6 characters"],
+      },
+      phone: {
+        type: String,
+        required: true,
+      },
+      isAdmin: {
+        type: Boolean,
+        default: false,
+      },
+      street: {
+        type: String,
+        default: "",
+      },
+      apartment: {
+        type: String,
+        default: "",
+      },
+      zip: {
+        type: String,
+        default: "",
+      },
+      city: {
+        type: String,
+        default: "",
+      },
+      country: {
+        type: String,
+        default: "",
+      },
     },
-    email: {
-      type: String,
-      required: [true, "Please add a email"],
-      unique: true,
-      trim: true,
-      match: [
-        /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-        "Please enter a valid email",
-      ],
-    },
-    password: {
-      type: String,
-      required: [true, "Please add a password"],
-      minLength: [6, "Password must be up to 6 characters"],
-  
-    },
-    photo: {
-      type: String,
-      required: [true, "Please add a photo"],
-      default: "https://ionicframework.com/docs/img/demos/avatar.svg",
-    },
-    phone: {
-      type: String,
-      default: "+966",
-    },
-    bio: {
-      type: String,
-      maxLength: [250, "bio most not be more then 250 characters"],
-      default: "bio",
-    },
-  },
-  {
-    timestamps: true,
-  }
-);
+    {
+      timestamps: true,
+    });
 
+    
 // Encrypt passeword
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) {
@@ -55,7 +67,13 @@ userSchema.pre("save", async function (next) {
   next();
 });
 
-const User = mongoose.model("User", userSchema);
+userSchema.virtual('id').get(function () {
+      return this._id.toHexString();
+  });
+  
+userSchema.set('toJSON', {
+      virtuals: true,
+  });
 
-module.exports = User;
-
+exports.User = mongoose.model("User", userSchema);
+exports.userSchema = userSchema;

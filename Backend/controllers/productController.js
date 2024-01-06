@@ -1,6 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const { Product } = require("../models/productModel");
 const { Category } = require("../models/categoryModel");
+const mongoose = require("mongoose");
 
 //get all products
 const getallProducts = asyncHandler(async (req, res) => {
@@ -17,10 +18,9 @@ const getallProducts = asyncHandler(async (req, res) => {
   res.send(productList);
 });
 
-
 //get product
 const getProduct = asyncHandler(async (req, res) => {
-  const product = await Product.findById(req.params.id).populate('category');
+  const product = await Product.findById(req.params.id).populate("category");
 
   if (!product) {
     res.status(500).json({ success: false });
@@ -28,7 +28,7 @@ const getProduct = asyncHandler(async (req, res) => {
   res.send(product);
 });
 
-//create
+//create product
 const createProduct = asyncHandler(async (req, res) => {
   if (!req.body.category) {
     return res.status(400).send("Invalid Category");
@@ -37,18 +37,30 @@ const createProduct = asyncHandler(async (req, res) => {
   if (!category) {
     return res.status(400).send("Invalid Category");
   }
+  const {
+    name,
+    description,
+    richDescription,
+    image,
+    brand,
+    price,
+    countInStock,
+    rating,
+    numReviews,
+    isFeatured,
+  } = req.body ;
   let product = new Product({
-    name: req.body.name,
-    description: req.body.description,
-    richDescription: req.body.richDescription,
-    image: req.body.image,
-    brand: req.body.brand,
-    price: req.body.price,
+    name,
+    description,
+    richDescription,
+    image,
+    brand,
+    price,
     category: req.body.category,
-    countInStock: req.body.countInStock,
-    rating: req.body.rating,
-    numReviews: req.body.numReviews,
-    isFeatured: req.body.isFeatured,
+    countInStock,
+    rating,
+    numReviews,
+    isFeatured,
   });
 
   product = await product.save();
@@ -57,9 +69,112 @@ const createProduct = asyncHandler(async (req, res) => {
 
   res.send(product);
 });
+//Update product
+const updateProduct = asyncHandler(async (req, res) => {
+  if (!mongoose.isValidObjectId(req.params.id)) {
+    res.status(400).send("Invalid Product Id");
+  }
+  if (!req.body.category) {
+    return res.status(400).send("Invalid Category");
+  }
+  const category = await Category.findById(req.body.category);
+  if (!category) {
+    return res.status(400).send("Invalid Category");
+  }
+  const {
+    name,
+    description,
+    richDescription,
+    image,
+    brand,
+    price,
+    countInStock,
+    rating,
+    numReviews,
+    isFeatured,
+  } = req.body ;
+  const product = await Product.findByIdAndUpdate(
+    req.params.id,
+    {
+      name,
+    description,
+    richDescription,
+    image,
+    brand,
+    price,
+    category: req.body.category,
+    countInStock,
+    rating,
+    numReviews,
+    isFeatured,
+    },
+    { new: true }
+  );
+  if (!product) {
+    return res.status(500).send("The product cannot be updated!");
+  }
+  res.send(product);
+});
+
+//delete product
+const deleteProduct = asyncHandler((req, res) => {
+  if (!mongoose.isValidObjectId(req.params.id)) {
+    res.status(400).send("Invalid Product Id");
+  }
+  try {
+    const product = Product.findByIdAndDelete(req.params.id);
+    if (product) {
+      return res
+        .status(200)
+        .json({ success: true, message: "The product is deleted!" });
+    } else {
+      return res
+        .status(404)
+        .json({ success: false, message: "product not found!" });
+    }
+  } catch (err) {
+    return res.status(500).json({ success: false, error: err });
+  }
+});
+
+//Product count
+const countProduct = asyncHandler(async (req, res) => {
+  try {
+    const productCount = await Product.countDocuments();
+
+    if (!productCount) {
+      return res.status(500).json({ success: false });
+    }
+
+    res.send({ productCount: productCount });
+  } catch (err) {
+    
+    res.status(500).json({ success: false  ,error: err});
+  }
+});
+//Product featured
+const featuredProduct = asyncHandler(async (req, res) => {
+  try {
+    const count = req.params.count ? req.params.count : 0
+    const products = await Product.find({isFeatured: true}).limit(+count);
+
+    if(!products) {
+        res.status(500).json({success: false})
+    } 
+    res.send(products);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false });
+  }
+ 
+});
 
 module.exports = {
   getallProducts,
   getProduct,
   createProduct,
+  updateProduct,
+  deleteProduct,
+  countProduct,
+  featuredProduct,
 };

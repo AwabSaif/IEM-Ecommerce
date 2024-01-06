@@ -6,20 +6,24 @@ const cors = require("cors");
 const cookieParser = require("cookie-parser")
 const morgan = require('morgan');
 
-const errorHandler = require( './middleWare/errerMiddleWare')
+const {authJwt ,errorHandler} = require("./middleWare/authMiddleWare");
+// const errorHandler = require( './middleWare/errerMiddleWare')
 const userRoute = require("./routes/userRoute");
 const categoryRoute = require("./routes/categoryRoute");
 const productRoute = require("./routes/productRoute");
 
 const app = express();
 
+app.use(cors());
+
+
 //Middlewares
+app.use(cookieParser()) 
 app.use(express.json());
 app.use(morgan('tiny'));
-app.use(cookieParser())
 app.use(express.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(cors());
+app.use(authJwt);
 
 
 //Routes Middleware
