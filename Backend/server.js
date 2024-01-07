@@ -6,8 +6,8 @@ const cors = require("cors");
 const cookieParser = require("cookie-parser")
 const morgan = require('morgan');
 
-const {authJwt ,errorHandler} = require("./middleWare/authMiddleWare");
-// const errorHandler = require( './middleWare/errerMiddleWare')
+const {authJwt  ,authErrorHandler}  = require("./middleWare/authMiddleWare");
+const errorHandler = require( './middleWare/errerMiddleWare')
 const userRoute = require("./routes/userRoute");
 const categoryRoute = require("./routes/categoryRoute");
 const productRoute = require("./routes/productRoute");
@@ -21,16 +21,18 @@ app.use(cors());
 app.use(cookieParser()) 
 app.use(express.json());
 app.use(morgan('tiny'));
+// app.use(authJwt());
 app.use(express.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(authJwt);
+app.use(authErrorHandler);
+
 
 
 //Routes Middleware
 const api = process.env.API_URL;
-app.use(`${api}/user`, userRoute)
-app.use(`${api}/category`, categoryRoute)
-app.use(`${api}/product`, productRoute)
+app.use(`${api}/users`, userRoute)
+app.use(`${api}/categories`, categoryRoute)
+app.use(`${api}/products`, productRoute)
 
 
 
@@ -41,6 +43,7 @@ app.get("/", (req, res) => {
 
 //Errer MiddleWare 
 app.use(errorHandler);
+
 
 // start server
 const PORT = process.env.PORT ;

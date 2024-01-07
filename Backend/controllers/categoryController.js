@@ -50,9 +50,9 @@ const updateCategory = asyncHandler(async (req, res) => {
   res.send(category);
 });
 //delete Category
-const deleteCategory = asyncHandler((req, res) => {
+const deleteCategory = asyncHandler( async (req, res) => {
   try {
-    const category = Category.findByIdAndDelete(req.params.id);
+    const category = await Category.findByIdAndDelete(req.params.id);
     if (category) {
       return res
         .status(200)

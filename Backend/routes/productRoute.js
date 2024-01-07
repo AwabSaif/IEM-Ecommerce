@@ -10,9 +10,6 @@ const {
   featuredProduct,
 } = require("../controllers/productController");
 const router = express.Router();
-const {authJwt } = require("../middleWare/authMiddleWare");
-
-router.use(authJwt);
 
 router.get("/", getallProducts);
 router.get("/:id", getProduct);

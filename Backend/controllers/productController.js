@@ -48,7 +48,7 @@ const createProduct = asyncHandler(async (req, res) => {
     rating,
     numReviews,
     isFeatured,
-  } = req.body ;
+  } = req.body;
   let product = new Product({
     name,
     description,
@@ -92,21 +92,21 @@ const updateProduct = asyncHandler(async (req, res) => {
     rating,
     numReviews,
     isFeatured,
-  } = req.body ;
+  } = req.body;
   const product = await Product.findByIdAndUpdate(
     req.params.id,
     {
       name,
-    description,
-    richDescription,
-    image,
-    brand,
-    price,
-    category: req.body.category,
-    countInStock,
-    rating,
-    numReviews,
-    isFeatured,
+      description,
+      richDescription,
+      image,
+      brand,
+      price,
+      category: req.body.category,
+      countInStock,
+      rating,
+      numReviews,
+      isFeatured,
     },
     { new: true }
   );
@@ -117,12 +117,12 @@ const updateProduct = asyncHandler(async (req, res) => {
 });
 
 //delete product
-const deleteProduct = asyncHandler((req, res) => {
+const deleteProduct = asyncHandler( async(req, res) => {
   if (!mongoose.isValidObjectId(req.params.id)) {
     res.status(400).send("Invalid Product Id");
   }
   try {
-    const product = Product.findByIdAndDelete(req.params.id);
+    const product = await Product.findByIdAndDelete(req.params.id);
     if (product) {
       return res
         .status(200)
@@ -148,25 +148,23 @@ const countProduct = asyncHandler(async (req, res) => {
 
     res.send({ productCount: productCount });
   } catch (err) {
-    
-    res.status(500).json({ success: false  ,error: err});
+    res.status(500).json({ success: false, error: err });
   }
 });
 //Product featured
 const featuredProduct = asyncHandler(async (req, res) => {
   try {
-    const count = req.params.count ? req.params.count : 0
-    const products = await Product.find({isFeatured: true}).limit(+count);
+    const count = req.params.count ? req.params.count : 0;
+    const products = await Product.find({ isFeatured: true }).limit(+count);
 
-    if(!products) {
-        res.status(500).json({success: false})
-    } 
+    if (!products) {
+      res.status(500).json({ success: false });
+    }
     res.send(products);
   } catch (err) {
     console.error(err);
     res.status(500).json({ success: false });
   }
- 
 });
 
 module.exports = {

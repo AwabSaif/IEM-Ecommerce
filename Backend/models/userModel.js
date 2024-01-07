@@ -26,8 +26,12 @@ const userSchema = new mongoose.Schema({
         required: true,
       },
       isAdmin: {
-        type: Boolean,
-        default: false,
+          type: Boolean,
+          default: false,
+      },
+      verified: {
+          type: Boolean,
+          default: false,
       },
       street: {
         type: String,
