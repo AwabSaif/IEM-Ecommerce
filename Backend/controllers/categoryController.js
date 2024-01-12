@@ -1,6 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const { Category } = require("../models/categoryModel");
-const { restart } = require("nodemon");
+
 
 //get all Categorys
 const getallCategorys = asyncHandler(async (req, res) => {

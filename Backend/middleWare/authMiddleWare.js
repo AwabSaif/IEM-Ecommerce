@@ -10,23 +10,46 @@ function authJwt() {
   }).unless({
     path: [
       { url: /\/public\/uploads(.*)/, methods: ["GET", "OPTIONS"] },
-      { url: /\/api\/v1\/products(.*)/, methods: ["GET", "OPTIONS"] },
-      { url: /\/api\/v1\/categories(.*)/, methods: ["GET", "OPTIONS"] },
-      { url: /\/api\/v1\/orders(.*)/, methods: ["GET", "OPTIONS", "POST"] },
+      { url: /\/api\/products(.*)/, methods: ["GET", "OPTIONS"] },
+      { url: /\/api\/categories(.*)/, methods: ["GET", "OPTIONS"] },
+      { url: /\/api\/orders(.*)/, methods: ["GET", "OPTIONS", "POST"] },
+      { url: /\/api\/users\/forgotpassword\/*/, methods: ["POST"] },
+      { url: /\/api\/users\/resetpassword\/*/, methods: ["PUT"] },
+      { url: /\/api\/users\/confirm\/*/, methods: ["GET"] },
       `${api}/users/login`,
       `${api}/users/register`,
-      `${api}/users/updateuser/`, 
-      `${api}/users/changepassword/`, 
-      `${api}/users/forgotPassword`, 
-      `${api}/users/resetpassword/:resetToken`, 
-      `${api}/users/confirm/:tToken`, 
+      `${api}/users/updateuser`,
+      `${api}/users/changepassword`,
+      `${api}/iem-contact-us`,
+      
+
     ],
   });
 }
 
+// revoke.js
+async function isRevoked(req, token,done) {
+ 
+  try {
+    if (!token.payload.isAdmin) {
+     
+      return true;
+    }
+   
+    return false;
+  } catch (error) {
+    console.error("Error in isRevoked:", error);
+    return true;
+  }
+}
+
+
+
+/* 
+
 async function isRevoked(req, token) {
   try {
-    if (token.payload.isAdmin == false) {
+    if (!token.payload.isAdmin) {
       return true;
     }
     return false;
@@ -34,7 +57,7 @@ async function isRevoked(req, token) {
     console.error("Error in isRevoked:", error);
     return true;
   }
-}
+} */
 
 const authErrorHandler = (err, req, res, next) => {
   if (err.name === "UnauthorizedError") {

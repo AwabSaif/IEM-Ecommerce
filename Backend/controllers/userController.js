@@ -3,9 +3,8 @@ const { User } = require("../models/userModel");
 const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
-const { sendEmail, verifEmail } = require("../utils/sendEmail");
+const { sendEmail, verifEmail } = require("../utils/emailService");
 const Token = require("../models/tokenModle");
-const { token } = require("morgan");
 
 const secret = process.env.JWT_SECRET;
 //get all Users
@@ -108,17 +107,32 @@ const updateUser = asyncHandler(async (req, res) => {
 // Login User
 const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
+
   if (!email || !password) {
-    res.status(400).json({ message: "Please add email and password!" });
+    return res
+      .status(400)
+      .json({ message: "Please provide email and password." });
   }
+
+  // Find user by email
   const user = await User.findOne({ email });
 
   if (!user) {
-    res.status(401).json({ message: "User not found!, pleases singup" });
+    return res.status(401).json({ message: "User not found! Please sign up." });
   }
-  //Check if password is correct
-  const passewordIsCorrect = await bcrypt.compareSync(password, user.password);
-  if (user && passewordIsCorrect) {
+
+  // Check if user is verified
+  if (!user.verified) {
+    return res
+      .status(400)
+      .json({ message: "You need to verify your email before logging in." });
+  }
+
+  // Check if password is correct
+  const passwordIsCorrect = await bcrypt.compareSync(password, user.password);
+
+  if (passwordIsCorrect) {
+    // Generate JWT token
     const token = jwt.sign(
       {
         userId: user.id,
@@ -127,9 +141,11 @@ const loginUser = asyncHandler(async (req, res) => {
       secret,
       { expiresIn: "1d" }
     );
-    res.status(200).json({ user: user.email, token: token });
+
+    // Respond with user email and token
+    return res.status(200).json({ user: user.email, token: token });
   } else {
-    res.status(400).send("Invalid email or password!");
+    return res.status(400).json({ message: "Invalid email or password." });
   }
 });
 
@@ -179,72 +195,16 @@ const registerUser = asyncHandler(async (req, res) => {
     expiresAt: Date.now() + 10800 * (60 * 1000), //7 days
   });
   await token.save();
-  console.log(token);
+  
   const verifyLink = `${process.env.FRONTEND_URL}/users/confirm/${token.token}`;
+  const email_user = user.email;
+  const name_user = user.name;
 
-  const message = `<!DOCTYPE html>
-  <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Account Verification</title>
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 0;
-        background-color: #f4f4f4;
-      }
-      .container {
-        max-width: 600px;
-        margin: 0 auto;
-        padding: 20px;
-        background-color: #fff;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        border-radius: 5px;
-        text-align: center;
-      }
-      h1 {
-        color: #333;
-      }
-      h2 {
-        color: #007BFF;
-      }
-      p {
-        color: #555;
-        margin-bottom: 20px;
-      }
-      a {
-        display: inline-block;
-        padding: 10px 20px;
-        background-color: #007BFF;
-        color: #fff;
-        text-decoration: none;
-        border-radius: 3px;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="container">
-      <h1>Welcome to IEM ECOMMERCE</h1>
-      <h2>Hello,</h2>
-      <p>We're excited to have you on board! Before you get started, we just need you to verify your account.</p>
-      <p>To verify your account, click on the link below:</p>
-      <a href="${verifyLink}">Verify Your Account</a>
-      <p>If you didn't create an account, you can safely ignore this email.</p>
-      <p>Thank you for choosing IEM ECOMMERCE!</p>
-    </div>
-  </body>
-  </html>`;
-  const subject = "Account Verification";
-  const send_to = user.email;
-
-  const sent_from = process.env.EMAIL_USER;
   try {
-    await sendEmail(subject, message, send_to, sent_from);
+    await verifEmail(verifyLink, email_user, name_user);
     res.status(200).json({
       success: true,
-      message: "Email send check your ma",
+      message: "Email send check your mail",
       name: req.body.name,
       email: req.body.email,
       phone: req.body.phone,
@@ -254,21 +214,11 @@ const registerUser = asyncHandler(async (req, res) => {
       city: req.body.city,
       country: req.body.country,
     });
+    
   } catch (error) {
     res.status(500);
     throw new Error("Email not sent. please try agein");
   }
-  /* 
-  res.json({
-    name:   req.body.name,
-    email: req.body.email,
-    phone:   req.body.phone,
-    street:   req.body.street,
-    apartment:   req.body.apartment,
-    zip:   req.body.zip,
-    city:   req.body.city,
-    country:   req.body.country,
-  }); */
 });
 
 //delete User
@@ -314,7 +264,6 @@ const editUser = asyncHandler(async (req, res) => {
 
 //Change Password
 const changePassword = asyncHandler(async (req, res) => {
-
   const user = await User.findById(req.body._id);
   const { oldPassword, password } = req.body;
 
@@ -372,76 +321,12 @@ const forgotPassword = asyncHandler(async (req, res) => {
   //Construct Rest Url
   const resetUrl = `${process.env.FRONTEND_URL}/resetpassword/${resetToken}`;
   //Reset Email
-  const message = `
-  <!DOCTYPE html>
-  <html lang="en">
-  
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Password Reset</title>
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f4f4f4;
-            text-align: center;
-            margin: 0;
-            padding: 20px;
-        }
-  
-        h1 {
-            color: #333;
-        }
-  
-        h2 {
-            color: #007bff;
-        }
-  
-        p {
-            color: #555;
-            font-size: 16px;
-        }
-  
-        a {
-            display: inline-block;
-            margin-top: 10px;
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: #fff;
-            text-decoration: none;
-            border-radius: 5px;
-            transition: background-color 0.3s;
-        }
-  
-        a:hover {
-            background-color: #0056b3;
-        }
-    </style>
-  </head>
-  
-  <body>
-    <h1>Password Reset</h1>
-    <h2>Hello ${user.name},</h2>
-  
-    <p>We received a request to reset your password for your account at IEM ECOMMERCE.</p>
-  
-    <p>To reset your password, click on the link below.</p>
-  
-    <a href="${resetUrl}">Reset Password</a>
-  
-    <p>If you did not request a password reset, you can ignore this email.</p>
-  
-    <p>Thank you for using IEM ECOMMERCE.</p>
-  </body>
-  
-  </html>`;
 
-  const subject = "Password reset request";
-  const send_to = user.email;
-  const sent_from = process.env.EMAIL_USER;
+  const email_user = user.email;
+  const name_user = user.name;
 
   try {
-    await sendEmail(subject, message, send_to, sent_from);
+    await sendEmail(resetUrl, name_user, email_user);
     res.status(200).json({ success: true, message: "Reset Email Sent" });
   } catch (error) {
     res.status(500);
@@ -478,9 +363,8 @@ const resetPassword = asyncHandler(async (req, res) => {
 });
 //active account
 const activetUser = asyncHandler(async (req, res) => {
-  
-  const token = req.params.tToken 
-  
+  const token = req.params.token;
+
   try {
     const foundToken = await Token.findOne({
       token: token,
@@ -489,15 +373,14 @@ const activetUser = asyncHandler(async (req, res) => {
     if (!foundToken) {
       return res.status(404).json({ success: false, error: "Token not found" });
     }
-    
+
     await User.updateOne(
       { _id: foundToken.userId },
       { $set: { verified: true } }
-      );
-      await Token.findByIdAndDelete(foundToken._id);
-      res.send("email verified");
-    } catch (err) {
-    
+    );
+    await Token.findByIdAndDelete(foundToken._id);
+    res.send("email verified");
+  } catch (err) {
     res.status(500).json({ success: false, error: err });
   }
 });

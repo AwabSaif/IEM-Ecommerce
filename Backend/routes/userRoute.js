@@ -31,7 +31,7 @@ router.patch("/updateuser", editUser);
 router.patch("/changepassword", changePassword); 
 router.post("/forgotpassword", forgotPassword); 
 router.put("/resetpassword/:resetToken", resetPassword); 
-router.get("/confirm/:tToken", activetUser); 
+router.get("/confirm/:token", activetUser); 
 router.get("/get/count", countUser);
 
 module.exports = router;

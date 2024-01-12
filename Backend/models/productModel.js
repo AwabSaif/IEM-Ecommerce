@@ -56,10 +56,6 @@ const productSchema = mongoose.Schema({
             type: Boolean,
             default:false,
         },
-        dateCreated: { 
-            type: Date, 
-            default: Date.now 
-        },
 },
 {
   timestamps: true,
