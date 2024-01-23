@@ -18,14 +18,15 @@ export const ContactUs = () => {
           headers: { "Content-Type": "application/json" },
         }
       );
-    /*   if (response.data.success) {
-        alert("تم إرسال رسالتك بنجاح! تم مسح الحقول.");
-      } */
+      if (response.data.success) {
+        setName('');
+        setEmail('');
+        setSubject('');
+        setMessage('');
+        alert("تم إرسال رسالتك بنجاح");
+      } 
 
-      setName("");
-      setEmail("");
-      setSubject("");
-      setMessage("");
+     
     } catch (err) {
       if (!err.response) {
         setErrMsg("Server not responding");

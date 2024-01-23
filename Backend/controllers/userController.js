@@ -143,7 +143,7 @@ const loginUser = asyncHandler(async (req, res) => {
     );
 
     // Respond with user email and token
-    return res.status(200).json({ user: user.email, token: token });
+    return res.status(200).json({ user: user.email ,roles: user.isAdmin, token: token });
   } else {
     return res.status(400).json({ message: "Invalid email or password." });
   }
@@ -151,38 +151,29 @@ const loginUser = asyncHandler(async (req, res) => {
 
 // register user
 const registerUser = asyncHandler(async (req, res) => {
-  const {
-    name,
-    email,
-    password,
-    phone,
-    street,
-    apartment,
-    zip,
-    city,
-    country,
-  } = req.body;
-  if (!name || !email || !password || !phone) {
-    res.status(400).json({ message: "Please fill in all required fields" });
+  const { name, email, password, phone } = req.body;
+
+  const requiredFields = [name, email, password, phone];
+  if (requiredFields.some((field) => !field)) {
+    return res
+      .status(400)
+      .json({ message: "Please fill in all required fields" });
   }
   if (password.length < 6) {
-    res.status(400).json({ message: "Password must be up to 6 characters" });
+    return res
+      .status(400)
+      .json({ message: "Password must be at least 6 characters long" });
   }
   const userExists = await User.findOne({ email });
 
   if (userExists) {
-    res.status(409).json({ message: "Email already exists" });
+    return res.status(409).json({ message: "Email already exists" });
   }
   let user = new User({
     name,
     email,
     password,
     phone,
-    street,
-    apartment,
-    zip,
-    city,
-    country,
   });
   user = await user.save();
   if (!user) {
@@ -195,7 +186,7 @@ const registerUser = asyncHandler(async (req, res) => {
     expiresAt: Date.now() + 10800 * (60 * 1000), //7 days
   });
   await token.save();
-  
+
   const verifyLink = `${process.env.FRONTEND_URL}/users/confirm/${token.token}`;
   const email_user = user.email;
   const name_user = user.name;
@@ -205,16 +196,8 @@ const registerUser = asyncHandler(async (req, res) => {
     res.status(200).json({
       success: true,
       message: "Email send check your mail",
-      name: req.body.name,
-      email: req.body.email,
-      phone: req.body.phone,
-      street: req.body.street,
-      apartment: req.body.apartment,
-      zip: req.body.zip,
-      city: req.body.city,
-      country: req.body.country,
+     
     });
-    
   } catch (error) {
     res.status(500);
     throw new Error("Email not sent. please try agein");

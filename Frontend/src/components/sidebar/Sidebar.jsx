@@ -88,14 +88,14 @@ export default function Sidebar() {
               </li>
               <li>
                <Link
-                  to="#"
+                  to="/dashboard/addproduct"
                   className="relative flex flex-row items-center h-11 focus:outline-none hover:bg-gray-50rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50 border-l-4 border-transparent hover:border-indigo-500 pr-6"
                 >
                   <span className="inline-flex justify-center items-center text-xl ml-4">
                     <PiNotepadBold />
                   </span>
                   <span className="ml-2 text-sm tracking-wide truncate">
-                  Available tasks
+                 Add Product
                   </span>
                 </Link>
               </li>
@@ -108,7 +108,7 @@ export default function Sidebar() {
                     <HiOutlineUserGroup />
                   </span>
 
-                  <span className="ml-2 text-sm tracking-wide truncate">عملاء</span>
+                  <span className="ml-2 text-sm tracking-wide truncate">Users</span>
                   <span className="px-2 py-0.5 ml-auto text-xs font-medium tracking-wide text-green-500 bg-green-50 rounded-full">
                     15
                   </span>
@@ -163,6 +163,7 @@ export default function Sidebar() {
             </ul>
           </div>
         </div>
+          <h2>6546545</h2>
       </div>
     </>
   );
