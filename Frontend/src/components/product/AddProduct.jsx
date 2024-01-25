@@ -108,7 +108,9 @@ export const AddProduct = () => {
 
     try {
       console.log(imagesData);
-      const response = await axios.post(PRODUCT_URL, postData);
+      const response = await axios.post(PRODUCT_URL, postData,{
+        withCredentials: true,
+      });
      // const resad = await axios.post(PRODUCT_IMAGES_URL, postData);
       setIsLoading(false);
       console.log("Product created successfully:", response.data);

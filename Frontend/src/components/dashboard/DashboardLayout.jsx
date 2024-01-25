@@ -5,7 +5,7 @@ export const DashboardLayout = ({children}) => {
   return (
       <>
         <Outlet />
-        <Sidebar  />
+        {/* <Sidebar  /> */}
       </>
    
     

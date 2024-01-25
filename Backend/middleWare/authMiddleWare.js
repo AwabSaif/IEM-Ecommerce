@@ -1,7 +1,7 @@
 const { expressjwt: jwt } = require("express-jwt");
 
 function authJwt() {
-  const secret = process.env.JWT_SECRET;
+  const secret = process.env.ACCESS_TOKEN_SECRET;
   const api = process.env.API_URL;
   return jwt({
     secret,
@@ -13,14 +13,16 @@ function authJwt() {
       { url: /\/api\/products(.*)/, methods: ["GET", "OPTIONS"] },
       { url: /\/api\/categories(.*)/, methods: ["GET", "OPTIONS"] },
       { url: /\/api\/orders(.*)/, methods: ["GET", "OPTIONS", "POST"] },
-      { url: /\/api\/users\/forgotpassword\/*/, methods: ["POST"] },
-      { url: /\/api\/users\/resetpassword\/*/, methods: ["PUT"] },
       { url: /\/api\/users\/confirm\/*/, methods: ["GET"] },
       `${api}/users/login`,
       `${api}/users/register`,
-      `${api}/users/updateuser`,
+      `${api}/users/refresh/token`,
+      // { url: /\/api\/users\/forgotpassword\/*/, methods: ["POST"] },
+      // { url: /\/api\/users\/resetpassword\/*/, methods: ["PUT"] },
+     /*  `${api}/users/updateuser`,
       `${api}/users/changepassword`,
-      `${api}/iem-contact-us`,
+      `${api}/users/logout`,
+      `${api}/iem-contact-us`, */
       
 
     ],
@@ -44,20 +46,6 @@ async function isRevoked(req, token,done) {
 }
 
 
-
-/* 
-
-async function isRevoked(req, token) {
-  try {
-    if (!token.payload.isAdmin) {
-      return true;
-    }
-    return false;
-  } catch (error) {
-    console.error("Error in isRevoked:", error);
-    return true;
-  }
-} */
 
 const authErrorHandler = (err, req, res, next) => {
   if (err.name === "UnauthorizedError") {

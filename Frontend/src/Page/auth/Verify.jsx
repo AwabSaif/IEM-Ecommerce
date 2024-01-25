@@ -5,7 +5,7 @@ import axios from "../../api/axios";
 const CONFIRM_ACCOUNT = "/api/users/confirm/";
 
 export const Verify = () => {
-  const { token } = useParams(); // استخراج قيمة التوكن من رابط الاستدعاء
+  const { token } = useParams();
   const [errMsg, setErrMsg] = useState("");
   const [isVerified, setIsVerified] = useState(false);
 
@@ -15,7 +15,7 @@ export const Verify = () => {
     } else {
       setErrMsg("Invalid verification link");
     }
-  }, [token]); // ضع token كتابع لـ useEffect لضمان تحديث الأثر فقط عندما يتغير
+  }, [token]);
 
   const verifyToken = async (token) => {
     console.log(token);

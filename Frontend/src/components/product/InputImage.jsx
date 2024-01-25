@@ -198,7 +198,9 @@ export const InputImage = () => {
       
       console.log(formData);
 
-      const response = await axios.post(PRODUCT_URL, postData);
+      const response = await axios.post(PRODUCT_URL, postData,{
+        withCredentials: true,
+      });
       // const response = await axios.post("http://localhost:5000/api/products", postData);
       console.log("Product created successfully:", response.data);
     } catch (error) {

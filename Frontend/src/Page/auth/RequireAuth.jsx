@@ -6,15 +6,16 @@ const RequireAuth = () => {
   const { auth } = useAuth();
   const location = useLocation();
 
-  const isAdmin =  auth?.roles === true;
+  const isAdmin =  auth.roles === true;
+
   return (
 
-    isAdmin 
+    isAdmin
     ? <Outlet />
-    : auth?.email
+    :  auth?.email
     ? <Navigate to="/unauthorized" state={{ from: location }} replace />
     : <Navigate to="/login" state={{ from: location }} replace />
-    )
+    )  
     
 };
 

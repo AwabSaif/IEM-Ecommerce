@@ -6,10 +6,9 @@ const jwt = require("jsonwebtoken");
 const { sendEmail, verifEmail } = require("../utils/emailService");
 const Token = require("../models/tokenModle");
 
-const secret = process.env.JWT_SECRET;
 //get all Users
 const getallUsers = asyncHandler(async (req, res) => {
-  const userList = await User.find().select("name email phone");
+  const userList = await User.find().select("name email phone createdAt");
 
   if (!userList) {
     res.status(500).json({ success: false });
@@ -115,40 +114,80 @@ const loginUser = asyncHandler(async (req, res) => {
   }
 
   // Find user by email
-  const user = await User.findOne({ email });
+  const foundUser = await User.findOne({ email });
 
-  if (!user) {
-    return res.status(401).json({ message: "User not found! Please sign up." });
+  if (!foundUser) {
+    return res.status(401).json({ message: "Unauthorized" });
   }
 
   // Check if user is verified
-  if (!user.verified) {
+  if (!foundUser.verified) {
     return res
       .status(400)
       .json({ message: "You need to verify your email before logging in." });
   }
 
   // Check if password is correct
-  const passwordIsCorrect = await bcrypt.compareSync(password, user.password);
+  const passwordIsCorrect = await bcrypt.compareSync(
+    password,
+    foundUser.password
+  );
 
-  if (passwordIsCorrect) {
-    // Generate JWT token
-    const token = jwt.sign(
-      {
-        userId: user.id,
-        isAdmin: user.isAdmin,
-      },
-      secret,
-      { expiresIn: "1d" }
-    );
-
-    // Respond with user email and token
-    return res.status(200).json({ user: user.email ,roles: user.isAdmin, token: token });
-  } else {
+  if (!passwordIsCorrect)
     return res.status(400).json({ message: "Invalid email or password." });
-  }
+
+  // Generate JWT token
+  const token = jwt.sign(
+    {
+      userId: foundUser.id, // اعتمد على معرف المستخدم في التوقيع
+      isAdmin: foundUser.isAdmin,
+    },
+    process.env.ACCESS_TOKEN_SECRET,
+    { expiresIn: "3d" }
+  );
+
+  res
+    .status(200)
+    .json({ user: foundUser.email, roles: foundUser.isAdmin, token: token });
 });
 
+//refresh Token User
+
+const refreshTokenUser = asyncHandler(async (req, res) => {
+  const refreshToken = req.headers.authorization;
+  const cleanedToken = refreshToken.replace("Bearer ", "");
+
+  jwt.verify(
+    cleanedToken,
+    process.env.ACCESS_TOKEN_SECRET,
+    asyncHandler(async (err, decoded) => {
+      if (err) return res.status(403).json({ message: "Forbidden", err: err });
+      const foundUser = await User.findOne({ user: decoded.email });
+
+      const token = jwt.sign(
+        {
+          userId: foundUser.id,
+          isAdmin: foundUser.isAdmin,
+        },
+        process.env.ACCESS_TOKEN_SECRET,
+        { expiresIn: "3d" }
+      );
+
+      res.status(200).json({
+        user: foundUser.email,
+        roles: foundUser.isAdmin,
+        token: token,
+      });
+    })
+  );
+});
+
+//logout User
+const logoutUser = asyncHandler(async (req, res) => {
+  const authToken = req.headers.authorization;
+  if (!authToken) return res.sendStatus(204);
+  res.json({ message: "Cookie cleared" });
+});
 // register user
 const registerUser = asyncHandler(async (req, res) => {
   const { name, email, password, phone } = req.body;
@@ -196,7 +235,6 @@ const registerUser = asyncHandler(async (req, res) => {
     res.status(200).json({
       success: true,
       message: "Email send check your mail",
-     
     });
   } catch (error) {
     res.status(500);
@@ -285,7 +323,6 @@ const forgotPassword = asyncHandler(async (req, res) => {
 
   //Creat Rest Token
   let resetToken = crypto.randomBytes(32).toString("hex") + user._id;
-  console.log(resetToken);
 
   //Hass token before saving to  DB
   const hasedToken = crypto
@@ -397,4 +434,6 @@ module.exports = {
   resetPassword,
   activetUser,
   countUser,
+  refreshTokenUser,
+  logoutUser,
 };

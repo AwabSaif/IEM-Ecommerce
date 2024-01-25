@@ -16,6 +16,7 @@ export const ContactUs = () => {
         JSON.stringify({ name, email, subject, message }),
         {
           headers: { "Content-Type": "application/json" },
+          withCredentials: true,
         }
       );
       if (response.data.success) {

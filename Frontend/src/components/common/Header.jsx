@@ -1,4 +1,4 @@
-import { NavLink ,Link, useLocation } from "react-router-dom";
+import { NavLink ,Link, useLocation, useNavigate } from "react-router-dom";
 import { HiOutlinePhone } from "react-icons/hi2";
 import { MdSpaceDashboard } from "react-icons/md";
 import { IoIosArrowDown, IoMdClose, IoIosLogOut } from "react-icons/io";
@@ -7,16 +7,24 @@ import { GrMenu } from "react-icons/gr";
 import logoImage from "../../assets/image/IEM Ecommerce-logo.png";
 import UseToggle from "../../hooks/useToggle";
 import { useState } from "react";
+import useLogout from "../../hooks/useLogout";
 
 const activeNavLink = ({ isActive }) => (isActive ? "active" : "");
 
 export const Header = () => {
+  const navigate = useNavigate();
   const { pathname } = useLocation();
+  const logout = useLogout();
   const [isMenuOpen, toggleMenu] = UseToggle(false);
   const [isHeaderOpen, setIsHeaderOpen] = useState(false);
   const [isButtonClick, setIsButtonClick] = useState(false);
 
  
+  const signOut = async () =>{
+    await logout();
+    navigate('/login')
+  }
+
   const toggleHeader = () => {
     setIsHeaderOpen(!isHeaderOpen);
     setIsButtonClick(true);
@@ -75,13 +83,13 @@ export const Header = () => {
            Profile
           </NavLink>
           <NavLink
-            to="/empte"
+            to="/dashboard/users"
             className={`${activeNavLink({
-              isActive: pathname === "/empte",
+              isActive: pathname === "/dashboard/users",
             })} text-sm font-semibold leading-6 text-gray-900  hover:bg-gray-200 hover:font-bold py-2 px-4 rounded-t-2xl`}
             aria-current="page"
           >
-            empte
+            Users
           </NavLink>
           <div className="relative">
             <button
@@ -114,23 +122,24 @@ export const Header = () => {
                   <div className="group relative flex items-center gap-x-6 rounded-lg p-4 text-sm leading-6 hover:bg-gray-200">
                     <IoIosLogOut className="text-xl -ml-4" />
                     <div className="flex-auto">
-                      <Link
-                        to="#"
+                      <button
+                      on
+                        onClick={signOut}
                         className="block font-semibold text-gray-900"
                       >
                        sign out
                         <span className="absolute inset-0"></span>
-                      </Link>
+                      </button>
                     </div>
                   </div>
                 </div>
 
                 <Link
-                  to="#"
+                  to="/contactus"
                   className="flex items-center justify-center gap-x-2.5 p-3 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-100"
                 >
                   <HiOutlinePhone className="text-xl" />
-                  Connect us
+                  Connact us
                 </Link>
               </div>
             )}
@@ -142,7 +151,7 @@ export const Header = () => {
           aria-modal="true"
         >
           <NavLink
-            to="/login"
+            to=""
             className="text-sm flex    items-center justify-items-center font-semibold leading-6 text-gray-900  hover:bg-gray-200 hover:font-bold py-2 px-4 rounded-t-2xl"
           >
             <HiOutlineLogin className="mt-1 text-xl pl-1" />
@@ -225,19 +234,19 @@ export const Header = () => {
                       <MdSpaceDashboard  className="mt-1 text-xl pl-1" />
                       Dashboard
                     </NavLink>
-                    <NavLink
-                      to="#"
+                    <button
+                     onClick={signOut}
                       className=" flex  items-center justify-items-center  rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-gray-900 hover:bg-gray-200"
                     >
                       <IoIosLogOut className="mt-1 text-xl pl-1 " />
                       Sign out
-                    </NavLink>
+                    </button>
                     <NavLink
-                      to="#"
+                      to="/contactus"
                       className=" flex  items-center justify-items-center  rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-gray-900 hover:bg-gray-200"
                     >
                       <HiOutlinePhone className="mt-1 text-xl pl-1  " />
-                      Connect us
+                      Connact us
                     </NavLink>
                   </div>
                 )}

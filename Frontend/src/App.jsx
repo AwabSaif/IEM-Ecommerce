@@ -19,28 +19,37 @@ import { Missing } from "./Page/missingPage/Missing";
 import { Unauthorized } from "./Page/missingPage/Unauthorized";
 import { AddProduct } from "./components/product/AddProduct";
 import RequireAuth from "./Page/auth/RequireAuth";
+import { Users } from "./Page/profile/Users";
+import PersistLogin from "./Page/auth/PersistLogin";
 
 export default function App() {
   return (
     <Routes>
+      {/* plblic routes */}
       <Route path="login" element={<Login />} />
       <Route path="register" element={<Register />} />
       <Route path="forgotpassword" element={<ForGotPassword />} />
       <Route path="resetpassword/:resetToken" element={<ResetPassword />} />
       <Route path="users/confirm/:token" element={<Verify />} />
-      <Route path="/" element={<Layout />}>
-        <Route index element={<Home />} />
-        <Route path="contactus" element={<ContactUs />} />
-        <Route path="product" element={<Product />} />
-        <Route path="profile" element={<Profile />} />
-        <Route path="changepassword" element={<ChangrPassword />} />
-      </Route>
-      <Route path="*" element={<Missing />} />
       <Route path="/unauthorized" element={<Unauthorized />} />
-      <Route element={<RequireAuth />}>
-        <Route path="/dashboard" element={<DashboardLayout />}>
-          <Route index element={<Dashbord />} />
-          <Route path="addproduct" element={<AddProduct />} />
+      {/* catch all */}
+      <Route path="*" element={<Missing />} />
+      {/* potect routes */}
+      <Route element={<PersistLogin />}>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<Home />} />
+          <Route path="contactus" element={<ContactUs />} />
+          <Route path="product" element={<Product />} />
+          <Route path="profile" element={<Profile />} />
+          <Route path="changepassword" element={<ChangrPassword />} />
+        </Route>
+         {/* potect admin routes */}
+        <Route element={<RequireAuth />}>
+          <Route path="/dashboard" element={<DashboardLayout />}>
+            <Route path="users" element={<Users />} />
+            <Route index element={<Dashbord />} />
+            <Route path="addproduct" element={<AddProduct />} />
+          </Route>
         </Route>
       </Route>
     </Routes>

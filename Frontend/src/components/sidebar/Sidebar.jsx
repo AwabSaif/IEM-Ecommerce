@@ -101,7 +101,7 @@ export default function Sidebar() {
               </li>
               <li>
                <Link
-                  to="#"
+                  to="/dashboard/users"
                   className="relative flex flex-row items-center h-11 focus:outline-none hover:bg-gray-50rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50 border-l-4 border-transparent hover:border-indigo-500 pr-6"
                 >
                   <span className="inline-flex justify-center items-center text-xl ml-4">
@@ -163,7 +163,7 @@ export default function Sidebar() {
             </ul>
           </div>
         </div>
-          <h2>6546545</h2>
+         
       </div>
     </>
   );

@@ -8,7 +8,7 @@ export const Layout = ({ children }) => {
       <Header />
 
      
-      <Outlet />
+      <Outlet className="min-h-[80vh]" />
       {/* <div className="min-h-[80vh]"></div> */}
       {/* <div className="min-h-[80vh]">{children}</div> */}
       <Footer />

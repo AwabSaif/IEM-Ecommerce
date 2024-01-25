@@ -1,17 +1,18 @@
-import React, { useEffect, useRef, useState } from "react";
+import  { useEffect, useRef, useState } from "react";
 import { useNavigate, Link, useLocation } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import useAuth from "../../hooks/useAuth";
 import image from "../../assets/image/IEM Ecommerce-logo.png";
 import axios from "../../api/axios";
+import Cookies from "cookie-universal";
 
 const LOGIN_URL = "/api/users/login";
 export const Login = () => {
   const { setAuth } = useAuth();
-
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/";
+
 
   const userRef = useRef();
   const errRef = useRef();
@@ -20,15 +21,14 @@ export const Login = () => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [errMsg, setErrMsg] = useState("");
-
+  const cookie = new Cookies();
   useEffect(() => {
     userRef.current.focus();
   }, []);
-
   useEffect(() => {
     setErrMsg("");
   }, [email, password]);
-
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -37,12 +37,18 @@ export const Login = () => {
         JSON.stringify({ email, password }),
         {
           headers: { "Content-Type": "application/json" },
+          withCredentials: true,
         }
-      );
-      console.log(JSON.stringify(response?.data));
-      const Token = response?.data.token;
+        );
+        
+        // console.log(JSON.stringify(response?.data));
+      const token = response?.data.token;
+      // const refreshToken = response?.data.refreshToken;
       const roles = response?.data.roles;
-      setAuth({ email, password, roles, Token });
+      console.log(roles);
+   
+      setAuth({ email, password, roles, token});
+      const tokencookie = cookie.set('Bearer', token);
       navigate(from, { replace: true });
     } catch (err) {
       if (!err.response) {

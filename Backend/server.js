@@ -16,13 +16,17 @@ const contactUsRoute = require("./routes/contactUsRoute");
 
 const app = express();
 
-app.use(cors());
+// app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:5173',
+  credentials: true, //لاتنسى اضافة اسم السيفير او الدومين في النشر
+}));
 
 //Middlewares
 app.use(cookieParser());
 app.use(express.json());
 app.use(morgan("tiny"));
-// app.use(authJwt());
+app.use(authJwt());
 app.use(express.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(authErrorHandler);
