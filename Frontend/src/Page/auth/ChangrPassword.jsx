@@ -3,7 +3,6 @@ import image from "../../assets/image/IEM Ecommerce-logo.png";
 import { FaInfoCircle } from "react-icons/fa";
 import axios from "../../api/axios";
 import { useParams } from "react-router-dom";
-import { PageMenu } from "../../components/pageMenu/PageMenu";
 
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 

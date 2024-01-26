@@ -51,7 +51,7 @@ export const Login = () => {
       const tokencookie = cookie.set('Bearer', token);
       navigate(from, { replace: true });
     } catch (err) {
-      if (!err.response) {
+      if (!err?.response) {
         setErrMsg("Server not responding");
       } else {
         setErrMsg(err.response.data.message);

@@ -1,22 +1,25 @@
 import React, { useEffect, useRef, useState } from "react";
 import image from "../../assets/image/IEM Ecommerce-logo.png";
-import { FaInfoCircle } from "react-icons/fa";
+import { FaInfoCircle, FaEye, FaEyeSlash } from "react-icons/fa";
 import axios from "../../api/axios";
+
 import { useParams } from "react-router-dom";
 
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 
-const RESETPASSWORD_URL = "api/user/resetpassword/";
+const RESETPASSWORD_URL = "api/users/resetpassword/";
 
 export const ResetPassword = () => {
   const errRef = useRef();
   const token = useParams();
 
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [validPassword, setValidPassword] = useState(false);
   const [passwordFocus, setPasswordFocus] = useState(false);
 
   const [matchPassword, setMatchPassword] = useState("");
+  const [showMatchPassword, setShowMatchPassword] = useState(false);
   const [validMatch, setValidMatch] = useState(false);
   const [matchFocus, setMatchFocus] = useState(false);
 
@@ -77,10 +80,10 @@ export const ResetPassword = () => {
 
             <p>
               <a
-                className="items-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4   rounded-full"
+                className="items-center bg-fuchsia-500 hover:bg-fuchsia-700 text-white font-bold py-2 px-4 disabled:bg-fuchsia-300  rounded-full"
                 href="/login"
               >
-                Sign in
+                sign in
               </a>
             </p>
           </div>
@@ -98,7 +101,7 @@ export const ResetPassword = () => {
               ref={errRef}
               className={
                 errMsg
-                  ? "bg-red-100 border border-red-400 text-red-700 px-2 py-2 mb-2  rounded relative"
+                  ? "bg-fuchsia-100 border border-fuchsia-400 text-fuchsia-700 px-2 py-2 mb-2  rounded relative"
                   : "hidden"
               }
               aria-live="assertive"
@@ -106,70 +109,108 @@ export const ResetPassword = () => {
             >
               <span className="block sm:inline">{errMsg}</span>
             </div>
+            <div className="mt-2 " x-data="{ show: true }">
+              <label htmlFor="password">Password</label>
+              <div className="relative">
+                <input
+                  className="w-full px-4 py-2  text-sm border border-gray-300 border-solid rounded  outline-fuchsia-400"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="password"
+                  id="password"
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  aria-invalid={validPassword ? "false" : "true"}
+                  aria-describedby="pwdnote"
+                  onFocus={() => setPasswordFocus(true)}
+                  onBlur={() => setPasswordFocus(false)}
+                />
+                <div
+                  className="absolute  inset-y-0 right-0 pr-2  flex items-center text-sm  leading-5 cursor-pointer"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? (
+                    <span className="text-xl text-fuchsia-500">
+                      <FaEyeSlash />
+                    </span>
+                  ) : (
+                    <span className="text-xl text-fuchsia-500">
+                      <FaEye />
+                    </span>
+                  )}
+                </div>
+              </div>
 
-            <input
-              className="w-full px-4 py-2 mt-4 text-sm border border-gray-300 border-solid rounded"
-              type="password"
-              placeholder="New Password"
-              id="password"
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              aria-invalid={validPassword ? "false" : "true"}
-              aria-describedby="pwdnote"
-              onFocus={() => setPasswordFocus(true)}
-              onBlur={() => setPasswordFocus(false)}
-            />
-            <div
-              id="pwdnote"
-              className={
-                passwordFocus && !validPassword
-                  ? "bg-orange-100  border-orange-500 text-orange-700 p-4"
-                  : "hidden"
-              }
-            >
-              <p>
-                <FaInfoCircle />
-                8 to 24 characters.
-                <br />
-                Must include uppercase and lowercase letters, a number, and a
-                special character.
-                <br />
-                Allowed special characters:
-                <span aria-label="exclamation mark">!</span>
-                <span aria-label="at code">@</span>
-                <span aria-label="hashtag">#</span>
-                <span aria-label="dollarsign">$</span>
-                <span aria-label="percent">%</span>
-              </p>
+              <div
+                id="pwdnote"
+                className={
+                  passwordFocus && !validPassword
+                    ? "bg-fuchsia-100 sm:w-72 md:w-[269px] items:center lg:w-full border-fuchsia-500 text-fuchsia-700 p-4"
+                    : "hidden"
+                }
+              >
+                <p>
+                  <FaInfoCircle />
+                  8 to 24 characters.
+                  <br />
+                  Must include uppercase and lowercase letters,a number, and a
+                  special character.
+                  <br />
+                  Allowed special characters:
+                  <span aria-label="exclamation mark">!</span>
+                  <span aria-label="at code">@</span>
+                  <span aria-label="hashtag">#</span>
+                  <span aria-label="dollarsign">$</span>
+                  <span aria-label="percent">%</span>
+                </p>
+              </div>
             </div>
-            <input
-              className="w-full px-4 py-2 mt-4 text-sm border border-gray-300 border-solid rounded"
-              placeholder="confirm password"
-              type="password"
-              id="confirm-Pass"
-              onChange={(e) => setMatchPassword(e.target.value)}
-              required
-              aria-invalid={validMatch ? "false" : "true"}
-              aria-describedby="confirmnote"
-              onFocus={() => setMatchFocus(true)}
-              onBlur={() => setMatchFocus(false)}
-            />
-            <div
-              id="confirmnote"
-              className={
-                matchFocus && !validMatch
-                  ? "bg-orange-100  border-orange-500 text-orange-700 p-4"
-                  : "hidden"
-              }
-            >
-              <p>
-                <FaInfoCircle />
-                Must match the password entry field.
-              </p>
+            <div className="mt-2">
+              <label htmlFor="confirm-Pass">Confirm Password</label>
+              <div className="relative">
+                <input
+                  className="w-full px-4 py-2 text-sm border border-gray-300 border-solid rounded  outline-fuchsia-400"
+                  placeholder="confirm password"
+                  type={showMatchPassword ? "text" : "password"}
+                  id="confirm-Pass"
+                  onChange={(e) => setMatchPassword(e.target.value)}
+                  required
+                  aria-invalid={validMatch ? "false" : "true"}
+                  aria-describedby="confirmnote"
+                  onFocus={() => setMatchFocus(true)}
+                  onBlur={() => setMatchFocus(false)}
+                />
+                <div
+                  className="absolute inset-y-0 right-0 pr-2  flex items-center text-sm leading-5 cursor-pointer"
+                  onClick={() => setShowMatchPassword(!showMatchPassword)}
+                >
+                  {showMatchPassword ? (
+                    <span className="text-xl text-fuchsia-500">
+                      <FaEyeSlash />
+                    </span>
+                  ) : (
+                    <span className="text-xl text-fuchsia-500">
+                      <FaEye />
+                    </span>
+                  )}
+                </div>
+              </div>
+              <div
+                id="confirmnote"
+                className={
+                  matchFocus && !validMatch
+                    ? "bg-fuchsia-100  border-fuchsia-500 text-fuchsia-700 p-4"
+                    : "hidden"
+                }
+              >
+                <p>
+                  <FaInfoCircle />
+                  Must match the password entry field.
+                </p>
+              </div>
             </div>
 
             <div className="text-center m-4 md:text-right">
-              <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4   rounded-full">
+              <button className="bg-fuchsia-500 hover:bg-fuchsia-700 text-white font-bold py-2 px-4 disabled:bg-fuchsia-300  rounded-full">
                 Submit
               </button>
             </div>

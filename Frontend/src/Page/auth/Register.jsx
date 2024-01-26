@@ -81,7 +81,7 @@ export const Register = () => {
       );
       setSuccess(true);
     } catch (err) {
-      if (!err.response) {
+      if (!err?.response) {
         setErrMsg("Server not responding");
       } else {
         setErrMsg(err.response.data.message);
@@ -157,7 +157,7 @@ export const Register = () => {
               <div
                 className={
                   emailFocus && email && !validMail
-                    ? "bg-fuchsia-100  border-fuchsia-500 text-fuchsia-700 p-4"
+                    ? "bg-fuchsia-100  border-fuchsia-500  text-fuchsia-700 p-4"
                     : "hidden"
                 }
               >
@@ -197,7 +197,7 @@ export const Register = () => {
                   onBlur={() => setPasswordFocus(false)}
                 />
                 <div
-                  className="absolute inset-y-0 right-0 pr-2  flex items-center text-sm leading-5 cursor-pointer"
+                  className="absolute  inset-y-0 right-0 pr-2  flex items-center text-sm  leading-5 cursor-pointer"
                   onClick={() => setShowPassword(!showPassword)}
                 >
                   {showPassword ? (
@@ -216,7 +216,7 @@ export const Register = () => {
                 id="pwdnote"
                 className={
                   passwordFocus && !validPassword
-                    ? "bg-fuchsia-100  border-fuchsia-500 text-fuchsia-700 p-4"
+                    ? "bg-fuchsia-100 sm:w-72 md:w-[269px] items:center lg:w-full border-fuchsia-500 text-fuchsia-700 p-4"
                     : "hidden"
                 }
               >
@@ -224,7 +224,7 @@ export const Register = () => {
                   <FaInfoCircle />
                   8 to 24 characters.
                   <br />
-                  Must include uppercase and lowercase <br /> letters,a number,
+                  Must include uppercase and lowercase letters,a number,
                   and a special character.
                   <br />
                   Allowed special characters:

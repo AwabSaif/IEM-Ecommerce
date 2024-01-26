@@ -4,92 +4,100 @@ import { IoIosSearch } from "react-icons/io";
 import { FaRegEdit } from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import axios from "../../api/axios";
-import useRefreshToken from "../../hooks/useRefreshToken";
 import useAuth from "../../hooks/useAuth";
-import { Link } from "react-router-dom";
+export const AllProducts = () => {
 
-
-export const Users = () => {
-  const [users, setUsers] = useState();
+  const [products, setProducts] = useState();
   const { auth } = useAuth();
-  const token = auth.token
-  
+  const token = auth.token;
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [productsPerPage, setproductsPerPage] = useState(5);
+console.log(productsPerPage);
+  const handleproductsPerPageChange = (event) => {
+    const selectedValue = parseInt(event.target.value, 10);
+    setproductsPerPage(selectedValue);
+  };
 
   useEffect(() => {
     let isMounted = true;
     const controller = new AbortController();
-    const getUsers = async () => {
+    const getProducts = async () => {
       try {
-        const response = await axios.get("/api/users", {
-          headers:{
+        const response = await axios.get("api/products", {
+          headers: {
             Accept: "application/json",
-            Authorization: "Bearer "+token,
+            Authorization: "Bearer " + token,
           },
           withCredentials: true,
           signal: controller.signal,
+          params: {
+            page: currentPage,
+            perPage: productsPerPage,
+          },
         });
 
         console.log(response.data);
-        isMounted && setUsers(response.data);
+        isMounted && setProducts(response.data);
       } catch (error) {
-        console.error("Error fetching users:", error);
+        console.error("Error fetching products:", error);
       }
     };
 
-    getUsers();
+    getProducts();
     return () => {
       isMounted = false;
       controller.abort();
     };
-  }, []);
-
+  }, [productsPerPage]);
   const removeUser = async (id) => {
     try {
       // إرسال طلب DELETE إلى الخادم
-      await axios.delete(`/api/users/${id}`,{
-        headers:{
+      await axios.delete(`/api/products/${id}`, {
+        headers: {
           Accept: "application/json",
-          Authorization: "Bearer "+token,
+          Authorization: "Bearer " + token,
         },
       });
 
       // إعادة تحميل قائمة المستخدمين بعد الحذف
-      const updatedUsers = users.filter((user) => user.id !== id);
-      setUsers(updatedUsers);
+      const updatedProducts = products.filter((product) => product.id !== id);
+      setProducts(updatedProducts);
+
+      // إعادة تحميل الصفحة الحالية
+      getProducts();
     } catch (error) {
-      console.error("Error removing user:", error);
+      console.error("Error removing products:", error);
     }
   };
 
   return (
     <article className="antialiased font-sans bg-white">
       <div className="isolate bg-white px-6 py-4 sm:py-6 lg:px-8">
-        <div className="absolute inset-x-0 top-[-10rem] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[-20rem]">
-          <div
-            className="relative left-1/2 -z-10 aspect-[1155/678] w-[36.125rem] max-w-none -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%-40rem)] sm:w-[72.1875rem]"
-            style={{
-              clipPath:
-                "polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)",
-            }}
-          />
-        </div>
+        <div className="absolute inset-x-0 top-[-10rem] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[-20rem]"></div>
         <div className="container mx-auto px-4 sm:px-8">
           <div className="py-8">
             <div>
-              <h2 className="text-2xl font-semibold leading-tight">Users</h2>
+              <h2 className="text-2xl font-semibold leading-tight">Products</h2>
             </div>
             <div className="my-2 flex sm:flex-row flex-col">
               <div className="flex flex-row mb-1 sm:mb-0">
-                {/*  <div className="relative">
-                  <select className="appearance-none h-full rounded-l border block  w-full bg-white border-gray-400 text-gray-700 py-2 px-4 pr-8 leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
+                <div className="relative">
+                  <select
+                    onChange={handleproductsPerPageChange}
+                    className="appearance-none h-full rounded-l  text-base border block  w-full bg-white border-gray-400 text-gray-700  px-5  leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                    value={productsPerPage}
+                  >
                     <option>5</option>
                     <option>10</option>
                     <option>20</option>
                   </select>
-                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+
+                  <span className="-mr-2 pointer-events-none absolute  inset-y-0 right-0 flex items-center px-2 text-gray-700">
                     <MdKeyboardArrowDown />
-                  </div>
+                  </span>
                 </div>
+                {/*
                 <div className="relative">
                   <select className=" h-full rounded-r border-t sm:rounded-r-none sm:border-r-0 border-r border-b block appearance-none w-full bg-white border-gray-400 text-gray-700 py-2 px-4 pr-8 leading-tight focus:outline-none focus:border-l focus:border-r focus:bg-white focus:border-gray-500">
                     <option>All</option>
@@ -99,7 +107,8 @@ export const Users = () => {
                   <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                     <MdKeyboardArrowDown />
                   </div>
-                </div> */}
+                </div> 
+                */}
               </div>
               <div className="block relative">
                 <span className="h-full absolute inset-y-0 left-0 flex items-center pl-2">
@@ -111,22 +120,22 @@ export const Users = () => {
                 />
               </div>
             </div>
-            <div className="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
-              <div className="inline-block min-w-full shadow rounded-lg overflow-hidden">
-                <table className="min-w-full leading-normal">
+            <div className="-mx-4  sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
+              <div className="inline-block min-w-full  shadow rounded-lg overflow-hidden">
+                <table className="min-w-full  leading-normal">
                   <thead>
                     <tr>
                       <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                        User
+                      Product Name
                       </th>
                       <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                        Email
+                      Price
                       </th>
                       <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                        Phone
+                      Quantity
                       </th>
                       <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                        Created at
+                      Product Category
                       </th>
                       <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                         Actions
@@ -134,38 +143,34 @@ export const Users = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {users?.length ? (
-                      users
+                    {products?.length ? (
+                      products
                         .slice()
                         .reverse()
-                        .map((user) => (
-                          <tr key={user?.id}>
+                        .map((product) => (
+                          <tr key={product?.id}>
                             <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                               <div className="items-center">
                                 <div className="ml-3">
                                   <p className="text-gray-900 whitespace-no-wrap">
-                                    {user?.name}
+                                    {product?.name}
                                   </p>
                                 </div>
                               </div>
                             </td>
                             <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                               <p className="text-gray-900 whitespace-no-wrap">
-                                {user?.email}
+                                {product?.price}
                               </p>
                             </td>
                             <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                               <p className="text-gray-900 whitespace-no-wrap">
-                                {user?.phone}
+                                {product?.countInStock}
                               </p>
                             </td>
                             <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                               <p className="text-gray-900 whitespace-no-wrap">
-                                {user?.createdAt
-                                  ? new Date(user.createdAt).toLocaleDateString(
-                                      "en-GB"
-                                    )
-                                  : ""}
+                                 {product?.category.name} 
                               </p>
                             </td>
                             <td className="px-5  border-b border-gray-200 bg-white text-sm">
@@ -176,7 +181,7 @@ export const Users = () => {
                                   </span>
                                 </button>
                                 <button
-                                  onClick={() => removeUser(user?.id)}
+                                  onClick={() => removeUser(product?.id)}
                                   className="ml-2 py-2.5 px-5 bg-red-500 rounded-xl hover:rounded-3xl hover:bg-red-600 transition-all duration-300 text-white"
                                 >
                                   <span className="text-lg text-center">
@@ -191,7 +196,7 @@ export const Users = () => {
                       <tr>
                         <td colSpan="5">
                           <p className="text-xs xs:text-sm text-gray-900">
-                            No users to display
+                            No products to display
                           </p>
                         </td>
                       </tr>
@@ -199,23 +204,27 @@ export const Users = () => {
                   </tbody>
                 </table>
                 <div className="px-5 py-5 bg-white border-t flex flex-col xs:flex-row items-center xs:justify-between          ">
-                
-                    <br />
-                    <Link to='/'
-                     className="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-l">
-                     
-                      Home
-                    </Link>
+                  <br />
+
                   <span className="text-xs xs:text-sm text-gray-900">
-                    Showing 1 to {users ? users.length : 0} of{" "}
-                    {users ? users.length : 0} Entries
+                    Showing 1 to {products ? products.length : 0} of{" "}
+                    {products ? products.length : 0} Entries
                   </span>
 
                   <div className="inline-flex mt-2 xs:mt-0">
-                    <button className="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-l">
+                    <button
+                      onClick={() =>
+                        setCurrentPage((prevPage) => Math.max(prevPage - 1, 1))
+                      }
+                      className="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-l"
+                    >
                       Prev
                     </button>
-                    <button className="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-r">
+
+                    <button
+                      onClick={() => setCurrentPage((prevPage) => prevPage + 1)}
+                      className="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-r"
+                    >
                       Next
                     </button>
                   </div>

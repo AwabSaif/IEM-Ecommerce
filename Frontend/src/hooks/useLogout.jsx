@@ -1,10 +1,13 @@
 import axios from "../api/axios";
 import useAuth from "./useAuth";
+import Cookies from "cookie-universal";
 
 const useLogout = () => {
   const { auth, setAuth } = useAuth();
   const token = auth.token;
-
+  const cookie = new Cookies();
+  
+  
   const logout = async () => {
     setAuth({});
     try {
@@ -15,7 +18,7 @@ const useLogout = () => {
         },
         withCredentials: true,
       });
-      console.log(auth);
+      cookie.remove('Bearer');
     } catch (err) {
       console.log(err);
     }

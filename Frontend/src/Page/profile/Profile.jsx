@@ -1,7 +1,6 @@
 import { useState } from "react";
 import profileImage from "../../assets/image/22Untitled.png";
 
-import { PageMenu } from "../../components/pageMenu/PageMenu";
 const initialState = {
   name: "Awab",
   email: "Awab@admin.com",

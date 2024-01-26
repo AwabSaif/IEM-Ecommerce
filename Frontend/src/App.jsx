@@ -14,13 +14,14 @@ import { Layout } from "./components/layout/Layout";
 import { Profile } from "./Page/profile/Profile";
 import { Product } from "./Page/porduct/Product";
 import { ContactUs } from "./Page/contactUs/ContactUs";
-import { DashboardLayout } from "./components/dashboard/DashboardLayout";
+import { DashboardLayout } from "./components/dashboard/Layout/DashboardLayout";
 import { Missing } from "./Page/missingPage/Missing";
 import { Unauthorized } from "./Page/missingPage/Unauthorized";
 import { AddProduct } from "./components/product/AddProduct";
 import RequireAuth from "./Page/auth/RequireAuth";
-import { Users } from "./Page/profile/Users";
+import { Users } from "./components/users/Users";
 import PersistLogin from "./Page/auth/PersistLogin";
+import { AllProducts } from "./components/product/AllProducts";
 
 export default function App() {
   return (
@@ -30,6 +31,7 @@ export default function App() {
       <Route path="register" element={<Register />} />
       <Route path="forgotpassword" element={<ForGotPassword />} />
       <Route path="resetpassword/:resetToken" element={<ResetPassword />} />
+    
       <Route path="users/confirm/:token" element={<Verify />} />
       <Route path="/unauthorized" element={<Unauthorized />} />
       {/* catch all */}
@@ -49,6 +51,7 @@ export default function App() {
             <Route path="users" element={<Users />} />
             <Route index element={<Dashbord />} />
             <Route path="addproduct" element={<AddProduct />} />
+            <Route path="allproducts" element={<AllProducts />} />
           </Route>
         </Route>
       </Route>

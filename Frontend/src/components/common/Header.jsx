@@ -22,7 +22,7 @@ export const Header = () => {
  
   const signOut = async () =>{
     await logout();
-    navigate('/login')
+    navigate('/')
   }
 
   const toggleHeader = () => {
