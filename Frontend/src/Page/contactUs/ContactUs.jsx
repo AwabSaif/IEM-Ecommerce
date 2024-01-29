@@ -20,28 +20,26 @@ export const ContactUs = () => {
         }
       );
       if (response.data.success) {
-        setName('');
-        setEmail('');
-        setSubject('');
-        setMessage('');
-        alert("تم إرسال رسالتك بنجاح");
-      } 
-
-     
+        setName("");
+        setEmail("");
+        setSubject("");
+        setMessage("");
+        alert("Your message was sent successfully");
+      }
     } catch (err) {
       if (!err.response) {
         setErrMsg("Server not responding");
+        alert("Not sent");
       } else {
         setErrMsg(err.response.data.message);
+        alert("Not sent");
       }
     }
   };
   return (
     <section className="bg-white">
       <div className="isolate bg-white px-6 py-24 sm:py-32 lg:px-8">
-        <div className="absolute inset-x-0 top-[-10rem] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[-20rem]">
-  
-        </div>
+        <div className="absolute inset-x-0 top-[-10rem] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[-20rem]"></div>
       </div>
       <div className="py-8 lg:py-16 px-4 mx-auto max-w-screen-md ">
         <h2 className="mb-4 text-4xl tracking-tight text-center text-gray-900 ">
@@ -57,9 +55,10 @@ export const ContactUs = () => {
               Name
             </label>
             <input
+              value={name}
               type="text"
               id="name"
-              className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium  outline-none focus:border-fuchsia-400  focus:shadow-md"
               placeholder="name"
               onChange={(e) => setName(e.target.value)}
               required
@@ -73,9 +72,10 @@ export const ContactUs = () => {
               Your email
             </label>
             <input
+            value={email}
               type="email"
               id="email"
-              className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium  outline-none focus:border-fuchsia-400  focus:shadow-md"
               placeholder="name@example.com"
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -90,9 +90,10 @@ export const ContactUs = () => {
               Subject
             </label>
             <input
+            value={subject}
               type="text"
               id="subject"
-              className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium  outline-none focus:border-fuchsia-400  focus:shadow-md"
               placeholder="How we can help you"
               onChange={(e) => setSubject(e.target.value)}
               required
@@ -106,19 +107,23 @@ export const ContactUs = () => {
               Your message
             </label>
             <textarea
+            value={message}
               id="message"
               rows="6"
-              className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium  outline-none focus:border-fuchsia-400  focus:shadow-md"
               placeholder="Leave a comment..."
               onChange={(e) => setMessage(e.target.value)}
             ></textarea>
           </div>
-          <button
+          <button className="hover:shadow-htmlForm w-full rounded-md hover:bg-fuchsia-400  bg-fuchsia-500 py-3 px-8 text-center text-base font-semibold text-white outline-none">
+            Send message
+          </button>
+          {/*     <button
             type="submit"
             className="block w-full rounded-md bg-indigo-600 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
           >
             Send message
-          </button>
+          </button> */}
         </form>
       </div>
     </section>

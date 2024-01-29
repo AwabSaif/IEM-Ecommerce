@@ -37,6 +37,7 @@ const createUser = asyncHandler(async (req, res) => {
     isAdmin,
     street,
     apartment,
+    verified,
     zip,
     city,
     country,
@@ -58,6 +59,7 @@ const createUser = asyncHandler(async (req, res) => {
     password,
     phone,
     isAdmin,
+    verified,
     street,
     apartment,
     zip,
@@ -75,6 +77,7 @@ const createUser = asyncHandler(async (req, res) => {
 const updateUser = asyncHandler(async (req, res) => {
   const userExist = await User.findById(req.params.id);
   let newPassword;
+
   if (req.body.password) {
     newPassword = bcrypt.hashSync(req.body.password, 10);
   } else {
@@ -86,9 +89,10 @@ const updateUser = asyncHandler(async (req, res) => {
     {
       name: req.body.name,
       email: req.body.email,
-      passwordHash: newPassword,
+      password: newPassword,
       phone: req.body.phone,
       isAdmin: req.body.isAdmin,
+      verified: req.body.verified,
       street: req.body.street,
       apartment: req.body.apartment,
       zip: req.body.zip,
@@ -117,7 +121,7 @@ const loginUser = asyncHandler(async (req, res) => {
   const foundUser = await User.findOne({ email });
 
   if (!foundUser) {
-    return res.status(401).json({ message: "Unauthorized" });
+    return res.status(401).json({ message: "Email does not exist" });
   }
 
   // Check if user is verified
@@ -139,7 +143,7 @@ const loginUser = asyncHandler(async (req, res) => {
   // Generate JWT token
   const token = jwt.sign(
     {
-      userId: foundUser.id, // اعتمد على معرف المستخدم في التوقيع
+      userId: foundUser.id,
       isAdmin: foundUser.isAdmin,
     },
     process.env.ACCESS_TOKEN_SECRET,
@@ -262,46 +266,42 @@ const deleteUser = asyncHandler(async (req, res) => {
 
 // Edit User for user
 const editUser = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.body._id).select(
-    "name email phone street apartment zip city country"
-  );
-
-  if (user) {
-    await user.save();
-    res.status(200).json({
-      name: req.body.name,
-      email: req.body.email,
-      phone: req.body.phone,
-      street: req.body.street,
-      apartment: req.body.apartment,
-      zip: req.body.zip,
-      city: req.body.city,
-      country: req.body.country,
-    });
-  } else {
-    res.status(400).json({ message: "the user cannot be updated" });
+  const userId = req.body._id;
+  const user = await User.findById(userId);
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
   }
+
+  // update user info
+  user.name = req.body.name;
+  user.email = req.body.email;
+  user.phone = req.body.phone;
+  user.street = req.body.street;
+  user.apartment = req.body.apartment;
+  user.zip = req.body.zip;
+  user.city = req.body.city;
+  user.country = req.body.country;
+
+  await User.findByIdAndUpdate(userId, user, { new: true });
+  res.status(200).json(user);
 });
 
 //Change Password
 const changePassword = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.body._id);
-  const { oldPassword, password } = req.body;
+  const userId = req.body._id;
+  const user = await User.findById(userId);
+  const { oldpassword, password } = req.body;
 
   if (!user) {
     res.status(404);
-    throw new Error("User Ont Fuond, Please Signup");
+    throw new Error("User Not Found, Please Signup");
   }
-  // Valdidate
-  if (!oldPassword || !password) {
-    res.status(404);
-    throw new Error("Please old and new password");
-  }
-  // Check if  old password matches password in BD
-  const passewordIsCorrect = await bcrypt.compare(oldPassword, user.password);
 
-  //Save new password
-  if (user && passewordIsCorrect) {
+  // Check if old password matches password in BD
+  const passwordIsCorrect = await bcrypt.compareSync(oldpassword, user.password);
+
+  // Save new password if the old password is correct
+  if (passwordIsCorrect) {
     user.password = password;
     await user.save();
     res.status(200).json({ message: "Password change successful" });
@@ -310,6 +310,7 @@ const changePassword = asyncHandler(async (req, res) => {
     throw new Error("Old password is incorrect!");
   }
 });
+
 
 //Forgot Password
 const forgotPassword = asyncHandler(async (req, res) => {

@@ -40,13 +40,9 @@ export const Login = () => {
           withCredentials: true,
         }
         );
-        
-        // console.log(JSON.stringify(response?.data));
+     
       const token = response?.data.token;
-      // const refreshToken = response?.data.refreshToken;
       const roles = response?.data.roles;
-      console.log(roles);
-   
       setAuth({ email, password, roles, token});
       const tokencookie = cookie.set('Bearer', token);
       navigate(from, { replace: true });

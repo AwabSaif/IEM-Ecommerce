@@ -22,6 +22,9 @@ import RequireAuth from "./Page/auth/RequireAuth";
 import { Users } from "./components/users/Users";
 import PersistLogin from "./Page/auth/PersistLogin";
 import { AllProducts } from "./components/product/AllProducts";
+import { AddUser } from "./components/users/AddUser";
+import { EditUser } from "./components/users/EditUser";
+import { UpdateUser } from "./components/users/UpdateUser";
 
 export default function App() {
   return (
@@ -44,14 +47,17 @@ export default function App() {
           <Route path="product" element={<Product />} />
           <Route path="profile" element={<Profile />} />
           <Route path="changepassword" element={<ChangrPassword />} />
+            <Route path="edituser/:id" element={<EditUser />} />
         </Route>
          {/* potect admin routes */}
         <Route element={<RequireAuth />}>
           <Route path="/dashboard" element={<DashboardLayout />}>
             <Route path="users" element={<Users />} />
+            <Route path="adduser" element={<AddUser />} />
+            <Route path="updateuser/:id" element={<UpdateUser />} />
             <Route index element={<Dashbord />} />
             <Route path="addproduct" element={<AddProduct />} />
-            <Route path="allproducts" element={<AllProducts />} />
+            <Route path="products" element={<AllProducts />} />
           </Route>
         </Route>
       </Route>

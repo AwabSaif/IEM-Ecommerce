@@ -2,13 +2,14 @@ import { Outlet } from "react-router-dom";
 import Sidebar from "../sidebar/Sidebar";
 
 
-export const DashboardLayout = ({children}) => {
+export const DashboardLayout = () => {
   return (
-    <div className="flex  ">
+    <div  className="flex ">
         <Sidebar  />
         <div className="h-full flex-1 p-7">
        
-        <h1 className="text-2xl font-semibold "> <Outlet /></h1>
+        {/* <div className="text-2xl font-semibold "> </div> */}
+        <Outlet />
       </div>
         </div>
    

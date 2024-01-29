@@ -76,7 +76,7 @@ export const Register = () => {
         }),
         {
           headers: { "Content-Type": "application/json" },
-             withCredentials: true,
+          withCredentials: true,
         }
       );
       setSuccess(true);
@@ -92,20 +92,19 @@ export const Register = () => {
   return (
     <>
       {success ? (
-        <section className="flex flex-col items-center justify-center h-screen mx-5 my-2 space-y-10 md:flex-row md:space-y-0 md:space-x-16 md:mx-0 md:my-0">
-          <div className="flex-row  items-center">
-            <h3 className="mb-4 text-lg font-medium">
-              Check your email to verify account
-            </h3>
-
-            <p>
+        <section className="flex items-center justify-center h-screen">
+          <div className="flex items-center justify-center border rounded-lg shadow relative max-w-lg">
+            <div className="p-6 pt-0 text-center">
+              <h3 className="text-xl font-normal text-gray-500  mx-15 mt-20 mb-10 ">
+                Check your email to verify account
+              </h3>
               <a
-                className="items-center bg-fuchsia-500 hover:bg-fuchsia-700 text-white font-bold py-2 px-4 disabled:bg-fuchsia-300  rounded-full"
                 href="/login"
+                className="bg-fuchsia-500 hover:bg-fuchsia-700 text-white font-bold py-2 px-4 disabled:bg-fuchsia-300  rounded-full "
               >
                 sign in
               </a>
-            </p>
+            </div>
           </div>
         </section>
       ) : (
@@ -170,7 +169,7 @@ export const Register = () => {
               </div>
             </div>
             <div className="mt-2 ">
-              <label htmlFor="phone">Phone</label>
+              <label htmlFor="phone">Phone Number</label>
               <input
                 className="flex-1 w-full px-4 py-2 text-sm border border-gray-300 border-solid rounded-r  outline-fuchsia-400"
                 placeholder="05506865"
@@ -224,8 +223,8 @@ export const Register = () => {
                   <FaInfoCircle />
                   8 to 24 characters.
                   <br />
-                  Must include uppercase and lowercase letters,a number,
-                  and a special character.
+                  Must include uppercase and lowercase letters,a number, and a
+                  special character.
                   <br />
                   Allowed special characters:
                   <span aria-label="exclamation mark">!</span>

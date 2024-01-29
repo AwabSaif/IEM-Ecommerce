@@ -23,6 +23,7 @@ export const Header = () => {
   const signOut = async () =>{
     await logout();
     navigate('/')
+    alert("You are logged out")
   }
 
   const toggleHeader = () => {
@@ -151,7 +152,7 @@ export const Header = () => {
           aria-modal="true"
         >
           <NavLink
-            to=""
+            to="/login"
             className="text-sm flex    items-center justify-items-center font-semibold leading-6 text-gray-900  hover:bg-gray-200 hover:font-bold py-2 px-4 rounded-t-2xl"
           >
             <HiOutlineLogin className="mt-1 text-xl pl-1" />

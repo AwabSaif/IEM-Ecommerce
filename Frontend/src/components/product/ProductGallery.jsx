@@ -1,32 +1,68 @@
 import React, { useEffect, useRef, useState } from "react";
 import { IoCloudUploadOutline } from "react-icons/io5";
 import axios from "../../api/axios";
+import { useDropzone } from "react-dropzone";
 
 const PRODUCT_IMAGES_URL = "/api/products/gallery-images/";
 
 export const ProductGallery = () => {
+  const errRef = useRef();
+
+ 
   const [formData, setFormData] = useState({
-    images: null,
+    images: [], // تخزين الصور المتعددة
   });
+  
+  // const { acceptedFiles, getRootProps, getInputProps, isDragActive } =
+  //   useDropzone({
+  //     noClick: true,
+  //   });
+  const {
+    acceptedFiles,
+    getRootProps,
+    getInputProps,
+    isDragActive,
+  } = useDropzone({
+    noClick: true,
+    multiple: true, // تمكين تحديد ملفات متعددة
+  });
+  const files = acceptedFiles.map((file) => (
+    <li key={file.path}>
+      {file.path} - {(file.size / 1024 / 1024).toFixed(2)} MB
+    </li>
+  ));
 
-  const [imagePreview, setImagePreview] = useState(null);
-  const [isDragging, setIsDragging] = useState(false);
-  const fileInputRef = useRef(null);
+  // const [imagePreview, setImagePreview] = useState(null);
+  const imagePreviews = acceptedFiles.map((file) => (
+    <img
+      key={file.path}
+      className="py-2"
+      src={URL.createObjectURL(file)}
+      alt={file.path}
+    />
+  ));
 
-  function selectFile() {
-    fileInputRef.current.click();
-  }
+  // const [isDragging, setIsDragging] = useState(false);
+  // const fileInputRef = useRef(null);
 
-  const handleImagesGalleryChange = (e) => {
-    const selectedImage = e.target.files[0];
-    setImagesData({
-      ...imagesData,
-      images: selectedImage,
+  const [errMsg, setErrMsg] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+
+  // function selectFile() {
+  //   fileInputRef.current.click();
+  // }
+
+  useEffect(() => {
+    setErrMsg("");
+  }, [formData]);
+
+  
+  const handleImageChange = (e) => {
+    const newImages = Array.from(e.target.files);
+    setFormData({
+      ...formData,
+      images: [...formData.images, ...newImages], // إضافة الصور الجديدة
     });
-
-    // إنشاء رابط للصورة المحددة
-    const previewUrl = URL.createObjectURL(selectedImage);
-    setImagePreview(previewUrl);
   };
 
   const handleSubmit = async (e) => {
@@ -39,73 +75,105 @@ export const ProductGallery = () => {
     }
 
     try {
-      const response = await axios.post(PRODUCT_IMAGES_URL, postData);
+      console.log(imagesData);
+      const response = await axios.post(PRODUCT_URL, postData, {
+        headers: {
+          Accept: "application/json",
+          Authorization: "Bearer " + token,
+        },
+        withCredentials: true,
+      });
+      setSuccessMessage("Product created successfully");
       setIsLoading(false);
       console.log("Product created successfully:", response.data);
-    } catch (error) {
-      console.error("Error creating product:", error);
-      setIsLoading(false);
+    } catch (err) {
+      if (!err?.response) {
+        setErrMsg("Server not responding");
+        setIsLoading(false);
+      } else {
+        setIsLoading(false);
+        setErrMsg(err.response.data.message);
+      }
+      errRef.current.focus();
     }
   };
-  return (
-    <section className=" ">
-      <form onSubmit={handleSubmit}>
-        <div className="p-4 -ml-4 md:w-[607px]  bg-white bg-whtie rounded-lg">
-          <label
-            htmlFor="product-gallery"
-            className="mb-2 block text-sm font-semibold leading-6 text-gray-900"
-          >
-            Product Gallery
-          </label>
 
-          <div className="block w-full border-4 border-dotted border-gray-300 rounded-lg px-3.5 py-2 text-gray-900    focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-            <div className="w-max mx-auto text-center">
-              {!imagePreview && (
-                <div>
-                  <label role="button" onClick={selectFile}>
-                    <input
-                      className="text-sm cursor-pointer w-36 hidden"
-                      type="file"
-                      id="product-image"
-                      name="image"
-                      // onChange={handleImagesGalleryChange}
-                      multiple
-                      ref={fileInputRef}
-                    />
-                    {isDragging ? (
-                      <div className="text-indigo-500 uppercase">
-                        or drop files here
-                      </div>
-                    ) : (
-                      <>
-                        <span>
-                          <IoCloudUploadOutline className="text-indigo-500 stroke-2 h-24 w-24 mx-auto mb-4" />
-                        </span>
-                      </>
-                    )}
-                  </label>
-                </div>
-              )}
-              <div className="max-w-52">
-                {imagePreview && (
-                  <label>
-                    <img
-                      className="py-2"
-                      src={imageGalleryPreview}
-                      alt="Product image"
-                    />
-                    <input
-                      className="text-sm cursor-pointer w-36 hidden"
-                      type="file"
-                      id="product-image"
-                      name="image"
-                      onChange={selectFile}
-                      multiple
-                      ref={fileInputRef}
-                    />
-                  </label>
-                )}
+  return (
+    <section className=" mt-6 ">
+      <form onSubmit={handleSubmit}>
+      
+        <div
+          ref={errRef}
+          className={
+            errMsg
+              ? "bg-fuchsia-100 border border-fuchsia-400 text-fuchsia-700 px-2 py-2 mb-2  rounded relative"
+              : "hidden"
+          }
+          aria-live="assertive"
+          role="alert"
+        >
+          <span className="block sm:inline">{errMsg}</span>
+        </div>
+        {successMessage && (
+          <div className=" bg-fuchsia-100 border border-fuchsia-400 text-fuchsia-700 px-2 py-2 mb-2  rounded relative">
+            {successMessage}
+          </div>
+        )}
+        <div className="-mt-4">
+          <div className="-ml-11 p-4 max-w-72 bg-white w-max bg-whtie m-auto rounded-lg">
+            <label
+              htmlFor="product-image"
+              className="mb-2 ml-8 block text-sm font-semibold leading-6 text-gray-900"
+            >
+              Add product images gallery
+            </label>
+
+            {!imagePreviews.length && (
+              <div className="absolute pointer-events-auto ml-7">
+                <label
+                  {...getRootProps({
+                    className:
+                      "mx-auto py-10  cursor-pointer flex w-[350px] md:w-[500px] lg:w-[550px] max-w-xl  flex-col items-center rounded-xl border-2 border-dashed border-fuchsia-400 bg-white  text-center",
+                  })}
+                >
+                  {" "}
+                  <span>
+                    <IoCloudUploadOutline className="text-fuchsia-500 stroke-2 h-16 w-16 mx-auto mb-4" />
+                  </span>
+                  <input
+                    className="text-sm cursor-pointer w-36 hidden"
+                    {...getInputProps()}
+                    // value={formData.image}
+                    onChange={handleImageChange}
+                    multiple
+                  />
+                  <div className="mt-2 text-gray-500 tracking-wide">
+                    Upload or darg & drop <br /> your file PNG, JPG or jpeg.
+                  </div>
+                </label>
               </div>
+            )}
+            <div className="max-w-52 absolute pointer-events-auto ml-7">
+            {imagePreviews.length > 0 && (
+                <label className="mx-auto py-10  cursor-pointer flex w-[350px] md:w-[500px] lg:w-[550px] max-w-xl  flex-col items-center rounded-xl border-2 border-dashed border-fuchsia-400 bg-white  text-center">
+              {/*     <img
+                    className="py-2 "
+                    src={imagePreview}
+                    alt="Product image"
+                  /> */}
+                  <input
+                    className="text-sm cursor-pointer w-36 hidden"
+                    type="file"
+                    id="product-image"
+                    name="image"
+                    onChange={handleImageChange}
+                    {...getInputProps()}
+                  />
+                  <aside>
+                    <ul className="text-bluck">{files}</ul>
+                  </aside>
+                </label>
+              )}
             </div>
           </div>
         </div>
@@ -113,60 +181,3 @@ export const ProductGallery = () => {
     </section>
   );
 };
-
-/* <div className="flex p-0 m-0">
-          <div className="-ml-11 p-4 max-w-72 bg-white w-max bg-whtie m-auto rounded-lg">
-            <label
-              htmlFor="product-image"
-              className="mb-2 ml-8 block text-sm font-semibold leading-6 text-gray-900"
-            >
-              Product Image
-            </label>
-
-            <div className="py-5 px-2 ml-7 relative border-4 border-dotted border-gray-300 rounded-lg">
-              <div className="flex flex-col w-max mx-auto text-center">
-                {!imagePreview && (
-                  <div>
-                    <label>
-                      <span>
-                        <IoCloudUploadOutline className="text-indigo-500 stroke-2 h-24 w-24 mx-auto mb-4" />
-                      </span>
-                      <input
-                        className="text-sm cursor-pointer w-36 hidden"
-                        type="file"
-                        id="product-image"
-                        name="image"
-                        onChange={handleImageChange}
-                        multiple
-                      />
-                    </label>
-
-                    <div className="text-indigo-500 uppercase">
-                      or drop files here
-                    </div>
-                  </div>
-                )}
-                <div className="max-w-52">
-                  {imagePreview && (
-                    <label>
-                      <img
-                        className="py-2 "
-                        src={imagePreview}
-                        alt="Product image"
-                      />
-                      <input
-                        className="text-sm cursor-pointer w-36 hidden"
-                        type="file"
-                        id="product-image"
-                        name="image"
-                        onChange={handleImageChange}
-                        multiple
-                      />
-                    </label>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
- */

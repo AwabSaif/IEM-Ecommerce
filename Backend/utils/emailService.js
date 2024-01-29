@@ -48,7 +48,7 @@ const sendEmail = async (resetUrl, name_user, email_user) => {
         color: #333;
       }
       h2 {
-        color: #007BFF;
+        color: #86198f;
       }
       p {
         color: #555;
@@ -57,14 +57,15 @@ const sendEmail = async (resetUrl, name_user, email_user) => {
       a {
         display: inline-block;
         padding: 10px 20px;
-        background-color: #007BFF;
-        color: #fff;
+        background-color: #d946ef;
+        color:#fdf4ff ;
         text-decoration: none;
         border-radius: 3px;
       }
           a:hover {
-              background-color: #0056b3;
+              background-color: #e879f9;
           }
+      </style>
       </style>
     </head>
     
@@ -87,7 +88,6 @@ const sendEmail = async (resetUrl, name_user, email_user) => {
     };
     //send email
     const info = await transporter.sendMail(potions);
-    
   } catch (err) {
     console.error("Email failed to send", err);
   }
@@ -139,7 +139,7 @@ const verifEmail = async (verifyLink, email_user, name_user) => {
             color: #333;
           }
           h2 {
-            color: #007BFF;
+            color: #86198f;
           }
           p {
             color: #555;
@@ -148,11 +148,15 @@ const verifEmail = async (verifyLink, email_user, name_user) => {
           a {
             display: inline-block;
             padding: 10px 20px;
-            background-color: #007BFF;
-            color: #fff;
+            background-color: #d946ef;
+            color:#fdf4ff ;
             text-decoration: none;
             border-radius: 3px;
           }
+              a:hover {
+                  background-color: #e879f9;
+              }
+          </style>
         </style>
       </head>
       <body>
@@ -169,7 +173,6 @@ const verifEmail = async (verifyLink, email_user, name_user) => {
       </html>`,
     };
     const info = await transporter.sendMail(options);
-  
   } catch (err) {
     console.error("Email failed to send", err);
   }

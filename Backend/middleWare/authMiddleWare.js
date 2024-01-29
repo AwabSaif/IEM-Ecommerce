@@ -19,10 +19,10 @@ function authJwt() {
       `${api}/users/login`,
       `${api}/users/register`,
       `${api}/users/refresh/token`,
-     /*  `${api}/users/updateuser`,
+      `${api}/users/updateuser`,
       `${api}/users/changepassword`,
       `${api}/users/logout`,
-      `${api}/iem-contact-us`, */
+      `${api}/iem-contact-us`, 
       
 
     ],
