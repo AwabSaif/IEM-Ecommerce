@@ -22,9 +22,11 @@ const useRefreshToken = () => {
         const token = response.data.token;
         const tokencookie = cookie.set("Bearer", token);
         return {
+          name: response.data.name,
           email: response.data.email,
           roles: response.data.roles,
           token: token,
+          id: response.data.id,
         };
       });
 

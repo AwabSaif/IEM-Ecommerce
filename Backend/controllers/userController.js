@@ -150,9 +150,13 @@ const loginUser = asyncHandler(async (req, res) => {
     { expiresIn: "3d" }
   );
 
-  res
-    .status(200)
-    .json({ user: foundUser.email, roles: foundUser.isAdmin, token: token });
+  res.status(200).json({
+    name:foundUser.name,
+    user: foundUser.email,
+    roles: foundUser.isAdmin,
+    token: token,
+    id: foundUser._id,
+  });
 });
 
 //refresh Token User
@@ -167,7 +171,6 @@ const refreshTokenUser = asyncHandler(async (req, res) => {
     asyncHandler(async (err, decoded) => {
       if (err) return res.status(403).json({ message: "Forbidden", err: err });
       const foundUser = await User.findOne({ user: decoded.email });
-
       const token = jwt.sign(
         {
           userId: foundUser.id,
@@ -178,9 +181,11 @@ const refreshTokenUser = asyncHandler(async (req, res) => {
       );
 
       res.status(200).json({
+        name:foundUser.name,
         user: foundUser.email,
         roles: foundUser.isAdmin,
         token: token,
+        id: foundUser._id
       });
     })
   );
@@ -298,7 +303,10 @@ const changePassword = asyncHandler(async (req, res) => {
   }
 
   // Check if old password matches password in BD
-  const passwordIsCorrect = await bcrypt.compareSync(oldpassword, user.password);
+  const passwordIsCorrect = await bcrypt.compareSync(
+    oldpassword,
+    user.password
+  );
 
   // Save new password if the old password is correct
   if (passwordIsCorrect) {
@@ -310,7 +318,6 @@ const changePassword = asyncHandler(async (req, res) => {
     throw new Error("Old password is incorrect!");
   }
 });
-
 
 //Forgot Password
 const forgotPassword = asyncHandler(async (req, res) => {

@@ -9,11 +9,12 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import ReactPaginate from "react-paginate";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { IoCloseCircleOutline } from "react-icons/io5";
-export const Users = () => {
-  const [users, setUsers] = useState([]);
+
+export const Categories = () => {
+  const [categories, SetCategories] = useState([]);
   const { auth } = useAuth();
   const token = auth.token;
-  
+
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/dashboard";
@@ -34,36 +35,36 @@ export const Users = () => {
 
   const endOffset = itemOffset + itemsPerPage;
   useEffect(() => {
-    SetCurrentItems(users.slice(itemOffset, endOffset).reverse());
-    SetPageCount(Math.ceil(users.length / itemsPerPage));
-  }, [itemOffset, itemsPerPage, users]);
+    SetCurrentItems(categories.slice(itemOffset, endOffset).reverse());
+    SetPageCount(Math.ceil(categories.length / itemsPerPage));
+  }, [itemOffset, itemsPerPage, categories]);
 
   const handlePageClick = (e) => {
-    const newOffset = (e.selected * itemsPerPage) % users.length;
+    const newOffset = (e.selected * itemsPerPage) % categories.length;
     SetItemOffset(newOffset);
   };
 
-  const removeUser = async (id) => {
+  const removecategory = async (id) => {
     try {
-      await axios.delete(`/api/users/${id}`, {
+      await axios.delete(`/api/categories/${id}`, {
         headers: {
           Accept: "application/json",
           Authorization: "Bearer " + token,
         },
       });
 
-      const updatedUsers = users.filter((user) => user.id !== id);
-      setUsers(updatedUsers);
+      const updatedCategories = categories.filter((category) => category.id !== id);
+      SetCategories(updatedCategories);
     } catch (error) {
-      console.error("Error removing user:", error);
+      console.error("Error removing category:", error);
     }
   };
   useEffect(() => {
     let isMounted = true;
     const controller = new AbortController();
-    const getUsers = async () => {
+    const getCategories = async () => {
       try {
-        const response = await axios.get("/api/users", {
+        const response = await axios.get("/api/categories", {
           headers: {
             Accept: "application/json",
             Authorization: "Bearer " + token,
@@ -72,23 +73,21 @@ export const Users = () => {
           signal: controller.signal,
         });
 
-        const filteredUsers = response.data.filter((user) => {
-          const { name, email, phone } = user;
+        const filtered = response.data.filter((category) => {
+          const { name } = category;
           const searchValue = searchTerm.toLowerCase();
           return (
-            name.toLowerCase().includes(searchValue) ||
-            email.toLowerCase().includes(searchValue) ||
-            phone.toLowerCase().includes(searchValue)
+            name.toLowerCase().includes(searchValue) 
           );
         });
 
-        isMounted && setUsers(filteredUsers);
+        isMounted && SetCategories(filtered);
       } catch (error) {
-        console.error("Error fetching users:", error);
+        console.error("Error fetching Categories:", error);
       }
     };
 
-    getUsers();
+    getCategories();
     return () => {
       isMounted = false;
       controller.abort();
@@ -98,10 +97,10 @@ export const Users = () => {
   return (
     <article className="antialiased font-sans bg-white">
       <div className="isolate bg-white px-6 py-4 sm:py-6 lg:px-8">
-      <div className="relative ">
+        <div className="relative ">
           <button
             className={`absolute cursor-pointer  white  -right-1 rounded-full  `}
-            onClick={() =>  navigate(from, { replace: true })}
+            onClick={() => navigate(from, { replace: true })}
           >
             <span className="text-fuchsia-500 text-2xl">
               <IoCloseCircleOutline />
@@ -112,7 +111,7 @@ export const Users = () => {
         <div className="container mx-auto px-4 sm:px-8">
           <div className="py-8">
             <div>
-              <h2 className="text-2xl font-semibold leading-tight">Users</h2>
+              <h2 className="text-2xl font-semibold leading-tight">Categories</h2>
             </div>
             <div className="my-2 flex sm:flex-row flex-col">
               <div className="flex flex-row mb-1 sm:mb-0">
@@ -138,7 +137,7 @@ export const Users = () => {
                 </span>
                 <input
                   placeholder="Search"
-                   onChange={(e) => handleSearch(e.target.value)}
+                  onChange={(e) => handleSearch(e.target.value)}
                   className="appearance-none rounded-r rounded-l sm:rounded-l-none border border-gray-400 border-b block pl-8 pr-6 py-2 w-full bg-white text-sm placeholder-gray-400 text-gray-700 focus:bg-white focus:placeholder-gray-600 focus:text-gray-700 focus:outline-none"
                 />
               </div>
@@ -149,13 +148,10 @@ export const Users = () => {
                   <thead>
                     <tr>
                       <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                        User
+                      Category
                       </th>
                       <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                        Email
-                      </th>
-                      <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                        Phone
+                      Color
                       </th>
                       <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                         Created at
@@ -166,33 +162,29 @@ export const Users = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {users.length > 0 ? (
-                      currentItems.map((user) => {
+                    {categories.length > 0 ? (
+                      currentItems.map((category) => {
                         return (
-                          <tr key={user?.id}>
+                          <tr key={category?.id}>
                             <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                               <div className="items-center">
                                 <div className="ml-3">
                                   <p className="text-gray-900 whitespace-no-wrap">
-                                    {user?.name}
+                                    {category?.name}
                                   </p>
                                 </div>
                               </div>
                             </td>
                             <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                               <p className="text-gray-900 whitespace-no-wrap">
-                                {user?.email}
+                                {category?.color}
                               </p>
                             </td>
+                        
                             <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                               <p className="text-gray-900 whitespace-no-wrap">
-                                {user?.phone}
-                              </p>
-                            </td>
-                            <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                              <p className="text-gray-900 whitespace-no-wrap">
-                                {user?.createdAt
-                                  ? new Date(user.createdAt).toLocaleDateString(
+                                {category?.createdAt
+                                  ? new Date(category.createdAt).toLocaleDateString(
                                       "en-GB"
                                     )
                                   : ""}
@@ -201,7 +193,7 @@ export const Users = () => {
                             <td className="px-5  border-b border-gray-200 bg-white text-sm">
                               <div className="flex items-center justify-center lg:-ml-16">
                                 <Link
-                                  to={`/dashboard/updateuser/${user?.id}`}
+                                  to={`/dashboard/updatecategory/${category?.id}`}
                                   className="p-2.5 bg-blue-500 rounded-xl hover:rounded-3xl hover:bg-blue-600 transition-all duration-300 text-white"
                                 >
                                   <span className="text-lg text-center">
@@ -209,7 +201,7 @@ export const Users = () => {
                                   </span>
                                 </Link>
                                 <button
-                                  onClick={() => removeUser(user?.id)}
+                                  onClick={() => removecategory(category?.id)}
                                   className="ml-2 py-2.5 px-5 bg-red-500 rounded-xl hover:rounded-3xl hover:bg-red-600 transition-all duration-300 text-white"
                                 >
                                   <span className="text-lg text-center">
@@ -225,7 +217,7 @@ export const Users = () => {
                       <tr>
                         <td colSpan="5">
                           <p className="text-xl text-center xs:text-sm text-gray-900">
-                            No users to display
+                            No Categories to display
                           </p>
                         </td>
                       </tr>
@@ -237,7 +229,7 @@ export const Users = () => {
 
                   <span className="text-xs xs:text-sm text-gray-900">
                     Showing {itemOffset + 1} to {endOffset} of{" "}
-                    {users ? users.length : 0} Users
+                    {categories ? categories.length : 0} Categories
                   </span>
 
                   <div className="inline-flex mt-2 xs:mt-0">

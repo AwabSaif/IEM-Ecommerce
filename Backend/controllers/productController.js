@@ -15,12 +15,8 @@ const FILE_TYPE_MAP = {
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
       const isValid = FILE_TYPE_MAP[file.mimetype];
-      // let uploadError = new Error('invalid image type');
 
-      /* if(isValid) {
-          uploadError = null
-      } */
-    cb(/* uploadError */null, 'public/uploads')
+    cb(null, 'public/uploads')
   },
   filename: function (req, file, cb) {
       
@@ -76,7 +72,6 @@ const createProduct = asyncHandler(async (req, res) => {
     name,
     description,
     richDescription,
-    image,
     brand,
     price,
     sku,

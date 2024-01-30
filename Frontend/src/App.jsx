@@ -17,14 +17,19 @@ import { ContactUs } from "./Page/contactUs/ContactUs";
 import { DashboardLayout } from "./components/dashboard/Layout/DashboardLayout";
 import { Missing } from "./Page/missingPage/Missing";
 import { Unauthorized } from "./Page/missingPage/Unauthorized";
-import { AddProduct } from "./components/product/AddProduct";
+import { AddProduct } from "./components/products/AddProduct";
 import RequireAuth from "./Page/auth/RequireAuth";
 import { Users } from "./components/users/Users";
 import PersistLogin from "./Page/auth/PersistLogin";
-import { AllProducts } from "./components/product/AllProducts";
+import { AllProducts } from "./components/products/AllProducts";
 import { AddUser } from "./components/users/AddUser";
 import { EditUser } from "./components/users/EditUser";
 import { UpdateUser } from "./components/users/UpdateUser";
+import { UpdateProduct } from "./components/products/UpdateProduct";
+import { Categories } from "./components/Categories/Categories";
+import { AddCategory } from "./components/Categories/AddCategory";
+import { UpdateCategory } from "./components/Categories/UpdateCategory";
+import { Orders } from "./components/Orders/Orders";
 
 export default function App() {
   return (
@@ -34,7 +39,7 @@ export default function App() {
       <Route path="register" element={<Register />} />
       <Route path="forgotpassword" element={<ForGotPassword />} />
       <Route path="resetpassword/:resetToken" element={<ResetPassword />} />
-    
+
       <Route path="users/confirm/:token" element={<Verify />} />
       <Route path="/unauthorized" element={<Unauthorized />} />
       {/* catch all */}
@@ -47,17 +52,26 @@ export default function App() {
           <Route path="product" element={<Product />} />
           <Route path="profile" element={<Profile />} />
           <Route path="changepassword" element={<ChangrPassword />} />
-            <Route path="edituser/:id" element={<EditUser />} />
+          <Route path="edituser/:id" element={<EditUser />} />
         </Route>
-         {/* potect admin routes */}
+        {/* potect admin routes */}
         <Route element={<RequireAuth />}>
           <Route path="/dashboard" element={<DashboardLayout />}>
+            <Route index element={<Dashbord />} />
+            {/* Orders */}
+            <Route path="orders" element={<Orders />} />
+            {/* users */}
             <Route path="users" element={<Users />} />
             <Route path="adduser" element={<AddUser />} />
             <Route path="updateuser/:id" element={<UpdateUser />} />
-            <Route index element={<Dashbord />} />
-            <Route path="addproduct" element={<AddProduct />} />
+            {/* products */}
             <Route path="products" element={<AllProducts />} />
+            <Route path="addproduct" element={<AddProduct />} />
+            <Route path="updateproduct/:id" element={<UpdateProduct />} />
+            {/* Categories */}
+            <Route path="categories" element={<Categories />} />
+            <Route path="addcategory" element={<AddCategory />} />
+            <Route path="updatecategory/:id" element={<UpdateCategory />} />
           </Route>
         </Route>
       </Route>

@@ -1,7 +1,7 @@
-import { AddProduct } from "../../components/product/AddProduct";
-import { InputImage } from "../../components/product/InputImage";
-import { ProductCard } from "../../components/product/ProductCard";
-import { ProductGallery } from "../../components/product/ProductGallery";
+import { AddProduct } from "../../components/products/AddProduct";
+import { InputImage } from "../../components/products/InputImage";
+import { ProductCard } from "../../components/products/ProductCard";
+import { ProductGallery } from "../../components/products/ProductGallery";
 
 export const Product = () => {
 

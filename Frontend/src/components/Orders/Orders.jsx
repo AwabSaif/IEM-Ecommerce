@@ -5,13 +5,20 @@ import { FaRegEdit } from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import axios from "../../api/axios";
 import useAuth from "../../hooks/useAuth";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import ReactPaginate from "react-paginate";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
-export const AllProducts = () => {
-  const [products, setProducts] = useState([]);
+import { IoCloseCircleOutline } from "react-icons/io5";
+
+export const Orders = () => {
+  const [orders, SetOrders] = useState([]);
   const { auth } = useAuth();
   const token = auth.token;
+
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/dashboard";
+
   //search
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -28,21 +35,36 @@ export const AllProducts = () => {
 
   const endOffset = itemOffset + itemsPerPage;
   useEffect(() => {
-    SetCurrentItems(products.slice(itemOffset, endOffset).reverse());
-    SetPageCount(Math.ceil(products.length / itemsPerPage));
-  }, [itemOffset, itemsPerPage, products]);
+    SetCurrentItems(orders.slice(itemOffset, endOffset));
+    SetPageCount(Math.ceil(orders.length / itemsPerPage));
+  }, [itemOffset, itemsPerPage, orders]);
 
   const handlePageClick = (e) => {
-    const newOffset = (e.selected * itemsPerPage) % products.length;
+    const newOffset = (e.selected * itemsPerPage) % orders.length;
     SetItemOffset(newOffset);
   };
 
+  const removeOrders = async (id) => {
+    try {
+      await axios.delete(`/api/orders/${id}`, {
+        headers: {
+          Accept: "application/json",
+          Authorization: "Bearer " + token,
+        },
+      });
+
+      const updatedOrders = orders.filter((order) => order.id !== id);
+      SetOrders(updatedOrders);
+    } catch (error) {
+      console.error("Error removing order:", error);
+    }
+  };
   useEffect(() => {
     let isMounted = true;
     const controller = new AbortController();
-    const getProducts = async () => {
+    const getOrders = async () => {
       try {
-        const response = await axios.get("api/products", {
+        const response = await axios.get("/api/orders", {
           headers: {
             Accept: "application/json",
             Authorization: "Bearer " + token,
@@ -50,57 +72,47 @@ export const AllProducts = () => {
           withCredentials: true,
           signal: controller.signal,
         });
-
-        const filtered = response.data.filter((filter) => {
-          const { name, sku, category } = filter;
+        console.log(response);
+        /*   
+        const filtered = response.data.filter((order) => {
+          const { user } = order;
           const searchValue = searchTerm.toLowerCase();
           return (
-            name.toLowerCase().includes(searchValue) ||
-            sku.toLowerCase().includes(searchValue) ||
-            category.toLowerCase().includes(searchValue)
+            user.toLowerCase().includes(searchValue) 
           );
-        });
-        
+        }); */
 
-        isMounted && setProducts(filtered);
+        isMounted && SetOrders(response.data);
       } catch (error) {
-        console.error("Error fetching Products:", error);
+        console.error("Error fetching Orders:", error);
       }
     };
 
-    getProducts();
+    getOrders();
     return () => {
       isMounted = false;
       controller.abort();
     };
   }, [searchTerm, token]);
 
-  const removeProduct = async (id) => {
-    try {
-      await axios.delete(`/api/products/${id}`, {
-        headers: {
-          Accept: "application/json",
-          Authorization: "Bearer " + token,
-        },
-      });
-  
-      const updatedProducts = products.filter((product) => product.id !== id);
-      setProducts(updatedProducts);
-      // تم حذف هذا السطر
-      // getProducts(); // لا حاجة لاستدعاء هنا
-    } catch (error) {
-      console.error("Error removing products:", error);
-    }
-  };
-  
   return (
     <article className="antialiased font-sans bg-white">
       <div className="isolate bg-white px-6 py-4 sm:py-6 lg:px-8">
+        <div className="relative ">
+          <button
+            className={`absolute cursor-pointer  white  -right-1 rounded-full  `}
+            onClick={() => navigate(from, { replace: true })}
+          >
+            <span className="text-fuchsia-500 text-2xl">
+              <IoCloseCircleOutline />
+            </span>
+          </button>
+        </div>
         <div className="absolute inset-x-0 top-[-10rem] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[-20rem]"></div>
         <div className="container mx-auto px-4 sm:px-8">
           <div className="py-8">
             <div>
-              <h2 className="text-2xl font-semibold leading-tight">Products</h2>
+              <h2 className="text-2xl font-semibold leading-tight">Orders</h2>
             </div>
             <div className="my-2 flex sm:flex-row flex-col">
               <div className="flex flex-row mb-1 sm:mb-0">
@@ -137,19 +149,19 @@ export const AllProducts = () => {
                   <thead>
                     <tr>
                       <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                        Product Name
+                        Order number
                       </th>
                       <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                        Price
+                        User
                       </th>
                       <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                        Quantity
+                        Status
                       </th>
                       <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                       SKU
+                        Created at
                       </th>
                       <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                        Product Category
+                        Total
                       </th>
                       <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                         Actions
@@ -157,43 +169,48 @@ export const AllProducts = () => {
                     </tr>
                   </thead>
                   <tbody>
-                  {products.length > 0 ? (
-                      currentItems.map((product) => {
+                    {orders.length > 0 ? (
+                      currentItems.map((order) => {
                         return (
-                          <tr key={product?.id}>
+                          <tr key={order?.id}>
                             <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                               <div className="items-center">
                                 <div className="ml-3">
                                   <p className="text-gray-900 whitespace-no-wrap">
-                                  {product?.name}
+                                    {order?.orderNumber}
                                   </p>
                                 </div>
                               </div>
                             </td>
                             <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                               <p className="text-gray-900 whitespace-no-wrap">
-                              {product?.price}
+                                {order?.user || "N/A"}
                               </p>
                             </td>
                             <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                               <p className="text-gray-900 whitespace-no-wrap">
-                              {product?.countInStock}
+                                {order?.status}
                               </p>
                             </td>
                             <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                               <p className="text-gray-900 whitespace-no-wrap">
-                              {product?.sku}
+                                {order?.dateOrdered
+                                  ? new Date(
+                                      order.dateOrdered
+                                    ).toLocaleDateString("en-GB")
+                                  : ""}
                               </p>
                             </td>
                             <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                               <p className="text-gray-900 whitespace-no-wrap">
-                              {product?.category.name}
+                                {order?.totalPrice}
                               </p>
                             </td>
+
                             <td className="px-5  border-b border-gray-200 bg-white text-sm">
                               <div className="flex items-center justify-center lg:-ml-16">
                                 <Link
-                                  to={`/dashboard/updateproduct/${product?.id}`}
+                                  to={`/dashboard/updateorder/${order?.id}`}
                                   className="p-2.5 bg-blue-500 rounded-xl hover:rounded-3xl hover:bg-blue-600 transition-all duration-300 text-white"
                                 >
                                   <span className="text-lg text-center">
@@ -201,7 +218,7 @@ export const AllProducts = () => {
                                   </span>
                                 </Link>
                                 <button
-                                  onClick={() => removeProduct(product?.id)}
+                                  onClick={() => removeOrders(order?.id)}
                                   className="ml-2 py-2.5 px-5 bg-red-500 rounded-xl hover:rounded-3xl hover:bg-red-600 transition-all duration-300 text-white"
                                 >
                                   <span className="text-lg text-center">
@@ -217,7 +234,7 @@ export const AllProducts = () => {
                       <tr>
                         <td colSpan="5">
                           <p className="text-xl text-center xs:text-sm text-gray-900">
-                            No users to display
+                            No Orders to display
                           </p>
                         </td>
                       </tr>
@@ -229,7 +246,7 @@ export const AllProducts = () => {
 
                   <span className="text-xs xs:text-sm text-gray-900">
                     Showing {itemOffset + 1} to {endOffset} of{" "}
-                    {products ? products.length : 0} Users
+                    {orders ? orders.length : 0} Orders
                   </span>
 
                   <div className="inline-flex mt-2 xs:mt-0">

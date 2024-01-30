@@ -104,19 +104,20 @@ const deleteOrder = asyncHandler(async (req, res) => {
   try {
     const order = await Order.findByIdAndDelete(req.params.id);
     if (order) {
-      await order.orderItems.map(async (orderItem) => {
-        await OrderItem.findByIdAndDelete(orderItem);
-        return res
-          .status(200)
-          .json({ success: true, message: "The order is deleted!" });
-      });
+      const deleteOrderItemsPromises = order.orderItems.map(
+        async (orderItem) => {
+          await OrderItem.findByIdAndDelete(orderItem);
+        }
+      );
+
+      await Promise.all(deleteOrderItemsPromises);
+
+      res.status(200).json({ success: true, message: "The order is deleted!" });
     } else {
-      return res
-        .status(404)
-        .json({ success: false, message: "order not found!" });
+      res.status(404).json({ success: false, message: "Order not found!" });
     }
   } catch (err) {
-    return res.status(500).json({ success: false, error: err });
+    res.status(500).json({ success: false, error: err.message });
   }
 });
 
@@ -161,7 +162,7 @@ const getUserOrders = asyncHandler(async (req, res) => {
   if (!userOrderList) {
     res.status(500).json({ success: false });
   }
-  res.send(userOrderList)
+  res.send(userOrderList);
 });
 
 module.exports = {
