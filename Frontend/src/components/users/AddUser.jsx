@@ -99,7 +99,7 @@ export const AddUser = () => {
 
   return (
     <div className="flex items-center justify-center p-12">
-      <div className="mx-auto w-full max-w-[550px] bg-white">
+      <div className="mx-auto w-full max-w-[850px] bg-white">
       <div className="relative ">
           <button
             className={`absolute cursor-pointer  white  -right-1 rounded-full  `}

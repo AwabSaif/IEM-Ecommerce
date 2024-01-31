@@ -21,7 +21,7 @@ export const UpdateCategory = () => {
   //navigate link
   const navigate = useNavigate();
   const location = useLocation();
-  const from = location.state?.from?.pathname || "/dashboard";
+  const from = location.state?.from?.pathname || "/dashboard/categories";
   //form
   const [category, setCategory] = useState({});
   const [name, setName] = useState("");

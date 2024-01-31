@@ -38,9 +38,6 @@ export const ContactUs = () => {
   };
   return (
     <section className="bg-white">
-      <div className="isolate bg-white px-6 py-24 sm:py-32 lg:px-8">
-        <div className="absolute inset-x-0 top-[-10rem] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[-20rem]"></div>
-      </div>
       <div className="py-8 lg:py-16 px-4 mx-auto max-w-screen-md ">
         <h2 className="mb-4 text-4xl tracking-tight text-center text-gray-900 ">
           Contact Us

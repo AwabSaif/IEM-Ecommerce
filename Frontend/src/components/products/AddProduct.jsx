@@ -18,7 +18,7 @@ export const AddProduct = () => {
 
   const navigate = useNavigate();
   const location = useLocation();
-  const from = location.state?.from?.pathname || "/dashboard";
+  const from = location.state?.from?.pathname || "/dashboard/products";
 
   const [formData, setFormData] = useState({
     name: "",
@@ -156,7 +156,7 @@ export const AddProduct = () => {
 
   return (
     <div className="flex items-center justify-center p-12">
-      <div className="mx-auto w-full max-w-[550px] bg-white">
+      <div className="mx-auto w-full max-w-[950px] bg-white">
         <div className="relative ">
           <button
             className={`absolute cursor-pointer  white  -right-1 rounded-full  `}
@@ -391,13 +391,12 @@ export const AddProduct = () => {
                 className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium  outline-none focus:border-fuchsia-400  focus:shadow-md"
               />
             </div>
-         
 
-              <div className="sm:col-span-2">
+            <div className="sm:col-span-2 mt-10">
               <label
                 htmlFor="description"
                 className="mb-2 block text-sm font-semibold leading-6 text-gray-900"
-                >
+              >
                 Product Description
               </label>
 
@@ -408,32 +407,31 @@ export const AddProduct = () => {
                 value={formData.description}
                 onChange={handleInputChange}
                 className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium  outline-none focus:border-fuchsia-400  focus:shadow-md"
-                />
+              />
             </div>
-             
+
             <div className="flex gap-x-4 sm:col-span-2">
               <div className="flex h-6 items-center"></div>
             </div>
           </div>
           {!showModal ? (
-
             <div className="mt-10">
-            {isLoading ? (
-              <button className="hover:shadow-htmlForm w-full rounded-md bg-fuchsia-500 py-3 px-8 text-center text-base font-semibold text-white outline-none">
-                Uploading...
-              </button>
-            ) : (
-              <button className="hover:shadow-htmlForm w-full rounded-md bg-fuchsia-500 py-3 px-8 text-center text-base font-semibold text-white outline-none">
-                Publish
-              </button>
-            )}
-          </div>
-                ) : null}
+              {isLoading ? (
+                <button className="hover:shadow-htmlForm w-full rounded-md bg-fuchsia-500 py-3 px-8 text-center text-base font-semibold text-white outline-none">
+                  Uploading...
+                </button>
+              ) : (
+                <button className="hover:shadow-htmlForm w-full rounded-md bg-fuchsia-500 py-3 px-8 text-center text-base font-semibold text-white outline-none">
+                  Publish
+                </button>
+              )}
+            </div>
+          ) : null}
         </form>
-        <div className="-mt-60 absolute">
+        <div className="-mt-80 ml-44 absolute flex items-center justify-center ">
           {!showModal ? (
             <button
-              className="bg-fuchsia-500  text-white active:bg-fuchsia-700 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mt-28 mb-1 ease-linear transition-all duration-150"
+              className="bg-fuchsia-500 -ml-44  w-[260px] text-white active:bg-fuchsia-700 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 -mt-7  mb-1 ease-linear transition-all duration-150"
               type="button"
               onClick={() => setShowModal(true)}
             >

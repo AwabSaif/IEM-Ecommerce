@@ -17,7 +17,7 @@ export const AddCategory = () => {
   //navigate link
   const navigate = useNavigate();
   const location = useLocation();
-  const from = location.state?.from?.pathname || "/dashboard";
+  const from = location.state?.from?.pathname || "/dashboard/categories";
   //form
   const [name, setName] = useState("");
   const [color, setColor] = useState("#d946ef");

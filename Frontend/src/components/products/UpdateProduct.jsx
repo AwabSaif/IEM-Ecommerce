@@ -24,6 +24,7 @@ export const UpdateProduct = () => {
   //preview input image
   const [imagePreviewServer, setImagePreviewServer] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
+  const [imagesPreviewServer, setImagesPreviewServer] = useState([]);
 
   //loading
   const [isLoading, setIsLoading] = useState(false);
@@ -40,7 +41,7 @@ export const UpdateProduct = () => {
   // navigate link
   const navigate = useNavigate();
   const location = useLocation();
-  const from = location.state?.from?.pathname || "/dashboard";
+  const from = location.state?.from?.pathname || "/dashboard/products";
 
   const [formData, setFormData] = useState({
     name: "",
@@ -112,7 +113,6 @@ export const UpdateProduct = () => {
     }
   };
 
-  console.log(imagePreviewServer);
   const handleCategoryChange = (e) => {
     const selectedCategoryId = e.target.value;
     const selectedCategory = categoryList.find(
@@ -125,14 +125,13 @@ export const UpdateProduct = () => {
       category: selectedCategory ? selectedCategory.id : "",
     });
   };
-  console.log(formData);
+
   //get data from server
   useEffect(() => {
     if (id) {
       axios
         .get(`${PRODUCT_URL}${id}`)
         .then((response) => {
-          console.log(response);
           setFormData({
             name: response.data.name,
             description: response.data.description,
@@ -151,6 +150,7 @@ export const UpdateProduct = () => {
           setCategory(response.data.category.id);
 
           setImagePreviewServer(response.data.image);
+          setImagesPreviewServer(response.data.images);
         })
 
         .catch((error) => {
@@ -164,6 +164,7 @@ export const UpdateProduct = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
+
     const postData = new FormData();
 
     if (formData.image) {
@@ -172,7 +173,6 @@ export const UpdateProduct = () => {
       postData.append("image", formData.image, newFileName);
     }
 
-    // إعداد باقي البيانات
     for (const key in formData) {
       if (key !== "image") {
         postData.append(key, formData[key]);
@@ -186,7 +186,7 @@ export const UpdateProduct = () => {
         },
         withCredentials: true,
       });
-      console.log(response);
+      // console.log(response);
       setProductId(response.data.id);
 
       setSuccessMessage("Product updated successfully");
@@ -205,7 +205,7 @@ export const UpdateProduct = () => {
 
   return (
     <div className="flex items-center justify-center p-12">
-      <div className="mx-auto w-full max-w-[550px] bg-white">
+      <div className="mx-auto w-full max-w-[950px] bg-white">
         <div className="relative ">
           <button
             className={`absolute cursor-pointer  white  -right-1 rounded-full  `}
@@ -283,174 +283,206 @@ export const UpdateProduct = () => {
               />
             </div>
 
-            <div className=" pointer-events-auto">
-              <div>
-                <label
-                  htmlFor="brand"
-                  className="mb-2 block text-sm font-semibold leading-6 text-gray-900"
-                >
-                  Brand
-                </label>
-
-                <input
-                  type="text"
-                  name="brand"
-                  id="brand"
-                  value={formData.brand}
-                  onChange={handleInputChange}
-                  className="w-full rounded-md border border-[#e0e0e0] bg-white px-3.5 py-2.5 text-base font-medium  outline-none focus:border-fuchsia-400  focus:shadow-md"
-                />
-              </div>
-
-              <div>
-                <label
-                  htmlFor="category"
-                  className="mb-2 block text-sm font-semibold leading-6 text-gray-900"
-                >
-                  Product Category
-                </label>
-                {Array.isArray(categoryList) && (
-                  <select
-                    id="category"
-                    name="category"
-                    value={category}
-                    onChange={handleCategoryChange}
-                    className="w-full rounded-md border border-[#e0e0e0] bg-white px-3.5 py-2.5 text-base font-medium  outline-none focus:border-fuchsia-400  focus:shadow-md"
-                  >
-                    <option>Category</option>
-                    {categoryList.map((categoryItem) => (
-                      <option key={categoryItem.id} value={categoryItem.id}>
-                        {categoryItem.name}
-                      </option>
-                    ))}
-                  </select>
-                )}
-              </div>
-
-              <div>
-                <label
-                  htmlFor="price"
-                  className="mb-2 block text-sm font-semibold leading-6 text-gray-900"
-                >
-                  Price
-                </label>
-
-                <input
-                  type="number"
-                  name="price"
-                  id="price"
-                  value={formData.price}
-                  onChange={handleInputChange}
-                  className="w-full rounded-md border border-[#e0e0e0] bg-white px-3.5 py-2.5 text-base font-medium  outline-none focus:border-fuchsia-400  focus:shadow-md"
-                />
-              </div>
-
-              <div>
-                <label
-                  htmlFor="quantity"
-                  className="mb-2 block text-sm font-semibold leading-6 text-gray-900"
-                >
-                  Quantity
-                </label>
-
-                <input
-                  type="number"
-                  id="quantity"
-                  name="countInStock"
-                  value={formData.countInStock}
-                  min="1"
-                  onChange={handleInputChange}
-                  className="w-full rounded-md border border-[#e0e0e0] bg-white px-3.5 py-2.5 text-base font-medium  outline-none focus:border-fuchsia-400  focus:shadow-md"
-                />
-              </div>
-            </div>
             <div>
-              <label className="mx-auto h-72 px-1  flex w-60 max-w-72  flex-col items-center justify-center rounded-xl border-2 border-solid border-fuchsia-400 bg-white text-center ">
-                <img
-                  className="max-h-72  object-cover"
-                  src={imagePreviewServer}
-                  alt="Product image"
-                />
+              <label
+                htmlFor="brand"
+                className="mb-2 block text-sm font-semibold leading-6 text-gray-900"
+              >
+                Brand
               </label>
-            </div>
-            <div className="flex justify-between w-[550px]">
-              <div className="sm:col-span-2">
-                <label
-                  htmlFor="sku"
-                  className="mb-2 block text-sm font-semibold leading-6 text-gray-900"
-                >
-                  SKU
-                </label>
-                <input
-                  type="text"
-                  name="sku"
-                  id="sku"
-                  value={formData.sku}
-                  onChange={handleInputChange}
-                  className="w-[260px] absolute rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium  outline-none focus:border-fuchsia-400  focus:shadow-md"
-                />
-              </div>
-              <div className="-mt-4">
-                <div className="-ml-11 p-4 max-w-72 bg-white w-max bg-whtie m-auto rounded-lg">
-                  <label
-                    htmlFor="product-image"
-                    className="mb-2 ml-8 block text-sm font-semibold leading-6 text-gray-900"
-                  >
-                    Product Image
-                  </label>
 
-                  {!imagePreview && (
-                    <div className=" pointer-events-auto ml-7">
-                      <label
-                        {...getRootProps({
-                          className:
-                            "mx-auto py-20  cursor-pointer flex w-full max-w-lg flex-col items-center rounded-xl border-2 border-dashed border-fuchsia-400 bg-white p-6 text-center",
-                        })}
-                      >
-                        {" "}
-                        <span>
-                          <IoCloudUploadOutline className="text-fuchsia-500 stroke-2 h-16 w-16 mx-auto mb-4" />
-                        </span>
-                        <input
-                          className="text-sm cursor-pointer w-36 hidden"
-                          {...getInputProps()}
-                          name="image"
-                          id="product-image"
-                          onChange={handleImageChange}
-                          multiple
-                        />
-                        <div className="mt-2 text-gray-500 tracking-wide">
-                          Upload your file PNG, JPG <br />
-                          or JEPG.
-                        </div>
-                        {/*  or darg & drop <br /> */}
-                      </label>
+              <input
+                type="text"
+                name="brand"
+                id="brand"
+                value={formData.brand}
+                onChange={handleInputChange}
+                className="w-full rounded-md border border-[#e0e0e0] bg-white px-3.5 py-2.5 text-base font-medium  outline-none focus:border-fuchsia-400  focus:shadow-md"
+              />
+            </div>
+
+            <div>
+              <label
+                htmlFor="category"
+                className="mb-2 block text-sm font-semibold leading-6 text-gray-900"
+              >
+                Product Category
+              </label>
+              {Array.isArray(categoryList) && (
+                <select
+                  id="category"
+                  name="category"
+                  value={category}
+                  onChange={handleCategoryChange}
+                  className="w-full rounded-md border border-[#e0e0e0] bg-white px-3.5 py-2.5 text-base font-medium  outline-none focus:border-fuchsia-400  focus:shadow-md"
+                >
+                  <option>Category</option>
+                  {categoryList.map((categoryItem) => (
+                    <option key={categoryItem.id} value={categoryItem.id}>
+                      {categoryItem.name}
+                    </option>
+                  ))}
+                </select>
+              )}
+            </div>
+
+            <div>
+              <label
+                htmlFor="price"
+                className="mb-2 block text-sm font-semibold leading-6 text-gray-900"
+              >
+                Price
+              </label>
+
+              <input
+                type="number"
+                name="price"
+                id="price"
+                value={formData.price}
+                onChange={handleInputChange}
+                className="w-full rounded-md border border-[#e0e0e0] bg-white px-3.5 py-2.5 text-base font-medium  outline-none focus:border-fuchsia-400  focus:shadow-md"
+              />
+            </div>
+
+            <div>
+              <label
+                htmlFor="quantity"
+                className="mb-2 block text-sm font-semibold leading-6 text-gray-900"
+              >
+                Quantity
+              </label>
+
+              <input
+                type="number"
+                id="quantity"
+                name="countInStock"
+                value={formData.countInStock}
+                min="1"
+                onChange={handleInputChange}
+                className="w-full rounded-md border border-[#e0e0e0] bg-white px-3.5 py-2.5 text-base font-medium  outline-none focus:border-fuchsia-400  focus:shadow-md"
+              />
+            </div>
+          </div>
+          <div>
+            <div className="flex items-center  justify-between">
+              <div className="pointer-events-auto">
+                <div className="-mt-4">
+                  <div className="-ml-11 p-4 max-w-72 bg-white w-max bg-whtie m-auto rounded-lg">
+                    <label
+                      htmlFor="product-image"
+                      className="mb-2 ml-8 block text-sm font-semibold leading-6 text-gray-900"
+                    >
+                      Product Image
+                    </label>
+                    <div
+                      className="bg-red-100  mb-2 border border-red-400 w-[400px] ml-7 text-red-700 px-4 rounded relative"
+                      role="alert"
+                    >
+                      <strong className="font-bold text-sm">Note! </strong>
+                      <span className="block text-sm sm:inline">
+                        Please add an image before update.
+                      </span>
                     </div>
-                  )}
-                  <div className="max-w-52  pointer-events-auto ml-7">
-                    {imagePreview && (
-                      <label className="mx-auto h-72 px-1 cursor-pointer flex w-60 max-w-72  flex-col items-center justify-center rounded-xl border-2 border-dashed border-fuchsia-400 bg-white text-center ">
-                        <img
-                          className="max-h-72  object-cover"
-                          src={imagePreview}
-                          alt="Product image"
-                        />
-                        <input
-                          className="text-sm cursor-pointer w-36 hidden"
-                          {...getInputProps()}
-                          name="image"
-                          id="product-image"
-                          onChange={handleImageChange}
-                          multiple
-                        />
-                        <aside>
-                          <ul className="text-bluck">{files}</ul>
-                        </aside>
-                      </label>
+
+                    {!imagePreview && (
+                      <div className="pointer-events-auto ml-7">
+                        <label
+                          {...getRootProps({
+                            className:
+                              "mx-auto py-20 cursor-pointer flex w-[400px] max-w-lg  flex-col items-center rounded-xl border-2 border-dashed border-fuchsia-400 bg-white p-6 text-center",
+                          })}
+                        >
+                          <span>
+                            <IoCloudUploadOutline className="text-fuchsia-500 stroke-2 h-16 w-16 mx-auto mb-4" />
+                          </span>
+                          <input
+                            className="text-sm cursor-pointer w-36 hidden"
+                            {...getInputProps()}
+                            name="image"
+                            id="product-image"
+                            onChange={handleImageChange}
+                            multiple
+                          />
+                          <div className="mt-2 text-gray-500 tracking-wide">
+                            Upload your file PNG, JPG <br />
+                            or JPEG.
+                          </div>
+                        </label>
+                      </div>
                     )}
+                    <div className="max-w-72 ml-8">
+                      {imagePreview && (
+                        <label className="mx-auto py-20 cursor-pointer flex w-[400px] max-w-lg  flex-col items-center rounded-xl border-2 border-dashed border-fuchsia-400 bg-white p-6 text-center">
+                          <img
+                            className="max-h-72 object-cover"
+                            src={imagePreview}
+                            alt="Product image"
+                          />
+                          <input
+                            className="text-sm cursor-pointer w-36 hidden"
+                            {...getInputProps()}
+                            name="image"
+                            id="product-image"
+                            onChange={handleImageChange}
+                            multiple
+                          />
+                          <aside>
+                            <ul className="text-black">{files}</ul>
+                          </aside>
+                        </label>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
+              <div>
+                <label className="max-h-[300px] w-[450px] -mb-[70px] -ml-2 mx-auto h-80 py-20 cursor-pointer flex  max-w-lg flex-col items-center rounded-xl border-2 border-solid border-fuchsia-400 bg-white p-6 text-center">
+                  <img
+                    className="max-h-72 -mt-20 object-cover"
+                    src={imagePreviewServer}
+                    alt="Product image"
+                  />
+                </label>
+              </div>
+            </div>
+           
+            <div className="flex  items-center ">
+              {imagesPreviewServer && (
+                <div className="w-full">
+                  <label className="mx-auto py-10 flex  flex-col items-center rounded-xl border-2 border-solid border-fuchsia-400 bg-white text-center">
+                    <div className="mx-auto flex flex-wrap">
+                      {imagesPreviewServer.map((image, index) => (
+                        <div key={index} className="flex-shrink-0 mx-2 mb-2">
+                          <img
+                            className="max-h-32 object-cover"
+                            src={image}
+                            alt={`Image ${index + 1}`}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </label>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="">
+            <div className="mb-16 mt-6 sm:col-span-2">
+              <label
+                htmlFor="sku"
+                className="mb-2 block text-sm font-semibold leading-6 text-gray-900"
+              >
+                SKU
+              </label>
+              <input
+                type="text"
+                name="sku"
+                id="sku"
+                value={formData.sku}
+                onChange={handleInputChange}
+                className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium  outline-none focus:border-fuchsia-400  focus:shadow-md"
+              />
             </div>
 
             <div className="sm:col-span-2">
@@ -470,6 +502,7 @@ export const UpdateProduct = () => {
                 className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium  outline-none focus:border-fuchsia-400  focus:shadow-md"
               />
             </div>
+
             <div className="flex gap-x-4 sm:col-span-2">
               <div className="flex h-6 items-center"></div>
             </div>
@@ -488,10 +521,10 @@ export const UpdateProduct = () => {
             </div>
           ) : null}
         </form>
-        <div className="-mt-80 absolute">
+        <div className="-mt-80 ml-44 absolute flex items-center justify-center ">
           {!showModal ? (
             <button
-              className="bg-fuchsia-500  w-[260px] text-white active:bg-fuchsia-700 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 absolute -mt-[270px] mb-1 ease-linear transition-all duration-150"
+              className="bg-fuchsia-500 -ml-44  w-[260px] text-white active:bg-fuchsia-700 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1   mb-1 ease-linear transition-all duration-150"
               type="button"
               onClick={() => setShowModal(true)}
             >

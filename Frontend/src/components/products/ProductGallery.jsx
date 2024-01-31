@@ -29,7 +29,7 @@ export const ProductGallery = ({ productId }) => {
   //input images
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     accept: "images/*",
-    maxFiles: 5,
+    maxFiles: 10,
     onDrop: (acceptedFiles, fileRejections) => {
       setFiles(acceptedFiles);
       if (fileRejections.length > 0) {
