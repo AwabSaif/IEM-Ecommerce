@@ -28,6 +28,7 @@ const Sidebar = () => {
     await logout();
     navigate("/");
   };
+  
 
   return (
     <div
@@ -45,10 +46,7 @@ const Sidebar = () => {
           <BsArrowLeftCircleFill />
         </span>
       </button>
-      <div  className={`text-fuchsia-400 text-xl  origin-left font-medium  duration-200 ${!open && "duration-200  hidden "}`}
-      >
-        Hello {name}
-      </div>
+ 
 
       <div>
         <Link className="flex w-14 gap-x-4 items-center" to="/dashboard">
@@ -254,7 +252,7 @@ const Sidebar = () => {
           </li>
           <li className="flex -ml-4 rounded-lg p-2 cursor-pointer hover:bg-fuchsia-100 text-gray-700 text- items-center gap-x-4">
             <Link
-              to={`/edituser/${id}`}
+              to={`/dashboard/updateuser/${id}`}
               className=" flex flex-row focus:outline-none   px-3 py-2 text-base font-semibold leading-7 text-gray-900 "
             >
               <span className="inline-flex justify-center items-center text-2xl mr-3">
@@ -266,7 +264,7 @@ const Sidebar = () => {
               </span>
             </Link>
           </li>
-          <li className="flex -ml-4 rounded-lg p-2 cursor-pointer hover:bg-fuchsia-100 text-gray-700 text- items-center gap-x-4">
+         {/*  <li className="flex -ml-4 rounded-lg p-2 cursor-pointer hover:bg-fuchsia-100 text-gray-700 text- items-center gap-x-4">
             <Link
               to="/"
               className=" flex flex-row focus:outline-none   px-3 py-2 text-base font-semibold leading-7 text-gray-900 "
@@ -279,7 +277,7 @@ const Sidebar = () => {
                 Settings
               </span>
             </Link>
-          </li>
+          </li> */}
 
           <li className="flex -ml-4 rounded-lg p-2 cursor-pointer hover:bg-fuchsia-100 text-gray-700 text- items-center gap-x-4">
             <button

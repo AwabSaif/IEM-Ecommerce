@@ -25,7 +25,7 @@ export const ProductCard = () => {
     fetchProducts();
   }, []);
 
-  console.log(products);
+  // console.log(products);
 
   return (
     <section className="flex flex-wrap justify-center">

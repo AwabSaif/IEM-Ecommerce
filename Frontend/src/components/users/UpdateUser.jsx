@@ -21,7 +21,7 @@ export const UpdateUser = () => {
    // navigate link or page
    const navigate = useNavigate();
    const location = useLocation();
-   const from = location.state?.from?.pathname || "/dashboard/users";
+   const from = location.state?.from?.pathname || "/dashboard";
  
    //loading page
    const isLoading = useRef(false);
@@ -117,7 +117,7 @@ export const UpdateUser = () => {
         zip,
         apartment,
       };
-      console.log(formFile);
+      
       const response = await axios.put(EDITUSER_URL+id, formFile, {
         headers: {
           Accept: "application/json",

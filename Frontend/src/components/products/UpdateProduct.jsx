@@ -22,6 +22,7 @@ export const UpdateProduct = () => {
   const [errMsg, setErrMsg] = useState("");
 
   //preview input image
+  const [imagePreviewServer, setImagePreviewServer] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
 
   //loading
@@ -54,7 +55,6 @@ export const UpdateProduct = () => {
   });
 
   // category
-  const [selectedCategoryId, setSelectedCategoryId] = useState("");
   const [categoryList, setCategoryList] = useState([]);
   const [category, setCategory] = useState({
     id: "",
@@ -100,63 +100,39 @@ export const UpdateProduct = () => {
       [e.target.name]: e.target.value,
     });
   };
-
   const handleImageChange = (e) => {
-    /*  const selectedImage = e.target.files[0];
-    setFormData({
-      ...formData,
-      image: selectedImage,
-    });
-
-    const previewUrl = URL.createObjectURL(selectedImage);
-    setImagePreview(previewUrl); */
     const selectedImage = e.target.files[0];
     if (selectedImage) {
+      setFormData({
+        ...formData,
+        image: selectedImage,
+      });
       const previewUrl = URL.createObjectURL(selectedImage);
       setImagePreview(previewUrl);
     }
   };
-  /* 
+
+  console.log(imagePreviewServer);
   const handleCategoryChange = (e) => {
     const selectedCategoryId = e.target.value;
     const selectedCategory = categoryList.find(
       (category) => category.id === selectedCategoryId
     );
-
-    setCategory({
-      id: selectedCategoryId,
-      value: selectedCategory ? selectedCategory.name : "",
-    });
+    setCategory(selectedCategory);
 
     setFormData({
       ...formData,
-      category: selectedCategoryId,
-    });
-  }; */
-  const handleCategoryChange = (e) => {
-    const selectedCategoryId = e.target.value;
-    const selectedCategory = categoryList.find(
-      (category) => category.id === selectedCategoryId
-    );
-
-    setCategory({
-      id: selectedCategoryId,
-      value: selectedCategory ? selectedCategory.name : "",
-    });
-
-    setFormData({
-      ...formData,
-      category: selectedCategoryId,
+      category: selectedCategory ? selectedCategory.id : "",
     });
   };
-
+  console.log(formData);
   //get data from server
   useEffect(() => {
     if (id) {
       axios
         .get(`${PRODUCT_URL}${id}`)
         .then((response) => {
-          console.log(response.data);
+          console.log(response);
           setFormData({
             name: response.data.name,
             description: response.data.description,
@@ -164,7 +140,7 @@ export const UpdateProduct = () => {
             brand: response.data.brand,
             price: response.data.price,
             sku: response.data.sku,
-            category: response.data.category,
+            category: response.data.category.id,
             countInStock: response.data.countInStock,
             image: null,
           });
@@ -174,10 +150,7 @@ export const UpdateProduct = () => {
           );
           setCategory(response.data.category.id);
 
-          if (response.data.image) {
-            const previewUrl = URL.createObjectURL(response.data.image);
-            setImagePreview(previewUrl);
-          }
+          setImagePreviewServer(response.data.image);
         })
 
         .catch((error) => {
@@ -193,18 +166,19 @@ export const UpdateProduct = () => {
     setIsLoading(true);
     const postData = new FormData();
 
-    /*  for (const key in formData) {
-      if (key === "image") {
-        const fileNameWithoutExtension = formData[key].name.split(".")[0];
-        const newFileName = `${fileNameWithoutExtension}`;
+    if (formData.image) {
+      const fileNameWithoutExtension = formData.image.name.split(".")[0];
+      const newFileName = `${fileNameWithoutExtension}`;
+      postData.append("image", formData.image, newFileName);
+    }
 
-        postData.append("image", formData[key], newFileName);
-      } else {
+    // إعداد باقي البيانات
+    for (const key in formData) {
+      if (key !== "image") {
         postData.append(key, formData[key]);
       }
-    } */
+    }
     try {
-      console.log(axios);
       const response = await axios.put(PRODUCT_URL + id, postData, {
         headers: {
           Accept: "application/json",
@@ -215,7 +189,7 @@ export const UpdateProduct = () => {
       console.log(response);
       setProductId(response.data.id);
 
-      setSuccessMessage("Product created successfully");
+      setSuccessMessage("Product updated successfully");
       setIsLoading(false);
     } catch (err) {
       if (!err?.response) {
@@ -224,7 +198,6 @@ export const UpdateProduct = () => {
       } else {
         setIsLoading(false);
         setErrMsg(err.response.data.message);
-        console.error("خطأ أثناء طلب axios:", err);
       }
       errRef.current.focus();
     }
@@ -274,6 +247,7 @@ export const UpdateProduct = () => {
                 </div>
               </>
             )}
+
             <div className="sm:col-span-2">
               <label
                 htmlFor="product-name"
@@ -308,67 +282,7 @@ export const UpdateProduct = () => {
                 className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium  outline-none focus:border-fuchsia-400  focus:shadow-md"
               />
             </div>
-            <div className="-mt-4">
-              <div className="-ml-11 p-4 max-w-72 bg-white w-max bg-whtie m-auto rounded-lg">
-                <label
-                  htmlFor="product-image"
-                  className="mb-2 ml-8 block text-sm font-semibold leading-6 text-gray-900"
-                >
-                  Product Image
-                </label>
 
-                {!imagePreview && (
-                  <div className="absolute pointer-events-auto ml-7">
-                    <label
-                      {...getRootProps({
-                        className:
-                          "mx-auto py-20  cursor-pointer flex w-full max-w-lg flex-col items-center rounded-xl border-2 border-dashed border-fuchsia-400 bg-white p-6 text-center",
-                      })}
-                    >
-                      {" "}
-                      <span>
-                        <IoCloudUploadOutline className="text-fuchsia-500 stroke-2 h-16 w-16 mx-auto mb-4" />
-                      </span>
-                      <input
-                        className="text-sm cursor-pointer w-36 hidden"
-                        {...getInputProps()}
-                        name="image"
-                        id="product-image"
-                        onChange={handleImageChange}
-                        multiple
-                      />
-                      <div className="mt-2 text-gray-500 tracking-wide">
-                        Upload your file PNG, JPG <br />
-                        or JEPG.
-                      </div>
-                      {/*  or darg & drop <br /> */}
-                    </label>
-                  </div>
-                )}
-                <div className="max-w-52 absolute pointer-events-auto ml-7">
-                  {imagePreview && (
-                    <label className="mx-auto h-72 px-1 cursor-pointer flex w-60 max-w-72  flex-col items-center justify-center rounded-xl border-2 border-dashed border-fuchsia-400 bg-white text-center ">
-                      <img
-                        className="max-h-72  object-cover"
-                        src={imagePreview}
-                        alt="Product image"
-                      />
-                      <input
-                        className="text-sm cursor-pointer w-36 hidden"
-                        {...getInputProps()}
-                        name="image"
-                        id="product-image"
-                        onChange={handleImageChange}
-                        multiple
-                      />
-                      <aside>
-                        <ul className="text-bluck">{files}</ul>
-                      </aside>
-                    </label>
-                  )}
-                </div>
-              </div>
-            </div>
             <div className=" pointer-events-auto">
               <div>
                 <label
@@ -399,7 +313,7 @@ export const UpdateProduct = () => {
                   <select
                     id="category"
                     name="category"
-                    value={selectedCategoryId}
+                    value={category}
                     onChange={handleCategoryChange}
                     className="w-full rounded-md border border-[#e0e0e0] bg-white px-3.5 py-2.5 text-base font-medium  outline-none focus:border-fuchsia-400  focus:shadow-md"
                   >
@@ -450,22 +364,93 @@ export const UpdateProduct = () => {
                 />
               </div>
             </div>
-
-            <div className="sm:col-span-2">
-              <label
-                htmlFor="sku"
-                className="mb-2 block text-sm font-semibold leading-6 text-gray-900"
-              >
-                SKU
+            <div>
+              <label className="mx-auto h-72 px-1  flex w-60 max-w-72  flex-col items-center justify-center rounded-xl border-2 border-solid border-fuchsia-400 bg-white text-center ">
+                <img
+                  className="max-h-72  object-cover"
+                  src={imagePreviewServer}
+                  alt="Product image"
+                />
               </label>
-              <input
-                type="text"
-                name="sku"
-                id="sku"
-                value={formData.sku}
-                onChange={handleInputChange}
-                className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium  outline-none focus:border-fuchsia-400  focus:shadow-md"
-              />
+            </div>
+            <div className="flex justify-between w-[550px]">
+              <div className="sm:col-span-2">
+                <label
+                  htmlFor="sku"
+                  className="mb-2 block text-sm font-semibold leading-6 text-gray-900"
+                >
+                  SKU
+                </label>
+                <input
+                  type="text"
+                  name="sku"
+                  id="sku"
+                  value={formData.sku}
+                  onChange={handleInputChange}
+                  className="w-[260px] absolute rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium  outline-none focus:border-fuchsia-400  focus:shadow-md"
+                />
+              </div>
+              <div className="-mt-4">
+                <div className="-ml-11 p-4 max-w-72 bg-white w-max bg-whtie m-auto rounded-lg">
+                  <label
+                    htmlFor="product-image"
+                    className="mb-2 ml-8 block text-sm font-semibold leading-6 text-gray-900"
+                  >
+                    Product Image
+                  </label>
+
+                  {!imagePreview && (
+                    <div className=" pointer-events-auto ml-7">
+                      <label
+                        {...getRootProps({
+                          className:
+                            "mx-auto py-20  cursor-pointer flex w-full max-w-lg flex-col items-center rounded-xl border-2 border-dashed border-fuchsia-400 bg-white p-6 text-center",
+                        })}
+                      >
+                        {" "}
+                        <span>
+                          <IoCloudUploadOutline className="text-fuchsia-500 stroke-2 h-16 w-16 mx-auto mb-4" />
+                        </span>
+                        <input
+                          className="text-sm cursor-pointer w-36 hidden"
+                          {...getInputProps()}
+                          name="image"
+                          id="product-image"
+                          onChange={handleImageChange}
+                          multiple
+                        />
+                        <div className="mt-2 text-gray-500 tracking-wide">
+                          Upload your file PNG, JPG <br />
+                          or JEPG.
+                        </div>
+                        {/*  or darg & drop <br /> */}
+                      </label>
+                    </div>
+                  )}
+                  <div className="max-w-52  pointer-events-auto ml-7">
+                    {imagePreview && (
+                      <label className="mx-auto h-72 px-1 cursor-pointer flex w-60 max-w-72  flex-col items-center justify-center rounded-xl border-2 border-dashed border-fuchsia-400 bg-white text-center ">
+                        <img
+                          className="max-h-72  object-cover"
+                          src={imagePreview}
+                          alt="Product image"
+                        />
+                        <input
+                          className="text-sm cursor-pointer w-36 hidden"
+                          {...getInputProps()}
+                          name="image"
+                          id="product-image"
+                          onChange={handleImageChange}
+                          multiple
+                        />
+                        <aside>
+                          <ul className="text-bluck">{files}</ul>
+                        </aside>
+                      </label>
+                    )}
+                  </div>
+                </div>
+              </div>
             </div>
 
             <div className="sm:col-span-2">
@@ -503,10 +488,10 @@ export const UpdateProduct = () => {
             </div>
           ) : null}
         </form>
-        <div className="-mt-60 absolute">
+        <div className="-mt-80 absolute">
           {!showModal ? (
             <button
-              className="bg-fuchsia-500  text-white active:bg-fuchsia-700 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mt-28 mb-1 ease-linear transition-all duration-150"
+              className="bg-fuchsia-500  w-[260px] text-white active:bg-fuchsia-700 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 absolute -mt-[270px] mb-1 ease-linear transition-all duration-150"
               type="button"
               onClick={() => setShowModal(true)}
             >

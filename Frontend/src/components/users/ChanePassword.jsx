@@ -55,8 +55,6 @@ export const ChanePassword = () => {
         oldpassword,
         password,
       };
-
-      console.log(formFile);
       const response = await axios.patch(CHANGEPASSWORD_URL, formFile, {
         headers: {
           Accept: "application/json",
@@ -64,7 +62,7 @@ export const ChanePassword = () => {
         },
         withCredentials: true,
       });
-      console.log(response);
+      // console.log(response);
       setSuccessMessage("Password updated successfully");
     } catch (err) {
       if (!err?.response) {

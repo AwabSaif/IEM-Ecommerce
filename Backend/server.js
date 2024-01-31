@@ -41,6 +41,11 @@ app.use(`${api}/orders`, orderRoute);
 app.use(`${api}/iem-contact-us`, contactUsRoute);
 
 //Routes
+/* app.get("/", (req, res) => {
+  //   res.send("home page");
+    res.sendFile(__dirname +"/public/index.html")
+  });
+   */
 app.get("/", (req, res) => {
   res.send("home page");
 });

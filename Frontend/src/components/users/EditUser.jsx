@@ -95,7 +95,7 @@ export const EditUser = () => {
         zip,
         apartment,
       };
-      console.log(formFile);
+
       const response = await axios.patch(EDITUSER_URL, formFile, {
         headers: {
           Accept: "application/json",
@@ -103,7 +103,7 @@ export const EditUser = () => {
         },
         withCredentials: true,
       });
-      console.log(response);
+      // console.log(response);
       setSuccessMessage("User updated successfully");
     } catch (err) {
       if (!err?.response) {

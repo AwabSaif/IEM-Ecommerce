@@ -1,19 +1,22 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import useAuth from "../../hooks/useAuth";
+import axios from "../../api/axios";
+import ReactPaginate from "react-paginate";
+import ReactToPrint from "react-to-print";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import { IoIosSearch } from "react-icons/io";
 import { FaRegEdit } from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import axios from "../../api/axios";
-import useAuth from "../../hooks/useAuth";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import ReactPaginate from "react-paginate";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
-import { IoCloseCircleOutline } from "react-icons/io5";
+import { IoCloseCircleOutline, IoPrintOutline } from "react-icons/io5";
+import { OrderPrintComponent } from "./OrderPrintComponent";
 
 export const Orders = () => {
-  const [orders, SetOrders] = useState([]);
   const { auth } = useAuth();
   const token = auth.token;
+
+  const componentRef = useRef();
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -33,6 +36,7 @@ export const Orders = () => {
   const [itemOffset, SetItemOffset] = useState(0);
   const [itemsPerPage, setItemsPerPage] = useState(5);
 
+  const [orders, SetOrders] = useState([]);
   const endOffset = itemOffset + itemsPerPage;
   useEffect(() => {
     SetCurrentItems(orders.slice(itemOffset, endOffset));
@@ -72,17 +76,14 @@ export const Orders = () => {
           withCredentials: true,
           signal: controller.signal,
         });
-        console.log(response);
-        /*   
-        const filtered = response.data.filter((order) => {
-          const { user } = order;
-          const searchValue = searchTerm.toLowerCase();
-          return (
-            user.toLowerCase().includes(searchValue) 
-          );
-        }); */
+        // console.log(response.data);
+        const filteredOrders = response.data.filter((order) => {
+          const { orderNumber } = order;
+          const searchValue = searchTerm;
+          return orderNumber.toString().includes(searchValue);
+        });
 
-        isMounted && SetOrders(response.data);
+        isMounted && SetOrders(filteredOrders);
       } catch (error) {
         console.error("Error fetching Orders:", error);
       }
@@ -119,8 +120,9 @@ export const Orders = () => {
                 <div className="relative">
                   <select
                     onChange={(e) => setItemsPerPage(parseInt(e.target.value))}
-                    className="appearance-none h-full rounded-l  text-base border block  w-full bg-white border-gray-400 text-gray-700  px-5  leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                    className="appearance-none h-[38px] rounded-l  text-base border block  w-full bg-white border-gray-400 text-gray-700  px-5  leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                     value={itemsPerPage}
+                    title="Number of orders displayed"
                   >
                     <option>5</option>
                     <option>10</option>
@@ -137,25 +139,27 @@ export const Orders = () => {
                   <IoIosSearch />
                 </span>
                 <input
+                     title="Search by order number"
                   placeholder="Search"
                   onChange={(e) => handleSearch(e.target.value)}
                   className="appearance-none rounded-r rounded-l sm:rounded-l-none border border-gray-400 border-b block pl-8 pr-6 py-2 w-full bg-white text-sm placeholder-gray-400 text-gray-700 focus:bg-white focus:placeholder-gray-600 focus:text-gray-700 focus:outline-none"
                 />
               </div>
             </div>
+
             <div className="-mx-4  sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
               <div className="inline-block min-w-full  shadow rounded-lg overflow-hidden">
                 <table className="min-w-full  leading-normal">
                   <thead>
                     <tr>
-                      <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                      <th className="px-5 py-3  border-b-2 text-center border-gray-200 bg-gray-100 text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                        User
+                      </th>
+                      <th className="px-5 py-3 border-b-2 text-center border-gray-200 bg-gray-100 text-xs font-semibold text-gray-600 uppercase tracking-wider">
                         Order number
                       </th>
                       <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                        User
-                      </th>
-                      <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                        Status
+                        Order Status
                       </th>
                       <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                         Created at
@@ -163,11 +167,12 @@ export const Orders = () => {
                       <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                         Total
                       </th>
-                      <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                      <th className="print:hidden px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                         Actions
                       </th>
                     </tr>
                   </thead>
+
                   <tbody>
                     {orders.length > 0 ? (
                       currentItems.map((order) => {
@@ -175,20 +180,20 @@ export const Orders = () => {
                           <tr key={order?.id}>
                             <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                               <div className="items-center">
-                                <div className="ml-3">
+                                <div className="text-center">
                                   <p className="text-gray-900 whitespace-no-wrap">
-                                    {order?.orderNumber}
+                                    {order?.user.name}
                                   </p>
                                 </div>
                               </div>
                             </td>
-                            <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                            <td className="px-5 py-5  text-center border-b border-gray-200 bg-white text-sm">
                               <p className="text-gray-900 whitespace-no-wrap">
-                                {order?.user || "N/A"}
+                                {order?.orderNumber}
                               </p>
                             </td>
                             <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                              <p className="text-gray-900 whitespace-no-wrap">
+                              <p className="text-gray-900   whitespace-no-wrap">
                                 {order?.status}
                               </p>
                             </td>
@@ -207,10 +212,10 @@ export const Orders = () => {
                               </p>
                             </td>
 
-                            <td className="px-5  border-b border-gray-200 bg-white text-sm">
+                            <td className="px-5 print:hidden border-b border-gray-200 bg-white text-sm">
                               <div className="flex items-center justify-center lg:-ml-16">
                                 <Link
-                                  to={`/dashboard/updateorder/${order?.id}`}
+                                  to={`/dashboard/orderdetails/${order?.id}`}
                                   className="p-2.5 bg-blue-500 rounded-xl hover:rounded-3xl hover:bg-blue-600 transition-all duration-300 text-white"
                                 >
                                   <span className="text-lg text-center">
@@ -241,7 +246,7 @@ export const Orders = () => {
                     )}
                   </tbody>
                 </table>
-                <div className="px-5 py-5 bg-white border-t flex flex-col xs:flex-row items-center xs:justify-between          ">
+                <div className="print:hidden px-5 py-5 bg-white border-t flex flex-col xs:flex-row items-center xs:justify-between          ">
                   <br />
 
                   <span className="text-xs xs:text-sm text-gray-900">

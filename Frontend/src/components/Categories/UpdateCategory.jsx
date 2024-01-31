@@ -81,14 +81,9 @@ export const UpdateCategory = () => {
 
   useEffect(() => {
     if (category.id) {
-      console.log(category);
       setName(category.name);
       setColor(category.color);
       setShowIcon(category.icon);
-      /*  const imageUrl = category.icon.url.startsWith("http")
-        ? category.icon
-        : `https://your-api-base-url/${category.icon}`;
-      setImagePreview(imageUrl);  */
     }
   }, [category]);
 
@@ -111,7 +106,7 @@ export const UpdateCategory = () => {
         },
         withCredentials: true,
       });
-      console.log(response);
+      // console.log(response);
       setIsLoading(false);
       setSuccessMessage("Category Updated successfully");
       setName("");

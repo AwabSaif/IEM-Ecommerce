@@ -16,7 +16,7 @@ const getallOrder = asyncHandler(async (req, res) => {
 //get  Order
 const getOrder = asyncHandler(async (req, res) => {
   const order = await Order.findById(req.params.id)
-    .populate("user", "name")
+    .populate("user", "name email city street zip apartment")
     .populate({
       path: "orderItems",
       populate: {
@@ -27,8 +27,9 @@ const getOrder = asyncHandler(async (req, res) => {
 
   if (!order) {
     res.status(500).json({ success: false });
+  } else {
+    res.send(order);
   }
-  res.send(order);
 });
 
 //create Order

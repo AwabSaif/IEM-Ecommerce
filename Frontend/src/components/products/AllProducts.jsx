@@ -20,6 +20,15 @@ export const AllProducts = () => {
     SetItemOffset(0);
   };
 
+  // minStock
+  const [minStock, setMinStock] = useState(() => {
+    const storedMinStock = localStorage.getItem("minStock");
+    return storedMinStock ? parseInt(storedMinStock) : 5;
+  });
+  useEffect(() => {
+    localStorage.setItem("minStock", minStock.toString());
+  }, [minStock]);
+
   //Paginate
   const [currentItems, SetCurrentItems] = useState(null);
   const [pageCount, SetPageCount] = useState(0);
@@ -56,7 +65,7 @@ export const AllProducts = () => {
           const searchValue = searchTerm.toLowerCase();
           return (
             name.toLowerCase().includes(searchValue) ||
-            sku.toLowerCase().includes(searchValue) 
+            sku.toLowerCase().includes(searchValue)
           );
         });
 
@@ -105,6 +114,7 @@ export const AllProducts = () => {
                     onChange={(e) => setItemsPerPage(parseInt(e.target.value))}
                     className="appearance-none h-full rounded-l  text-base border block  w-full bg-white border-gray-400 text-gray-700  px-5  leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                     value={itemsPerPage}
+                    title="Number of product displayed"
                   >
                     <option>5</option>
                     <option>10</option>
@@ -116,11 +126,23 @@ export const AllProducts = () => {
                   </span>
                 </div>
               </div>
+              <div>
+                <input
+                  id="minStock"
+                  type="number"
+                  min="1"
+                  value={minStock}
+                  title="Minimum Stock"
+                  onChange={(e) => setMinStock(parseInt(e.target.value))}
+                  className=" rounded-l sm:rounded-l-none border border-gray-400 border-b block pl-8 py-2 w-20 bg-white text-sm placeholder-gray-400 text-gray-700 focus:bg-white focus:placeholder-gray-600 focus:text-gray-700 focus:outline-none"
+                />
+              </div>
               <div className="block relative">
                 <span className="h-full absolute inset-y-0 left-0 flex items-center pl-2">
                   <IoIosSearch />
                 </span>
                 <input
+                  title="Search by product name or sku number"
                   placeholder="Search"
                   onChange={(e) => handleSearch(e.target.value)}
                   className="appearance-none rounded-r rounded-l sm:rounded-l-none border border-gray-400 border-b block pl-8 pr-6 py-2 w-full bg-white text-sm placeholder-gray-400 text-gray-700 focus:bg-white focus:placeholder-gray-600 focus:text-gray-700 focus:outline-none"
@@ -171,9 +193,14 @@ export const AllProducts = () => {
                                 {product?.price}
                               </p>
                             </td>
-                            <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                            <td className=" px-5 py-5 border-b border-gray-200 bg-white text-sm">
                               <p className="text-gray-900 whitespace-no-wrap">
                                 {product?.countInStock}
+                                {product.countInStock < minStock && (
+                                  <span className="ml-2 text-sm text-red-500">
+                                    (Low Stock!)
+                                  </span>
+                                )}
                               </p>
                             </td>
                             <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">

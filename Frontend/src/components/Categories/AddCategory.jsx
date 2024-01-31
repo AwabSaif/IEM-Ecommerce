@@ -68,7 +68,7 @@ export const AddCategory = () => {
         },
         withCredentials: true,
       });
-      console.log(response);
+      // console.log(response);
       setIsLoading(false);
       setSuccessMessage("Category created successfully");
       setName("");

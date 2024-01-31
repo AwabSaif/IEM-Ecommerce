@@ -8,23 +8,21 @@ const FILE_TYPE_MAP = {
   "image/png": "png",
   "image/jpeg": "jpeg",
   "image/jpg": "jpg",
-  "png": "png"
+  png: "png",
 };
 
- 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-      const isValid = FILE_TYPE_MAP[file.mimetype];
+    const isValid = FILE_TYPE_MAP[file.mimetype];
 
-    cb(null, 'public/uploads')
+    cb(null, "public/uploads");
   },
   filename: function (req, file, cb) {
-      
-    const fileName = file.originalname.split(' ').join('-');
+    const fileName = file.originalname.split(" ").join("-");
     const extension = FILE_TYPE_MAP[file.mimetype];
-    cb(null, `${fileName}-${Date.now()}.png`)
-  }
-})
+    cb(null, `${fileName}-${Date.now()}.png`);
+  },
+});
 const uploadOptions = multer({ storage: storage });
 
 //get all products
@@ -107,6 +105,7 @@ const createProduct = asyncHandler(async (req, res) => {
 
   res.send(product);
 });
+
 //Update product
 const updateProduct = asyncHandler(async (req, res) => {
   try {
@@ -120,11 +119,17 @@ const updateProduct = asyncHandler(async (req, res) => {
     if (!category) {
       return res.status(400).send("Invalid Category");
     }
+
+    const file = req.file;
+    if (!file) return res.status(400).send("No image in the request");
+
+    const fileName = file.filename;
+    const basePath = `${req.protocol}://${req.get("host")}/public/uploads/`;
+
     const {
       name,
       description,
       richDescription,
-      image,
       brand,
       price,
       sku,
@@ -133,11 +138,17 @@ const updateProduct = asyncHandler(async (req, res) => {
       numReviews,
       isFeatured,
     } = req.body;
-    const existingProductWithSku = await Product.findOne({ sku }).where('_id').ne(req.params.id);
+    const existingProductWithSku = await Product.findOne({ sku })
+      .where("_id")
+      .ne(req.params.id);
 
     if (existingProductWithSku) {
-      console.log("Sku already exists in a different product. Sending conflict response.");
-      return res.status(409).json({ message: "Sku already exists in another product" });
+      console.log(
+        "Sku already exists in a different product. Sending conflict response."
+      );
+      return res
+        .status(409)
+        .json({ message: "Sku already exists in another product" });
     }
     const product = await Product.findByIdAndUpdate(
       req.params.id,
@@ -145,7 +156,7 @@ const updateProduct = asyncHandler(async (req, res) => {
         name,
         description,
         richDescription,
-        image,
+        image: `${basePath}${fileName}`,
         brand,
         price,
         sku,
@@ -218,41 +229,39 @@ const featuredProduct = asyncHandler(async (req, res) => {
   }
 });
 //update image
-const updateImageProduct = asyncHandler(
-
-  async (req, res) => {
-    if (!mongoose.isValidObjectId(req.params.id)) {
-      return res.status(400).send("Invalid Product Id");
-    }
-    const files = req.files;
-    let imagesPaths = [];
-    const basePath = `${req.protocol}://${req.get("host")}/public/uploads/`;
-
-    console.log("basePath", basePath); // تحقق هنا
-
-    if (files) {
-      files.map((file) => {
-        imagesPaths.push(`${basePath}${file.filename}`);
-      });
-    }
-
-    console.log("imagesPaths", imagesPaths); // تحقق هنا
-
-    console.log("req.params.id", req.params.id); // تحقق هنا
-
-    const product = await Product.findByIdAndUpdate(
-      req.params.id,
-      {
-        images: imagesPaths,
-      },
-      { new: true }
-    );
-
-    if (!product) return res.status(500).send("the gallery cannot be updated!");
-
-    res.send(product);
+const updateImageProduct = asyncHandler(async (req, res) => {
+  if (!mongoose.isValidObjectId(req.params.id)) {
+    return res.status(400).send("Invalid Product Id");
   }
-);
+  console.log(req.body);
+  const files = req.files;
+  let imagesPaths = [];
+  const basePath = `${req.protocol}://${req.get("host")}/public/uploads/`;
+
+  console.log("basePath", basePath); // تحقق هنا
+
+  if (files) {
+    files.map((file) => {
+      imagesPaths.push(`${basePath}${file.filename}`);
+    });
+  }
+
+  console.log("imagesPaths", imagesPaths); // تحقق هنا
+
+  console.log("req.params.id", req.params.id); // تحقق هنا
+
+  const product = await Product.findByIdAndUpdate(
+    req.params.id,
+    {
+      images: imagesPaths,
+    },
+    { new: true }
+  );
+
+  if (!product) return res.status(500).send("the gallery cannot be updated!");
+
+  res.send(product);
+});
 module.exports = {
   getallProducts,
   getProduct,

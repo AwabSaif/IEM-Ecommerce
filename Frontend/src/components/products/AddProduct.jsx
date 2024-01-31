@@ -140,7 +140,6 @@ export const AddProduct = () => {
         withCredentials: true,
       });
       setProductId(response.data.id);
-      console.log(productId);
       setSuccessMessage("Product created successfully");
       setIsLoading(false);
     } catch (err) {

@@ -86,7 +86,7 @@ export const AddUser = () => {
       setCity("");
       setZip("");
       setApartment("");
-      console.log("user created");
+      // console.log("user created");
     } catch (err) {
       if (!err?.response) {
         setErrMsg("Server not responding");

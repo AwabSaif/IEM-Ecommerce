@@ -30,6 +30,7 @@ import { Categories } from "./components/Categories/Categories";
 import { AddCategory } from "./components/Categories/AddCategory";
 import { UpdateCategory } from "./components/Categories/UpdateCategory";
 import { Orders } from "./components/Orders/Orders";
+import { UpdateOrder } from "./components/Orders/UpdateOrder";
 
 export default function App() {
   return (
@@ -60,6 +61,7 @@ export default function App() {
             <Route index element={<Dashbord />} />
             {/* Orders */}
             <Route path="orders" element={<Orders />} />
+            <Route path="orderdetails/:id" element={<UpdateOrder />} />
             {/* users */}
             <Route path="users" element={<Users />} />
             <Route path="adduser" element={<AddUser />} />

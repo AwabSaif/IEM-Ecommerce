@@ -56,7 +56,7 @@ export const ProductGallery = ({ productId }) => {
     files.forEach((file, index) => {
       formData.append(`images`, file);
     });
-    console.log(formData);
+
     setFormData({
       ...formData,
       images: files,
