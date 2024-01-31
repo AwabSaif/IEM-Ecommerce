@@ -81,10 +81,10 @@ export const DashboardItems = () => {
         <Products products={products} />
         <SalesSummary orders={orders} />
       </div>
-      <div className="mb-4 grid grid-cols-1 gap-6">
+      <div className="mb-4 grid grid-cols-2 gap-6">
         <div className=" flex flex-col bg-clip-border rounded-xl bg-white text-gray-700 shadow-md overflow-hidden xl:col-span-2">
-          <div className=" bg-clip-border rounded-xl overflow-hidden bg-transparent shadow-none m-0 flex-col flex items-center justify-between p-6">
-            <div className="flex flex-col">
+          <div className=" bg-clip-border rounded-xl overflow-hidden bg-transparent shadow-none m-0  sm:flex-col  md:flex-col  lg:flex-row  xl:flex-row flex items-center justify-between p-6">
+            <div className="flex flex-col  ">
               <h4 className="block mb-4 antialiased tracking-normal font-sans text-2xl font-semibold leading-snug text-blue-gray-900">
                 Sales in last 7 days
               </h4>
@@ -92,7 +92,7 @@ export const DashboardItems = () => {
                 <BarChart orders={orders} />
               </div>
             </div>
-            <div className="flex flex-col">
+            <div className="flex flex-col ">
               <h4 className="block mb-4 antialiased tracking-normal font-sans text-2xl font-semibold leading-snug text-blue-gray-900">
                 New users in last 7 days
               </h4>
