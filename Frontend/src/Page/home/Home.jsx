@@ -1,10 +1,11 @@
 import image from "../../assets/image/IEM Ecommerce-logo.png";
-import { ProductCard } from "../../components/products/ProductCard";
+import { Product } from "../porduct/Product";
 
 export default function Home() {
   return (
     <>
-      <ProductCard />
+    <h1>Home</h1>
+      <Product />
 
     </>
   );

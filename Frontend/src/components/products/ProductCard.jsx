@@ -1,90 +1,91 @@
-import { useEffect, useState } from "react";
-import { FaRegStar, FaStarHalfAlt, FaStar } from "react-icons/fa";
-import axios from "../../api/axios";
-const GETPRODUCT_URL = "/api/products";
+import { Link } from "react-router-dom";
+import { BsCartPlus } from "react-icons/bs";
+import { FaStar } from "react-icons/fa6";
+import { FaStarHalfAlt } from "react-icons/fa";
+import { RiDeleteBin6Line } from "react-icons/ri";
+import useCart from "../../hooks/useCart";
 
-export const ProductCard = () => {
-  const [products, setProducts] = useState([]);
-
-  // get Products
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await axios.get(GETPRODUCT_URL);
-        setProducts(response.data);
-      } catch (err) {
-        if (err.response) {
-          console.log(err.response.data);
-          console.log(err.response.status);
-          console.log(err.response.headers);
-        } else {
-          console.log(`Error: ${err.message}`);
-        }
-      }
-    };
-    fetchProducts();
-  }, []);
-
-  // console.log(products);
-
+export const ProductCard = ({
+  productId,
+  productImage,
+  productName,
+  productRating,
+  productPrice,
+  productBrand,
+}) => {
+  const { getItemsQuantity, increaseCartQuantity, decreaseCartQuantity } =
+    useCart();
+  const id = productId;
+  const quantity = getItemsQuantity(id);
   return (
-    <section className="flex flex-wrap justify-center">
-      <div className="max-w-2xl mx-auto ">
-        {products.map((product) => (
-          <div
-            key={product._id}
-            className="bg-white  shadow-md rounded-lg max-w-sm dark:bg-gray-800 dark:border-gray-700"
-          >
-            <a href="#">
-              <img
-                className="rounded-t-lg p-8"
-                src={product.image}
-                alt="product image"
-              />
-            </a>
-            <div className="px-5 pb-5">
-              <a href="#">
-                <h3 className="text-gray-900 font-semibold text-xl tracking-tight dark:text-white">
-                  {product.name}
-                </h3>
-              </a>
-              <div className="flex items-center mt-2.5 mb-5">
-                <span className="ml-1">
-                  <FaStar className="w-5 h-5 text-yellow-300" />
-                </span>
-                <span className="ml-1">
-                  <FaStar className="w-5 h-5 text-yellow-300" />
-                </span>
-                <span className="ml-1">
-                  <FaStar className="w-5 h-5 text-yellow-300" />
-                </span>
+    <div className="w-72 bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl">
+      <img
+        src={productImage}
+        alt={productImage}
+        className="h-80 w-72 object-cover rounded-t-xl"
+      />
+      <div className="px-4 py-3 w-72">
+        <span className="text-gray-400 mr-3 uppercase text-xs">
+          {productBrand}
+        </span>
+        <p className="text-md font-bold text-gray-900 truncate block capitalize">
+          {productName}
+        </p>
+        <div className="mt-1 flex flex-row justify-start items-center">
+          {[...Array(Math.floor(productRating))].map((_, index) => (
+            <span
+              key={index}
+              className="block p-1 transition ease-in duration-300"
+            >
+              <FaStar className="w-5 h-5 text-yellow-300" />
+            </span>
+          ))}
+          {productRating % 1 !== 0 && (
+            <span className="block p-1 transition ease-in duration-300">
+              <FaStarHalfAlt className="w-5 h-5 text-yellow-300" />
+            </span>
+          )}
+          <span className="bg-fuchsia-100 text-fuchsia-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded ">
+            {productRating}
+          </span>
+        </div>
+        <div className="flex items-center">
+          <p className="text-lg font-semibold text-gray-900 cursor-auto my-3">
+            ${productPrice}
+          </p>
+          <del>
+            {/* <p className="text-sm text-gray-600 cursor-auto ml-2">$199</p> */}
+          </del>
+          <div className="ml-auto">
+            {quantity === 0 ? (
+              <button onClick={() => increaseCartQuantity(id)}>
+                <BsCartPlus className="text-3xl text-fuchsia-500 transition ease-in duration-300 hover:text-fuchsia-600/60  focus:outline-none" />
+              </button>
+            ) : (
+              <div className="flex flex-col items-center justify-center">
+                <div className="flex items-center border-gray-100">
+                  <button
+                    onClick={() => decreaseCartQuantity(id)}
+                    className="cursor-pointer rounded-l bg-fuchsia-100 py-1 px-3.5 duration-100 hover:bg-fuchsia-500 hover:text-fuchsia-50"
+                  >
+                    -
+                  </button>
 
-                <span className="ml-1">
-                  <FaStarHalfAlt className="w-5 h-5 text-yellow-300" />
-                </span>
-                <span className="ml-1">
-                  <FaRegStar className="w-5 h-5 text-yellow-300" />
-                </span>
-
-                <span className="bg-blue-100 text-blue-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800 ml-3">
-                  5.0
-                </span>
+                  <span className="h-8 w-8 border flex  justify-center items-center bg-white text-xs outline-none">
+                    {quantity}
+                  </span>
+                  <button
+                    onClick={() => increaseCartQuantity(id)}
+                    className="cursor-pointer rounded-r bg-fuchsia-100 py-1 px-3 duration-100 hover:bg-fuchsia-500 hover:text-fuchsia-50"
+                  >
+                    +
+                  </button>
+                </div>
               </div>
-              <div className="flex items-center justify-between">
-                <span className="text-3xl font-bold text-gray-900 dark:text-white">
-                  {product.price}
-                </span>
-                <a
-                  href="#"
-                  className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                >
-                  Add to cart
-                </a>
-              </div>
-            </div>
+            )}
           </div>
-        ))}
+        </div>
       </div>
-    </section>
+    </div>
   );
 };

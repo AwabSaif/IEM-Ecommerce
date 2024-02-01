@@ -11,7 +11,6 @@ import {
 } from "./Page/auth/index";
 
 import { Layout } from "./components/layout/Layout";
-import { Profile } from "./Page/profile/Profile";
 import { Product } from "./Page/porduct/Product";
 import { ContactUs } from "./Page/contactUs/ContactUs";
 import { DashboardLayout } from "./components/dashboard/Layout/DashboardLayout";
@@ -31,6 +30,10 @@ import { AddCategory } from "./components/Categories/AddCategory";
 import { UpdateCategory } from "./components/Categories/UpdateCategory";
 import { Orders } from "./components/Orders/Orders";
 import { UpdateOrder } from "./components/Orders/UpdateOrder";
+import { CategoriesStore } from "./Page/Categories/CategoriesStore";
+import { Store } from "./Page/Store/Store";
+import { MyOrders } from "./Page/Orders/MyOrders";
+import { CartPage } from "./components/Cart/CartPage";
 
 export default function App() {
   return (
@@ -49,11 +52,14 @@ export default function App() {
       <Route element={<PersistLogin />}>
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
-          <Route path="contactus" element={<ContactUs />} />
+          <Route path="store" element={<Store />} />
+          <Route path="myorders" element={<MyOrders />} />
+          <Route path="cart" element={<CartPage />} />
+          <Route path="allcategories" element={<CategoriesStore />} />
           <Route path="product" element={<Product />} />
-          <Route path="profile" element={<Profile />} />
-          <Route path="changepassword" element={<ChangrPassword />} />
+          <Route path="contactus" element={<ContactUs />} />
           <Route path="edituser/:id" element={<EditUser />} />
+          <Route path="changepassword" element={<ChangrPassword />} />
         </Route>
         {/* potect admin routes */}
         <Route element={<RequireAuth />}>

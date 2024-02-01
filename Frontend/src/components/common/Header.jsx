@@ -1,15 +1,18 @@
 import { NavLink, Link, useLocation, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import useLogout from "../../hooks/useLogout";
+import useAuth from "../../hooks/useAuth";
+
+import logoImage from "../../assets/image/IEM Ecommerce-logo.png";
 import { HiOutlinePhone } from "react-icons/hi2";
-import { MdSpaceDashboard } from "react-icons/md";
+import { BsCart2, BsCartPlus } from "react-icons/bs";
 import { IoIosArrowDown, IoMdClose, IoIosLogOut } from "react-icons/io";
 import { HiOutlineLogin } from "react-icons/hi";
 import { GrMenu } from "react-icons/gr";
-import logoImage from "../../assets/image/IEM Ecommerce-logo.png";
 import UseToggle from "../../hooks/useToggle";
-import { useState } from "react";
-import useLogout from "../../hooks/useLogout";
 import { LuLayoutDashboard } from "react-icons/lu";
-import useAuth from "../../hooks/useAuth";
+import { GoSearch } from "react-icons/go";
+import useCart from "../../hooks/useCart";
 
 const activeNavLink = ({ isActive }) => (isActive ? "active" : "");
 
@@ -21,6 +24,7 @@ export const Header = () => {
   //auth
   const { auth } = useAuth();
   const admin = auth.roles;
+  const id = auth.id;
 
   //log out
   const logout = useLogout();
@@ -35,10 +39,8 @@ export const Header = () => {
   const [isHeaderOpen, setIsHeaderOpen] = useState(false);
   const [isButtonClick, setIsButtonClick] = useState(false);
 
-  /*   const toggleHeader = () => {
-    setIsHeaderOpen(!isHeaderOpen);
-    setIsButtonClick(true);
-  }; */
+  // Cart
+  const { handleOpenCart, CartQuantity } = useCart();
 
   const handleOpenClick = () => {
     setIsButtonClick(false);
@@ -65,6 +67,15 @@ export const Header = () => {
           >
             <GrMenu />
           </button>
+          <button
+            onClick={() => handleOpenCart()}
+            className="text-sm ml-3 mr-2 flex p-2 rounded-full border-2 border-fuchsia-500   text-gray-900  hover:bg-fuchsia-200  hover:font-bold   "
+          >
+            <span className=" absolute mt-2.5 ml-6  bg-fuchsia-500 p-2.5  flex h-2 w-1 items-center justify-center rounded-full text-xs text-white">
+              {CartQuantity}
+            </span>
+            <BsCart2 className=" text-2xl" />
+          </button>
         </div>
 
         <div className="flex lg:flex-1">
@@ -88,29 +99,38 @@ export const Header = () => {
             Home
           </NavLink>
           <NavLink
-            to="/profile"
+            to="/store"
             className={`${activeNavLink({
-              isActive: pathname === "/profile",
+              isActive: pathname === "/store",
             })} text-sm font-semibold leading-6 text-gray-900  hover:bg-fuchsia-200  hover:font-bold py-2 px-4 rounded-t-2xl`}
             aria-current="page"
           >
-            Profile
+            Store
           </NavLink>
           <NavLink
-            to="/dashboard/users"
+            to="/allcategories"
             className={`${activeNavLink({
-              isActive: pathname === "/dashboard/users",
+              isActive: pathname === "/allcategories",
             })} text-sm font-semibold leading-6 text-gray-900   hover:bg-fuchsia-200  hover:font-bold py-2 px-4 rounded-t-2xl`}
             aria-current="page"
           >
-            Users
+            Categories
           </NavLink>
+          <div className="relative">
+            <input
+              type="text"
+              name="q"
+              className="w-[350px] border h-10 shadow p-4 rounded-full"
+              placeholder="search"
+            />
+            <button type="submit">
+              <GoSearch className="text-fuchsia-400 h-5 w-5 absolute top-2.5 right-3 fill-current" />
+            </button>
+          </div>
           <div className="relative">
             <button
               type="button"
-              className={`${activeNavLink({
-                isActive: pathname === "/user",
-              })} flex items-center gap-x-1 text-sm font-semibold leading-6 text-gray-900   hover:bg-fuchsia-200  hover:font-bold py-2 px-4 rounded-t-2xl`}
+              className="flex  items-center gap-x-1 text-sm font-semibold leading-6 text-gray-900   hover:bg-fuchsia-200  hover:font-bold py-2 px-4 rounded-t-2xl"
               aria-current="page"
               aria-expanded={isMenuOpen}
               onClick={toggleMenu}
@@ -119,36 +139,41 @@ export const Header = () => {
               <IoIosArrowDown />
             </button>
             {isMenuOpen && (
-              <div className="absolute -right-[160px] top-full z-10  w-screen max-w-md overflow-hidden rounded-3xl bg-white shadow-lg ring-1 ring-gray-900/5 ">
-                <div className="p-4">
+              <div className="absolute -right-[80px] top-full z-10  w-screen max-w-[250px] overflow-hidden rounded-3xl bg-white shadow-lg ring-1 ring-fuchsia-900/5 ">
+                <div className="p-4 flex flex-col items-center justify-center">
                   {admin && (
-                    <div className="group relative  gap-x-6 rounded-lg p-4 text-sm leading-6  hover:bg-fuchsia-200 ">
-                      <div className="flex-auto">
-                        <Link
-                          to="/dashboard"
-                          className="block font-semibold ml-4 text-gray-900"
-                        >
-                          Dashboard
-                          <span className="absolute inset-0 top-5">
-                            <LuLayoutDashboard className="text-xl " />
-                          </span>
-                        </Link>
-                      </div>
+                    <div className=" rounded-lg p-4 text-sm leading-6  hover:bg-fuchsia-200 ">
+                      <Link
+                        to="/dashboard"
+                        className="block font-semibold text-gray-900"
+                      >
+                        Dashboard
+                      </Link>
                     </div>
                   )}
-                  <div className="group relative gap-x-6 rounded-lg p-4 text-sm leading-6  hover:bg-fuchsia-200 ">
-                    <div className="flex-auto">
-                      <button
-                        on
-                        onClick={signOut}
-                        className="block ml-4 font-semibold text-gray-900"
-                      >
-                        Sign out
-                        <span className="absolute inset-0 top-5">
-                          <IoIosLogOut className="text-xl " />
-                        </span>
-                      </button>
-                    </div>
+                  <div className=" rounded-lg p-4 text-sm leading-6  hover:bg-fuchsia-200 ">
+                    <Link
+                      to="/myorders"
+                      className="block  font-semibold text-gray-900"
+                    >
+                      Order's
+                    </Link>
+                  </div>
+                  <div className=" rounded-lg p-4 text-sm leading-6  hover:bg-fuchsia-200 ">
+                    <Link
+                      to={`edituser/${id}`}
+                      className="block  font-semibold text-gray-900"
+                    >
+                      Profile
+                    </Link>
+                  </div>
+                  <div className=" rounded-lg p-4 text-sm leading-6  hover:bg-fuchsia-200 ">
+                    <button
+                      onClick={signOut}
+                      className="block  font-semibold text-gray-900"
+                    >
+                      Sign out
+                    </button>
                   </div>
                 </div>
 
@@ -164,22 +189,24 @@ export const Header = () => {
           </div>
         </div>
         <div
-          className="hidden lg:flex lg:flex-1 lg:justify-end"
+          className="hidden lg:flex lg:flex-1 lg:justify-end "
           role="dialog"
           aria-modal="true"
         >
+          <button
+            onClick={() => handleOpenCart()}
+            className="text-sm mr-2 flex p-2 rounded-full border-2 border-fuchsia-500   text-gray-900  hover:bg-fuchsia-200  hover:font-bold   "
+          >
+            <span className=" absolute mt-2.5 ml-6  bg-fuchsia-500 p-2.5  flex h-2 w-1 items-center justify-center rounded-full text-xs text-white">
+              {CartQuantity}
+            </span>
+            <BsCart2 className=" text-2xl" />
+          </button>
           <NavLink
             to="/login"
-            className="text-sm flex    items-center justify-items-center font-semibold leading-6 text-gray-900   hover:bg-fuchsia-200  hover:font-bold py-2 px-4 rounded-t-2xl"
+            className="text-sm flex   items-center justify-items-center font-semibold leading-6 text-gray-900 hover:font-bold py-2 px-4 "
           >
-            <HiOutlineLogin className="mt-1 text-xl pl-1" />
-            سلة
-          </NavLink>
-          <NavLink
-            to="/login"
-            className="text-sm flex    items-center justify-items-center font-semibold leading-6 text-gray-900   hover:bg-fuchsia-200  hover:font-bold py-2 px-4 rounded-t-2xl"
-          >
-            <HiOutlineLogin className="mt-1 text-xl pl-1" />
+            <HiOutlineLogin className="text-2xl pl-1" />
             Sign in
           </NavLink>
         </div>
@@ -209,8 +236,19 @@ export const Header = () => {
           </div>
 
           <div className="mt-6 flow-root">
-            <div className="-my-6 divide-y divide-gray-500/10">
+            <div className="-my-6 divide-y divide-fuchsia-500/10">
               <div className="space-y-2 py-6">
+                <div className="relative mx-2 lg:hidden ">
+                  <input
+                    type="text"
+                    name="q"
+                    className="w-full block  px-3 py-2 text-base font-semibold leading-7 text-gray-900  outline-none  md:w-[300px] border h-10 shadow p-4 rounded-full"
+                    placeholder="search"
+                  />
+                  <button type="submit">
+                    <GoSearch className="text-fuchsia-400  h-5 w-5 absolute top-2.5 right-7 fill-current" />
+                  </button>
+                </div>
                 <NavLink
                   to="/"
                   className={`${activeNavLink({
@@ -221,27 +259,27 @@ export const Header = () => {
                   Home
                 </NavLink>
                 <NavLink
-                  to="/profile"
+                  to="/store"
                   className={`${activeNavLink({
-                    isActive: pathname === "/profile",
+                    isActive: pathname === "/store",
                   })} -mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900  hover:bg-fuchsia-200 `}
                   aria-current="page"
                 >
-                  Profile
+                  Store
                 </NavLink>
                 <NavLink
-                  to="#"
+                  to="/allcategories"
                   className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900  hover:bg-fuchsia-200 "
                 >
-                  Empte
+                  Categories
                 </NavLink>
               </div>
               <div className="-mx-3">
                 <button
                   type="button"
-                  className={`${activeNavLink({
-                    isActive: pathname === "/user",
-                  })} flex w-full items-center justify-between rounded-lg py-2 pl-3 pr-3.5 text-base font-semibold leading-7 text-gray-900  hover:bg-fuchsia-200 `}
+                  className={`${activeNavLink(
+                    {}
+                  )} flex w-full items-center justify-between rounded-lg py-2 pl-3 pr-3.5 text-base font-semibold leading-7 text-gray-900  hover:bg-fuchsia-200 `}
                   aria-expanded={isMenuOpen}
                   onClick={toggleMenu}
                 >
@@ -253,32 +291,35 @@ export const Header = () => {
                     {admin && (
                       <NavLink
                         to="/dashboard"
-                        className="flex  items-center justify-items-center rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-gray-900  hover:bg-fuchsia-200 "
+                        className="flex   justify-items-center rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-gray-900  hover:bg-fuchsia-200 "
                       >
-                        <span className="p-2">
-                          <LuLayoutDashboard className="mt-1 text-xl pl-1" />
-                        </span>
                         Dashboard
                       </NavLink>
                     )}
-                    <button
-                      onClick={signOut}
-                      className=" flex  items-center justify-items-center  rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-gray-900  hover:bg-fuchsia-200 "
+                    <NavLink
+                      to="/myorders"
+                      className=" flex   justify-items-center  rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-gray-900  hover:bg-fuchsia-200 "
                     >
-                      <span className="p-2">
-                        <IoIosLogOut className="mt-1 text-xl pl-1 " />
-                      </span>
-                      Sign out
-                    </button>
+                      Order's
+                    </NavLink>
+                    <NavLink
+                      to={`edituser/${id}`}
+                      className=" flex   justify-items-center  rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-gray-900  hover:bg-fuchsia-200 "
+                    >
+                      Profile
+                    </NavLink>
                     <NavLink
                       to="/contactus"
-                      className=" flex  items-center justify-items-center  rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-gray-900  hover:bg-fuchsia-200 "
+                      className=" flex  justify-items-center  rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-gray-900  hover:bg-fuchsia-200 "
                     >
-                      <span className="p-2">
-                        <HiOutlinePhone className="mt-1 text-xl pl-1  " />
-                      </span>
                       Connact us
                     </NavLink>
+                    <button
+                      onClick={signOut}
+                      className=" flex   justify-items-center  rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-gray-900  hover:bg-fuchsia-200 "
+                    >
+                      Sign out
+                    </button>
                   </div>
                 )}
               </div>

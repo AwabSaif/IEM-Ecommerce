@@ -1,0 +1,70 @@
+import React, { useEffect, useState } from "react";
+import useCart from "../../hooks/useCart";
+import { CartPageItems } from "./CartPageItems";
+import axios from "../../api/axios";
+const GETPRODUCT_URL = "/api/products";
+
+export const CartPage = () => {
+  const [products, setProducts] = useState([]);
+  const { cartItems, CartQuantity, getItemsQuantity } = useCart();
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await axios.get(GETPRODUCT_URL);
+        setProducts(response.data);
+      } catch (err) {
+        if (err.response) {
+          console.log(err.response.data);
+          console.log(err.response.status);
+          console.log(err.response.headers);
+        } else {
+          console.log(`Error: ${err.message}`);
+        }
+      }
+    };
+    fetchProducts();
+  }, [cartItems]);
+  return (
+    <div 
+    className="h-screen relative overflow-y-scroll  pt-20">
+      <h1 className="mb-10 text-center text-2xl font-bold">Cart Items</h1>
+      <div className="mx-auto max-w-5xl justify-center px-6 md:flex md:space-x-6 xl:px-0">
+        <div className="rounded-lg md:w-2/3">
+          {cartItems.map((item) => {
+            const quantity = getItemsQuantity(item.id);
+            if (quantity > 0) {
+              return <CartPageItems key={item.id} {...item} />;
+            } else {
+              return null;
+            }
+          })}
+        </div>
+
+        <div className="mt-6 h-full rounded-lg border sticky top-0 bg-white p-6 shadow-md md:mt-0 md:w-1/3">
+          <div className="mb-2 flex justify-between">
+            <p className="text-gray-700">Number of Items</p>
+            <p className="text-gray-700">{CartQuantity}</p>
+          </div>
+
+          <hr className="my-4" />
+          <div className="flex justify-between">
+            <p className="text-lg font-bold">Total</p>
+            <div className="">
+              <p className="mb-1 text-lg font-bold">
+                $
+                {cartItems.reduce((totol, cartItem) => {
+                  const item = products.find((i) => i.id === cartItem.id);
+                  return totol + (item?.price || 0) * cartItem.quantity;
+                }, 0)}
+              </p>
+            </div>
+          </div>
+          <button className="mt-6 w-full rounded-md bg-fuchsia-500 py-1.5 font-medium text-fuchsia-50 hover:bg-fuchsia-600/80">
+            Check out
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};

@@ -182,7 +182,7 @@ export const Orders = () => {
                               <div className="items-center">
                                 <div className="text-center">
                                   <p className="text-gray-900 whitespace-no-wrap">
-                                    {order?.user.name}
+                                    {order?.user.name || "N/A"}
                                   </p>
                                 </div>
                               </div>
