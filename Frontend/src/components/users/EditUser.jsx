@@ -16,12 +16,11 @@ export const EditUser = () => {
 
   //set error
   const errRef = useRef();
-
-  // navigate link or page
+  //navigate
   const navigate = useNavigate();
-  const location = useLocation();
-  const from = location.state?.from?.pathname || "/";
-
+  const handleGoBack = () => {
+    navigate(-1);
+  };
   //loading page
   const isLoading = useRef(false);
 
@@ -123,7 +122,7 @@ export const EditUser = () => {
           <div className="relative ">
             <button
               className={`absolute cursor-pointer  white  -right-1 rounded-full  `}
-              onClick={() => navigate(from, { replace: true })}
+              onClick={handleGoBack}
             >
               <span className="text-fuchsia-500 text-2xl">
                 <IoCloseCircleOutline />

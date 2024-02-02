@@ -14,9 +14,7 @@ export const Product = () => {
         setProducts(response.data);
       } catch (err) {
         if (err.response) {
-          console.log(err.response.data);
-          console.log(err.response.status);
-          console.log(err.response.headers);
+          console.log(err?.response.data);
         } else {
           console.log(`Error: ${err.message}`);
         }
@@ -30,17 +28,20 @@ export const Product = () => {
       id="Projects"
       className="w-fit mx-auto grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 md:grid-cols-2 justify-items-center justify-center gap-y-20 gap-x-14 mt-10 mb-5"
     >
-      {products.slice(0).reverse().map((product) => (
-        <ProductCard
-          key={product._id}
-          productId={product._id}
-          productImage={product.image}
-          productName={product.name}
-          productRating={product.rating}
-          productPrice={product.price}
-          productBrand={product.brand}
-        />
-      ))}
+      {products
+        .slice(0)
+        .reverse()
+        .map((product) => (
+          <ProductCard
+            key={product._id}
+            productId={product._id}
+            productImage={product.image}
+            productName={product.name}
+            productRating={product.rating}
+            productPrice={product.price}
+            productBrand={product.brand}
+          />
+        ))}
     </section>
   );
 };

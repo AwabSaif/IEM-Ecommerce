@@ -16,8 +16,9 @@ export const AddCategory = () => {
   const [errMsg, setErrMsg] = useState("");
   //navigate link
   const navigate = useNavigate();
-  const location = useLocation();
-  const from = location.state?.from?.pathname || "/dashboard/categories";
+  const handleGoBack = () => {
+    navigate(-1);
+  };
   //form
   const [name, setName] = useState("");
   const [color, setColor] = useState("#d946ef");
@@ -93,7 +94,7 @@ export const AddCategory = () => {
         <div className="relative ">
           <button
             className={`absolute cursor-pointer  white  -right-1 rounded-full  `}
-            onClick={() => navigate(from, { replace: true })}
+            onClick={handleGoBack}
           >
             <span className="text-fuchsia-500 text-2xl">
               <IoCloseCircleOutline />

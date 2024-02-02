@@ -7,17 +7,16 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 const REGISTER_URL = "/api/users";
 
-
 export const AddUser = () => {
-  
   const { auth } = useAuth();
   const token = auth.token;
   const errRef = useRef();
 
+  //navigate
   const navigate = useNavigate();
-  const location = useLocation();
-  const from = location.state?.from?.pathname || "/dashboard";
-
+  const handleGoBack = () => {
+    navigate(-1);
+  };
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -34,7 +33,6 @@ export const AddUser = () => {
   const [city, setCity] = useState("");
   const [zip, setZip] = useState("");
   const [apartment, setApartment] = useState("");
-
 
   const [errMsg, setErrMsg] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
@@ -100,10 +98,10 @@ export const AddUser = () => {
   return (
     <div className="flex items-center justify-center p-12">
       <div className="mx-auto w-full max-w-[850px] bg-white">
-      <div className="relative ">
+        <div className="relative ">
           <button
             className={`absolute cursor-pointer  white  -right-1 rounded-full  `}
-            onClick={() =>  navigate(from, { replace: true })}
+            onClick={handleGoBack}
           >
             <span className="text-fuchsia-500 text-2xl">
               <IoCloseCircleOutline />

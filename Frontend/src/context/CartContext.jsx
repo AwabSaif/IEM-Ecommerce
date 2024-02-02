@@ -16,6 +16,10 @@ const CartProvider = ({ children }) => {
   //handel cart open
   const [isCartOpen, setIsCartOpen] = useState(false);
 
+  const handleRemoveCartAfterOrder = () => {
+    setCartITems([]);
+  };
+  
   const handleCloseCart = () => {
     setIsCartOpen(false);
   };
@@ -78,6 +82,7 @@ const CartProvider = ({ children }) => {
         handleOpenCart,
         handleCloseCart,
         CartQuantity,
+        handleRemoveCartAfterOrder,
       }}
     >
       {children}

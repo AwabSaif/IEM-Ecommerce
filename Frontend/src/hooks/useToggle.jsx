@@ -1,4 +1,4 @@
-import React  from 'react'
+import { useState }  from 'react'
 import useEffectOnUpdate from "./useEffectOnUpdate"
  
 
@@ -7,7 +7,7 @@ export default function UseToggle(
     initialValue = false,
     onToggle = () => { }
 ) {
-    const [on, setOn] = React.useState(initialValue)
+    const [on, setOn] = useState(initialValue)
 
     function toggle() {
         setOn(prevOn => !prevOn)

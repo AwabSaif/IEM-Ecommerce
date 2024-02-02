@@ -134,12 +134,15 @@ export const Header = () => {
               aria-current="page"
               aria-expanded={isMenuOpen}
               onClick={toggleMenu}
+              onMouseEnter={toggleMenu}
+          
+
             >
               More
               <IoIosArrowDown />
             </button>
             {isMenuOpen && (
-              <div className="absolute -right-[80px] top-full z-10  w-screen max-w-[250px] overflow-hidden rounded-3xl bg-white shadow-lg ring-1 ring-fuchsia-900/5 ">
+              <div  onMouseLeave={toggleMenu} className="absolute -right-[80px] top-full z-10  w-screen max-w-[250px] overflow-hidden rounded-3xl bg-white shadow-lg ring-1 ring-fuchsia-900/5 ">
                 <div className="p-4 flex flex-col items-center justify-center">
                   {admin && (
                     <div className=" rounded-lg p-4 text-sm leading-6  hover:bg-fuchsia-200 ">
@@ -195,6 +198,7 @@ export const Header = () => {
         >
           <button
             onClick={() => handleOpenCart()}
+          
             className="text-sm mr-2 flex p-2 rounded-full border-2 border-fuchsia-500   text-gray-900  hover:bg-fuchsia-200  hover:font-bold   "
           >
             <span className=" absolute mt-2.5 ml-6  bg-fuchsia-500 p-2.5  flex h-2 w-1 items-center justify-center rounded-full text-xs text-white">
@@ -282,12 +286,14 @@ export const Header = () => {
                   )} flex w-full items-center justify-between rounded-lg py-2 pl-3 pr-3.5 text-base font-semibold leading-7 text-gray-900  hover:bg-fuchsia-200 `}
                   aria-expanded={isMenuOpen}
                   onClick={toggleMenu}
+                
                 >
                   More
                   <IoIosArrowDown />
                 </button>
                 {isMenuOpen && (
-                  <div className="mt-2 space-y-2" id="disclosure-1">
+
+                  <div  className="mt-2 space-y-2" id="disclosure-1">
                     {admin && (
                       <NavLink
                         to="/dashboard"

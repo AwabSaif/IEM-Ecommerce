@@ -34,6 +34,8 @@ import { CategoriesStore } from "./Page/Categories/CategoriesStore";
 import { Store } from "./Page/Store/Store";
 import { MyOrders } from "./Page/Orders/MyOrders";
 import { CartPage } from "./components/Cart/CartPage";
+import { ProductDetails } from "./components/products/ProductDetails";
+import { CheckOut } from "./Page/Orders/CheckOut";
 
 export default function App() {
   return (
@@ -56,7 +58,8 @@ export default function App() {
           <Route path="myorders" element={<MyOrders />} />
           <Route path="cart" element={<CartPage />} />
           <Route path="allcategories" element={<CategoriesStore />} />
-          <Route path="product" element={<Product />} />
+          <Route path="checkout" element={<CheckOut />} />
+          <Route path="product/:id" element={<ProductDetails />} />
           <Route path="contactus" element={<ContactUs />} />
           <Route path="edituser/:id" element={<EditUser />} />
           <Route path="changepassword" element={<ChangrPassword />} />

@@ -1,9 +1,9 @@
-import React from "react"
+import React, { useEffect, useRef } from "react"
 
 export default function useEffectOnUpdate(effectFunction, deps) {
-    const firstRender = React.useRef(true)
+    const firstRender = useRef(true)
     
-    React.useEffect(() => {
+  useEffect(() => {
         if (firstRender.current) {
             firstRender.current = false
         } else {

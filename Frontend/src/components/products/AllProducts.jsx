@@ -5,9 +5,10 @@ import { FaRegEdit } from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import axios from "../../api/axios";
 import useAuth from "../../hooks/useAuth";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ReactPaginate from "react-paginate";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import { IoCloseCircleOutline } from "react-icons/io5";
 export const AllProducts = () => {
   const [products, setProducts] = useState([]);
   const { auth } = useAuth();
@@ -20,6 +21,10 @@ export const AllProducts = () => {
     SetItemOffset(0);
   };
 
+  const navigate = useNavigate();
+  const handleGoBack = () => {
+    navigate(-1);
+  };
   // minStock
   const [minStock, setMinStock] = useState(() => {
     const storedMinStock = localStorage.getItem("minStock");
@@ -101,6 +106,17 @@ export const AllProducts = () => {
   return (
     <article className="antialiased font-sans bg-white">
       <div className="isolate bg-white px-6 py-4 sm:py-6 lg:px-8">
+         <div className="relative ">
+          <button
+            className={`absolute cursor-pointer  white  -right-1 rounded-full  `}
+            onClick={handleGoBack}
+          >
+            <span className="text-fuchsia-500 text-2xl">
+              <IoCloseCircleOutline />
+            </span>
+          </button>
+        </div>
+        
         <div className="absolute inset-x-0 top-[-10rem] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[-20rem]"></div>
         <div className="container mx-auto px-4 sm:px-8">
           <div className="py-8">

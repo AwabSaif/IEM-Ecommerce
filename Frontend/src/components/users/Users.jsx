@@ -13,11 +13,12 @@ export const Users = () => {
   const [users, setUsers] = useState([]);
   const { auth } = useAuth();
   const token = auth.token;
-  
-  const navigate = useNavigate();
-  const location = useLocation();
-  const from = location.state?.from?.pathname || "/dashboard";
 
+  //navigate
+  const navigate = useNavigate();
+  const handleGoBack = () => {
+    navigate(-1);
+  };
   //search
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -98,10 +99,10 @@ export const Users = () => {
   return (
     <article className="antialiased font-sans bg-white">
       <div className="isolate bg-white px-6 py-4 sm:py-6 lg:px-8">
-      <div className="relative ">
+        <div className="relative ">
           <button
             className={`absolute cursor-pointer  white  -right-1 rounded-full  `}
-            onClick={() =>  navigate(from, { replace: true })}
+            onClick={handleGoBack}
           >
             <span className="text-fuchsia-500 text-2xl">
               <IoCloseCircleOutline />
@@ -138,7 +139,7 @@ export const Users = () => {
                 </span>
                 <input
                   placeholder="Search"
-                   onChange={(e) => handleSearch(e.target.value)}
+                  onChange={(e) => handleSearch(e.target.value)}
                   className="appearance-none rounded-r rounded-l sm:rounded-l-none border border-gray-400 border-b block pl-8 pr-6 py-2 w-full bg-white text-sm placeholder-gray-400 text-gray-700 focus:bg-white focus:placeholder-gray-600 focus:text-gray-700 focus:outline-none"
                 />
               </div>

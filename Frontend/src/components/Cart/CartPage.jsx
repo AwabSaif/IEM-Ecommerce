@@ -2,9 +2,16 @@ import React, { useEffect, useState } from "react";
 import useCart from "../../hooks/useCart";
 import { CartPageItems } from "./CartPageItems";
 import axios from "../../api/axios";
+import { useNavigate } from "react-router-dom";
+import { BsArrowLeftCircleFill } from "react-icons/bs";
 const GETPRODUCT_URL = "/api/products";
 
 export const CartPage = () => {
+  //navigate
+  const navigate = useNavigate();
+  const handleGoBack = () => {
+    navigate(-1);
+  };
   const [products, setProducts] = useState([]);
   const { cartItems, CartQuantity, getItemsQuantity } = useCart();
 
@@ -14,20 +21,27 @@ export const CartPage = () => {
         const response = await axios.get(GETPRODUCT_URL);
         setProducts(response.data);
       } catch (err) {
-        if (err.response) {
+        if (err?.response) {
           console.log(err.response.data);
-          console.log(err.response.status);
-          console.log(err.response.headers);
         } else {
           console.log(`Error: ${err.message}`);
         }
       }
     };
     fetchProducts();
-  }, [cartItems]);
+  }, []);
   return (
-    <div 
-    className="h-screen relative overflow-y-scroll  pt-20">
+    <div className="h-screen relative overflow-y-scroll  pt-20">
+      <div className="relative ">
+        <button
+          className={`absolute cursor-pointer -mt-6 white mr-32 -right-1 rounded-full  `}
+          onClick={handleGoBack}
+        >
+          <span className="text-fuchsia-400 text-2xl">
+            <BsArrowLeftCircleFill className="rotate-180" />
+          </span>
+        </button>
+      </div>
       <h1 className="mb-10 text-center text-2xl font-bold">Cart Items</h1>
       <div className="mx-auto max-w-5xl justify-center px-6 md:flex md:space-x-6 xl:px-0">
         <div className="rounded-lg md:w-2/3">
@@ -60,7 +74,7 @@ export const CartPage = () => {
               </p>
             </div>
           </div>
-          <button className="mt-6 w-full rounded-md bg-fuchsia-500 py-1.5 font-medium text-fuchsia-50 hover:bg-fuchsia-600/80">
+          <button onClick={()=>navigate('/checkout')} className="mt-6 w-full rounded-md bg-fuchsia-500 py-1.5 font-medium text-fuchsia-50 hover:bg-fuchsia-600/80">
             Check out
           </button>
         </div>

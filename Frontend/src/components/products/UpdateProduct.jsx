@@ -39,10 +39,11 @@ export const UpdateProduct = () => {
   const [showModal, setShowModal] = useState(false);
 
   // navigate link
-  const navigate = useNavigate();
-  const location = useLocation();
-  const from = location.state?.from?.pathname || "/dashboard/products";
 
+  const navigate = useNavigate();
+  const handleGoBack = () => {
+    navigate(-1);
+  };
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -209,7 +210,7 @@ export const UpdateProduct = () => {
         <div className="relative ">
           <button
             className={`absolute cursor-pointer  white  -right-1 rounded-full  `}
-            onClick={() => navigate(from, { replace: true })}
+            onClick={handleGoBack}
           >
             <span className="text-fuchsia-500 text-2xl">
               <IoCloseCircleOutline />
@@ -445,7 +446,7 @@ export const UpdateProduct = () => {
                 </label>
               </div>
             </div>
-           
+
             <div className="flex  items-center ">
               {imagesPreviewServer && (
                 <div className="w-full">

@@ -6,26 +6,24 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { IoCloseCircleOutline } from "react-icons/io5";
 const EDITUSER_URL = "/api/users/";
 
-
 export const UpdateUser = () => {
-   //auth
-   const { auth } = useAuth();
-   const token = auth.token;
-   //id from link
-   const { id } = useParams();
- 
-   //set error
-   const errRef = useRef();
- 
- 
-   // navigate link or page
-   const navigate = useNavigate();
-   const location = useLocation();
-   const from = location.state?.from?.pathname || "/dashboard";
- 
-   //loading page
-   const isLoading = useRef(false);
- 
+  //auth
+  const { auth } = useAuth();
+  const token = auth.token;
+  //id from link
+  const { id } = useParams();
+
+  //set error
+  const errRef = useRef();
+
+  //navigate
+  const navigate = useNavigate();
+  const handleGoBack = () => {
+    navigate(-1);
+  };
+  //loading page
+  const isLoading = useRef(false);
+
   //form
   const [user, setUser] = useState({});
   const [username, setUsername] = useState("");
@@ -44,8 +42,7 @@ export const UpdateUser = () => {
   const [city, setCity] = useState("");
   const [zip, setZip] = useState("");
   const [apartment, setApartment] = useState("");
-  
-  
+
   //message
   const [errMsg, setErrMsg] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
@@ -76,7 +73,6 @@ export const UpdateUser = () => {
 
   useEffect(() => {
     if (user.id) {
-        console.log(user);
       setUsername(user.name);
       setEmail(user.email);
       setPhone(user.phone);
@@ -117,15 +113,15 @@ export const UpdateUser = () => {
         zip,
         apartment,
       };
-      
-      const response = await axios.put(EDITUSER_URL+id, formFile, {
+
+      const response = await axios.put(EDITUSER_URL + id, formFile, {
         headers: {
           Accept: "application/json",
           Authorization: "Bearer " + token,
         },
         withCredentials: true,
       });
-    //   console.log(response);
+      //   console.log(response);
       setSuccessMessage("User updated successfully");
     } catch (err) {
       if (!err?.response) {
@@ -142,7 +138,7 @@ export const UpdateUser = () => {
         <div className="relative ">
           <button
             className={`absolute cursor-pointer  white  -right-1 rounded-full  `}
-            onClick={() =>  navigate(from, { replace: true })}
+            onClick={handleGoBack}
           >
             <span className="text-fuchsia-500 text-2xl">
               <IoCloseCircleOutline />
@@ -196,7 +192,6 @@ export const UpdateUser = () => {
               name="email"
               id="email"
               value={email}
-          
               placeholder="Enter your email"
               className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium  outline-none focus:border-fuchsia-400  focus:shadow-md"
             />
@@ -437,7 +432,6 @@ export const UpdateUser = () => {
             </button>
           </div>
         </form>
-     
       </div>
     </div>
   );

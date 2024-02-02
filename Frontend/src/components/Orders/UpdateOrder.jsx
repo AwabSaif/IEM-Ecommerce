@@ -8,6 +8,7 @@ import { AiOutlineMail } from "react-icons/ai";
 import { IoCloseCircleOutline } from "react-icons/io5";
 import { OrderItems } from "./OrderItems";
 import { IoPrintOutline } from "react-icons/io5";
+import { HiOutlinePhone } from "react-icons/hi2";
 
 export const UpdateOrder = () => {
   //auth
@@ -22,11 +23,12 @@ export const UpdateOrder = () => {
   const [status, SetStatus] = useState("");
   const [orderItems, setOrderItems] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
- 
+
   //navigate
   const navigate = useNavigate();
-  const location = useLocation();
-  const from = location.state?.from?.pathname || "/dashboard";
+  const handleGoBack = () => {
+    navigate(-1);
+  };
   //error
   const errRef = useRef();
   const [errMsg, setErrMsg] = useState("");
@@ -71,7 +73,7 @@ export const UpdateOrder = () => {
         },
         withCredentials: true,
       });
-    //   console.log(response);
+      //   console.log(response);
       setSuccessMessage(
         `Order Status Updated to ${response.data.status} successfully`
       );
@@ -92,7 +94,7 @@ export const UpdateOrder = () => {
           <div className="relative ">
             <button
               className={`absolute cursor-pointer  white  -right-1 rounded-full  `}
-              onClick={() => navigate(from, { replace: true })}
+              onClick={handleGoBack}
             >
               <span className="text-fuchsia-500 text-2xl">
                 <IoCloseCircleOutline />
@@ -173,6 +175,12 @@ export const UpdateOrder = () => {
                         <p className="cursor-pointer text-sm leading-5 ">
                           {orders.user.email}
                         </p>
+                        <span className="text-lg font-sans">
+                          <HiOutlinePhone />
+                        </span>
+                        <p className="cursor-pointer text-sm leading-5 ">
+                          {orders.phone}
+                        </p>
                       </div>
                       <div className="flex justify-start w-full items-start  pt-8 pb-3">
                         <span className="text-lg -mt-1.5 text-left font-sans">
@@ -223,13 +231,12 @@ export const UpdateOrder = () => {
                         </div>
                         <div className="flex justify-start items-start flex-col space-y-4">
                           <p className="text-base  font-semibold leading-4 text-left text-gray-800">
-                            Billing Address
+                            Address
                           </p>
-                          <p className="w-48 text-left text-sm leading-5 text-gray-600">
-                            {orders.user.city || "N/A"}-
-                            {orders.user.street || "N/A"}-
-                            {orders.user.zip || "N/A"}-
-                            {orders.user.apartment || "N/A"}
+                          <p className="w-48 text-left text-sm leading-5 text-gray-600 flex flex-col">
+                            <p>Country: {orders.country}</p>
+                            <p>City: {orders.city}</p>
+                            <p>Zip: {orders.zip}</p>
                           </p>
                         </div>
                       </div>

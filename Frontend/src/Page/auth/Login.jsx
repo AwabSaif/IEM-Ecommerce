@@ -9,6 +9,7 @@ import Cookies from "cookie-universal";
 const LOGIN_URL = "/api/users/login";
 export const Login = () => {
   const { setAuth } = useAuth();
+  
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/";

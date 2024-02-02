@@ -18,9 +18,11 @@ export const Orders = () => {
 
   const componentRef = useRef();
 
-  const navigate = useNavigate();
-  const location = useLocation();
-  const from = location.state?.from?.pathname || "/dashboard";
+ //navigate
+ const navigate = useNavigate();
+ const handleGoBack = () => {
+   navigate(-1);
+ };
 
   //search
   const [searchTerm, setSearchTerm] = useState("");
@@ -102,7 +104,7 @@ export const Orders = () => {
         <div className="relative ">
           <button
             className={`absolute cursor-pointer  white  -right-1 rounded-full  `}
-            onClick={() => navigate(from, { replace: true })}
+            onClick={handleGoBack}
           >
             <span className="text-fuchsia-500 text-2xl">
               <IoCloseCircleOutline />

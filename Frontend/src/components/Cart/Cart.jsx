@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 const GETPRODUCT_URL = "/api/products";
 export const Cart = ({ isCartOpen }) => {
   const [products, setProducts] = useState([]);
-  const { cartItems, handleCloseCart, getItemsQuantity } = useCart();
+  const { cartItems, handleCloseCart, getItemsQuantity  } = useCart();
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -15,31 +15,31 @@ export const Cart = ({ isCartOpen }) => {
         const response = await axios.get(GETPRODUCT_URL);
         setProducts(response.data);
       } catch (err) {
-        if (err.response) {
+        if (err?.response) {
           console.log(err.response.data);
-          console.log(err.response.status);
-          console.log(err.response.headers);
         } else {
           console.log(`Error: ${err.message}`);
         }
       }
     };
     fetchProducts();
-  }, [cartItems]);
+  }, []);
   return (
     <div
       className={`relative z-10 ${isCartOpen ? "visible" : "hidden"}`}
       aria-labelledby="slide-over-title"
       role="dialog"
       aria-modal="true"
+    
+    
     >
       <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
 
-      <div className="fixed inset-0 overflow-hidden">
+      <div   className="fixed inset-0 overflow-hidden">
         <div className="absolute inset-0 overflow-hidden">
           <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10">
             <div className="pointer-events-auto w-screen max-w-md">
-              <div className="flex h-full flex-col overflow-y-scroll bg-white shadow-xl">
+              <div     className="flex h-full flex-col overflow-y-scroll bg-white shadow-xl">
                 <div className="flex-1 overflow-y-auto px-4 py-6 sm:px-6">
                   <div className="flex items-start justify-between">
                     <h2
@@ -97,13 +97,13 @@ export const Cart = ({ isCartOpen }) => {
                   <div className="mt-6">
                     <Link
                       to="/cart"
-                      className="flex items-center justify-center rounded-md border border-transparent bg-fuchsia-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-fuchsia-700"
+                      className="w-full rounded-md py-1.5 font-medium text-fuchsia-50  flex items-center justify-center  border border-transparent bg-fuchsia-600 px-6 text-base shadow-sm hover:bg-fuchsia-600/80"
                     >
                       View cart
                     </Link>
                     <Link
-                      to="#"
-                      className="flex mt-2 items-center justify-center rounded-md border border-transparent bg-fuchsia-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-fuchsia-700"
+                      to="/checkout"
+                      className="mt-2 w-full rounded-md py-1.5 font-medium text-fuchsia-50  flex items-center justify-center  border border-transparent bg-fuchsia-600 px-6 text-base shadow-sm hover:bg-fuchsia-600/80"
                     >
                       Checkout
                     </Link>
