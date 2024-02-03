@@ -18,14 +18,13 @@ export const ProductDetails = () => {
   //id from params
   const { id } = useParams();
 
-
   // get Products
   const [product, setProduct] = useState([]);
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         const response = await axios.get(GETPRODUCT_URL + id);
-        console.log(response.data);
+        // console.log(response.data);
         setProduct(response.data);
       } catch (err) {
         if (err?.response) {
@@ -163,19 +162,24 @@ export const ProductDetails = () => {
               </div>
             </div>
 
-            <div className=" flex  items-center justify-between space-y-4 border-t border-b py-4 sm:space-y-0">
+            <div className="flex items-center justify-between space-y-4 border-t border-b py-4 sm:space-y-0">
               <div className="flex items-end">
                 <h1 className="text-3xl font-bold">${product.price}</h1>
               </div>
+
               {quantity === 0 ? (
-                <button
-                  type="button"
-                  onClick={() => increaseCartQuantity(id)}
-                  className="inline-flex items-center justify-center rounded-md border-2 border-transparent bg-fuchsia-500 bg-none px-12 py-2 text-center text-base font-bold text-fuchsia-50 transition-all duration-200 ease-in-out focus:shadow hover:bg-fuchsia-600/80"
-                >
-                  <BsCartPlus className="shrink-0 mr-3 h-5 w-5" />
-                  Add to cart
-                </button>
+                product.countInStock > 0 ? (
+                  <button
+                    type="button"
+                    onClick={() => increaseCartQuantity(id)}
+                    className="inline-flex items-center justify-center rounded-md border-2 border-transparent bg-fuchsia-500 bg-none px-12 py-2 text-center text-base font-bold text-fuchsia-50 transition-all duration-200 ease-in-out focus:shadow hover:bg-fuchsia-600/80"
+                  >
+                    <BsCartPlus className="shrink-0 mr-3 h-5 w-5" />
+                    Add to cart
+                  </button>
+                ) : (
+                  <span className="text-red-500 font-bold">Out of Stock</span>
+                )
               ) : (
                 <div className="mr-6 flex flex-col items-center justify-center">
                   <div className="flex items-center border-gray-100">
@@ -190,11 +194,15 @@ export const ProductDetails = () => {
                       {quantity}
                     </span>
                     <button
-                      onClick={() => increaseCartQuantity(id)}
+                      onClick={() =>
+                        increaseCartQuantity(id, product.countInStock)
+                      }
                       className="cursor-pointer rounded-r bg-fuchsia-100  py-2 px-5  duration-100 hover:bg-fuchsia-500 hover:text-fuchsia-50"
+                      disabled={quantity >= product.countInStock}
                     >
                       +
                     </button>
+                    {/*  */}
                   </div>
                 </div>
               )}
@@ -212,21 +220,40 @@ export const ProductDetails = () => {
 
           <div className="lg:col-span-3">
             <div className="border-b border-gray-300">
+              <p className="flex text-xl gap-4">Description</p>
+            </div>
+            <div className="mt-2 flow-root ">
+              <div id="description">
+                <p>{product.description}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+/* 
+
+          <div className="lg:col-span-3">
+            <div className="border-b border-gray-300">
               <nav className="flex gap-4">
-                <Link
-                  to="#description"
+                Description
+                {/*      <Link
+                 
+                   to="#description"
                   className={`border-b-2 ${
                     activeTab === "description"
                       ? "border-fuchsia-900 py-4 text-sm font-medium text-gray-900 hover:border-gray-400 hover:text-gray-800"
                       : "border-transparent py-4 text-sm font-medium text-gray-600"
                   }`}
                   activeClassName="border-b-2 border-fuchsia-900"
-                  onClick={() => handleTabChange("description")}
+                  onClick={() => handleTabChange("description")} 
                 >
                   Description
-                </Link>
-
-                <Link
+                </Link> 
+                       <Link
                   to="#reviews"
                   className={`inline-flex items-center border-b-2 ${
                     activeTab === "reviews"
@@ -240,33 +267,27 @@ export const ProductDetails = () => {
                   <span className="ml-2 block rounded-full bg-fuchsia-500 px-2 py-px text-xs font-bold text-fuchsia-50">
                     {product.numReviews}
                   </span>
-                </Link>
-              </nav>
-            </div>
-
-            <div className=" flow-root ">
-              <div
-                id="description"
-                className={`${activeTab === "reviews" ? "hidden" : ""}`}
-              >
-                <p>{product.description}</p>
-              </div>
-            </div>
-
-            <div className=" flow-root ">
-              <div
-                id="reviews"
-                className={` ${activeTab === "description" ? "hidden" : ""}`}
-              >
-                
-                <p>
-                  reviews <Rating reviews={product.numReviews} />
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-};
+                </Link> 
+                </nav>
+                </div>
+    
+                <div className=" flow-root ">
+                  <div
+                    id="description"
+                       className={`${activeTab === "reviews" ? "hidden" : ""}`} 
+                  >
+                    <p>{product.description}</p>
+                  </div>
+                </div>
+    
+                   <div className=" flow-root ">
+                  <div
+                    id="reviews"
+                    className={` ${activeTab === "description" ? "hidden" : ""}`}
+                  >
+                    <p>
+                      reviews <Rating reviews={product.numReviews} />
+                    </p>
+                  </div>
+                </div> 
+              </div> */

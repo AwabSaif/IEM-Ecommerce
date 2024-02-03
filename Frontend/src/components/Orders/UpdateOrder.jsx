@@ -45,7 +45,7 @@ export const UpdateOrder = () => {
           },
           withCredentials: true,
         });
-        // console.log(response.data);
+        console.log(response.data);
         SetOrders(response.data);
         setOrderItems(response.data.orderItems);
         setTotalPrice(response.data.totalPrice);
@@ -73,7 +73,7 @@ export const UpdateOrder = () => {
         },
         withCredentials: true,
       });
-      //   console.log(response);
+        // console.log(response);
       setSuccessMessage(
         `Order Status Updated to ${response.data.status} successfully`
       );
@@ -210,6 +210,15 @@ export const UpdateOrder = () => {
                           {status}
                         </p>
                       </div>
+                      <div className="flex justify-start w-full items-center  pt-8 pb-3">
+                        <span className="text-lg -mt-1.5 text-left font-sans">
+                          payment method:
+                        </span>
+
+                        <p className="ml-2 text-smleading-10 -mt-1 print:block">
+                          {orders.payment}
+                        </p>
+                      </div>
                     </div>
                     <div className="flex justify-between items-stretch w-full flex-col">
                       <div className="flex justify-start  space-x-6  space-y-0 flex-row items-center">
@@ -241,11 +250,11 @@ export const UpdateOrder = () => {
                         </div>
                       </div>
                       <div className=" hidden print:flex items-center  flex-col">
-                        <Barcode
+                         <Barcode
                           width={1.5}
                           height={29}
                           value={orders.orderNumber}
-                        />
+                        /> 
                       </div>
                     </div>
                   </div>

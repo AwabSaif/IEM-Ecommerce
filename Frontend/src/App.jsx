@@ -36,6 +36,9 @@ import { MyOrders } from "./Page/Orders/MyOrders";
 import { CartPage } from "./components/Cart/CartPage";
 import { ProductDetails } from "./components/products/ProductDetails";
 import { CheckOut } from "./Page/Orders/CheckOut";
+import { AboutUs } from "./Page/AboutUs/AboutUs";
+import { Policies } from "./Page/AboutUs/Policies";
+import { OrderDetails } from "./components/Orders/OrderDetails";
 
 export default function App() {
   return (
@@ -55,14 +58,20 @@ export default function App() {
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="store" element={<Store />} />
-          <Route path="myorders" element={<MyOrders />} />
-          <Route path="cart" element={<CartPage />} />
+          <Route path="orders/:id" element={<MyOrders />} />
+          <Route path="orderdetails/:id" element={<OrderDetails />} />
           <Route path="allcategories" element={<CategoriesStore />} />
+
+          <Route path="cart" element={<CartPage />} />
           <Route path="checkout" element={<CheckOut />} />
           <Route path="product/:id" element={<ProductDetails />} />
-          <Route path="contactus" element={<ContactUs />} />
+          
           <Route path="edituser/:id" element={<EditUser />} />
           <Route path="changepassword" element={<ChangrPassword />} />
+
+          <Route path="aboutus" element={<AboutUs />} />
+          <Route path="policies" element={<Policies />} />
+          <Route path="contactus" element={<ContactUs />} />
         </Route>
         {/* potect admin routes */}
         <Route element={<RequireAuth />}>

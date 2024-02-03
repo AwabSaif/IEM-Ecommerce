@@ -19,7 +19,6 @@ export const CartPageItems = ({ id, quantity }) => {
       } catch (err) {
         if (err?.response) {
           console.log(err.response.data);
-          
         } else {
           console.log(`Error: ${err.message}`);
         }
@@ -54,17 +53,20 @@ export const CartPageItems = ({ id, quantity }) => {
             </button>
 
             <span className="h-8 w-8 border flex  justify-center items-center bg-white text-xs outline-none">
-               {quantity} 
+              {quantity}
             </span>
             <button
-              onClick={() => increaseCartQuantity(id)}
+              onClick={() => increaseCartQuantity(id, item.countInStock)}
+              disabled={quantity >= item.countInStock}
               className="cursor-pointer rounded-r bg-fuchsia-100 py-1 px-3 duration-100 hover:bg-fuchsia-500 hover:text-fuchsia-50"
             >
               +
             </button>
           </div>
           <div className="flex items-center space-x-4">
-            <p className="text-gray-700 font-medium">${item.price * quantity}</p>
+            <p className="text-gray-700 font-medium">
+              ${item.price * quantity}
+            </p>
             <button
               type="button"
               onClick={() => removeItemFromCart(id)}

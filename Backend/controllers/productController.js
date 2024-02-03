@@ -81,7 +81,6 @@ const createProduct = asyncHandler(async (req, res) => {
   const skuExists = await Product.findOne({ sku });
 
   if (skuExists) {
-    console.log("Sku already exists. Sending conflict response.");
     return res.status(409).json({ message: "Sku already exists" });
   }
   let product = new Product({
@@ -143,9 +142,6 @@ const updateProduct = asyncHandler(async (req, res) => {
       .ne(req.params.id);
 
     if (existingProductWithSku) {
-      console.log(
-        "Sku already exists in a different product. Sending conflict response."
-      );
       return res
         .status(409)
         .json({ message: "Sku already exists in another product" });
@@ -174,7 +170,7 @@ const updateProduct = asyncHandler(async (req, res) => {
 
     res.send(product);
   } catch (err) {
-    console.log(err);
+    throw new Error(err);
   }
 });
 
@@ -233,22 +229,16 @@ const updateImageProduct = asyncHandler(async (req, res) => {
   if (!mongoose.isValidObjectId(req.params.id)) {
     return res.status(400).send("Invalid Product Id");
   }
-  console.log(req.body);
+
   const files = req.files;
   let imagesPaths = [];
   const basePath = `${req.protocol}://${req.get("host")}/public/uploads/`;
-
-  console.log("basePath", basePath); // تحقق هنا
 
   if (files) {
     files.map((file) => {
       imagesPaths.push(`${basePath}${file.filename}`);
     });
   }
-
-  console.log("imagesPaths", imagesPaths); // تحقق هنا
-
-  console.log("req.params.id", req.params.id); // تحقق هنا
 
   const product = await Product.findByIdAndUpdate(
     req.params.id,
@@ -262,6 +252,16 @@ const updateImageProduct = asyncHandler(async (req, res) => {
 
   res.send(product);
 });
+//bestSellers
+const bestSellers = asyncHandler(async (req, res) => {
+  try {
+    const products = await Product.find().sort({ sales: -1 }).limit(8);
+    res.json(products);
+  } catch (err) {
+    res.status(500).json({ message: err });
+  }
+});
+
 module.exports = {
   getallProducts,
   getProduct,
@@ -271,5 +271,6 @@ module.exports = {
   countProduct,
   featuredProduct,
   updateImageProduct,
+  bestSellers,
   uploadOptions,
 };

@@ -134,8 +134,7 @@ export const Header = () => {
               aria-current="page"
               aria-expanded={isMenuOpen}
               onClick={toggleMenu}
-              onMouseEnter={toggleMenu}
-          
+            
 
             >
               More
@@ -156,10 +155,10 @@ export const Header = () => {
                   )}
                   <div className=" rounded-lg p-4 text-sm leading-6  hover:bg-fuchsia-200 ">
                     <Link
-                      to="/myorders"
+                      to={`/orders/${id}`}
                       className="block  font-semibold text-gray-900"
                     >
-                      Order's
+                      Orders
                     </Link>
                   </div>
                   <div className=" rounded-lg p-4 text-sm leading-6  hover:bg-fuchsia-200 ">
@@ -303,10 +302,10 @@ export const Header = () => {
                       </NavLink>
                     )}
                     <NavLink
-                      to="/myorders"
+                      to={`/orders/${id}`}
                       className=" flex   justify-items-center  rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-gray-900  hover:bg-fuchsia-200 "
                     >
-                      Order's
+                      Orders
                     </NavLink>
                     <NavLink
                       to={`edituser/${id}`}

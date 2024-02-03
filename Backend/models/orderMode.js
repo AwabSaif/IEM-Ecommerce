@@ -34,7 +34,7 @@ const OrderSchema = mongoose.Schema({
   status: {
     type: String,
     required: true,
-    default: "Pending",
+    default: "Pending Payment",
   },
   totalPrice: {
     type: Number,
@@ -42,6 +42,15 @@ const OrderSchema = mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
+    require: true,
+  },
+  payment: {
+    type: String,
+    required: true,
+  },
+  currency: {
+    type: String,
+    default: "usd",
   },
   orderNumber: {
     type: Number,
@@ -53,19 +62,16 @@ const OrderSchema = mongoose.Schema({
   },
 });
 const createOrderNumber = (counter) => {
-  // تكوين الرقم بطول ثابت 8 أرقام
   return String(counter).padStart(8, "0");
 };
 
 OrderSchema.pre("save", async function (next) {
   try {
     if (!this.orderNumber) {
-      // البحث عن أعلى قيمة لرقم الأمر
       const highestOrder = await this.constructor
         .findOne({}, "orderNumber")
         .sort({ orderNumber: -1 });
 
-      // تحديد الرقم الأولي بناءً على أعلى قيمة موجودة
       const initialOrderNumber = highestOrder
         ? highestOrder.orderNumber + 1
         : 1;

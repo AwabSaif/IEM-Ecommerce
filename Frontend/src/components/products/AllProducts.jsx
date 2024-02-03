@@ -42,7 +42,7 @@ export const AllProducts = () => {
 
   const endOffset = itemOffset + itemsPerPage;
   useEffect(() => {
-    SetCurrentItems(products.slice(itemOffset, endOffset).reverse());
+    SetCurrentItems(products.slice(itemOffset, endOffset));
     SetPageCount(Math.ceil(products.length / itemsPerPage));
   }, [itemOffset, itemsPerPage, products]);
 
@@ -192,7 +192,7 @@ export const AllProducts = () => {
                   </thead>
                   <tbody>
                     {products.length > 0 ? (
-                      currentItems.map((product) => {
+                   currentItems.map((product) => {
                         return (
                           <tr key={product?.id}>
                             <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
@@ -214,7 +214,7 @@ export const AllProducts = () => {
                                 {product?.countInStock}
                                 {product.countInStock < minStock && (
                                   <span className="ml-2 text-sm text-red-500">
-                                    (Low Stock!)
+                                    Low Stock!
                                   </span>
                                 )}
                               </p>

@@ -19,7 +19,6 @@ export const CartItems = ({ id, quantity }) => {
       } catch (err) {
         if (err?.response) {
           console.log(err.response.data);
-          
         } else {
           console.log(`Error: ${err.message}`);
         }
@@ -60,7 +59,8 @@ export const CartItems = ({ id, quantity }) => {
             </button>
             <p className="text-gray-500">Qty {quantity}</p>
             <button
-              onClick={() => increaseCartQuantity(id)}
+              onClick={() => increaseCartQuantity(id, item.countInStock)}
+              disabled={quantity >= item.countInStock}
               className="cursor-pointer rounded-md bg-fuchsia-100 py-1 px-3 duration-100 hover:bg-fuchsia-500 hover:text-fuchsia-50"
             >
               +

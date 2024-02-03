@@ -12,7 +12,7 @@ export const CheckOut = () => {
   const { auth } = useAuth();
   const token = auth.token;
   const user = auth.id;
-  
+
   //set error
   const errRef = useRef();
 
@@ -29,7 +29,12 @@ export const CheckOut = () => {
 
   //get data
   const [products, setProducts] = useState([]);
-  const { cartItems, CartQuantity, getItemsQuantity ,handleRemoveCartAfterOrder } = useCart();
+  const {
+    cartItems,
+    CartQuantity,
+    getItemsQuantity,
+    handleRemoveCartAfterOrder,
+  } = useCart();
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -54,6 +59,7 @@ export const CheckOut = () => {
   const [country, setCountry] = useState("");
   const [city, setCity] = useState("");
   const [zip, setZip] = useState("");
+  const [payment, Setpayment] = useState("");
 
   useEffect(() => {
     const updatedOrderItems = cartItems.map((cartItem) => {
@@ -64,14 +70,19 @@ export const CheckOut = () => {
     });
     setOrderItems(updatedOrderItems);
   }, [cartItems]);
-console.log(user);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!user) {
-        setErrMsg("Please log in before placing an order.");
-        navigate('/login')
-        return;
-      }
+      setErrMsg("Please log in before placing an order.");
+      navigate("/login");
+      return;
+    }
+    if (!payment) {
+      setErrMsg("Please choose a payment method before placing an order.");
+      return;
+    }
+
     try {
       setIsLoading(true);
       setErrMsg(null);
@@ -84,20 +95,29 @@ console.log(user);
         city,
         zip,
         user,
+        payment,
       };
-      console.log(formFile);
-      const response = await axios.post("/api/orders" , formFile, {
+      console.log(payment);
+      const response = await axios.post("/api/orders", formFile, {
         headers: {
           Accept: "application/json",
           Authorization: "Bearer " + token,
         },
         withCredentials: true,
       });
-        
-        console.log(response.data);
+
+      // console.log(response.data);
       setSuccessMessage("order created successfully");
       setIsLoading(false);
       handleRemoveCartAfterOrder();
+      setOrderItems("");
+      Setpayment("");
+      setZip("");
+      setCity("");
+      setCountry("");
+      setPhone("");
+      setShippingAddress2("");
+      SetShippingAddress1("");
     } catch (err) {
       if (!err?.response) {
         setErrMsg("Server not responding");
@@ -107,7 +127,6 @@ console.log(user);
         setIsLoading(false);
       }
       errRef.current.focus();
-      
     }
   };
   return (
@@ -178,6 +197,7 @@ console.log(user);
                 name="shippingAddress1"
                 id="shippingAddress1"
                 required
+                value={shippingAddress1}
                 className="w-full rounded-md border border-[#e0e0e0] bg-white py-2 px-6 text-base font-medium  outline-none focus:border-fuchsia-400  focus:shadow-md"
               />
             </div>
@@ -195,6 +215,7 @@ console.log(user);
                 name="shippingAddress2"
                 id="shippingAddress2"
                 required
+                value={shippingAddress2}
                 className="w-full rounded-md border border-[#e0e0e0] bg-white py-2 px-6 text-base font-medium  outline-none focus:border-fuchsia-400  focus:shadow-md"
               />
             </div>
@@ -207,6 +228,7 @@ console.log(user);
                     name="phone"
                     id="phone"
                     required
+                    value={phone}
                     placeholder="Phone Number"
                     className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
                   />
@@ -220,6 +242,7 @@ console.log(user);
                     name="country"
                     id="country"
                     required
+                    value={country}
                     placeholder="Country"
                     className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
                   />
@@ -234,6 +257,7 @@ console.log(user);
                     name="city"
                     id="city"
                     required
+                    value={city}
                     placeholder="City"
                     className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
                   />
@@ -248,6 +272,7 @@ console.log(user);
                     name="zip-code"
                     id="zip-code"
                     required
+                    value={zip}
                     placeholder="Zip Code"
                     className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
                   />
@@ -255,8 +280,27 @@ console.log(user);
               </div>
             </div>
           </div>
+          <div className="flex flex-col justify-start w-full items-start  pt-8 pb-3">
+            <label
+              htmlFor="payment"
+              className="mb-3 block text-base font-medium"
+            >
+              Payment method
+            </label>
+            <select
+              id="payment"
+              name="payment"
+              value={payment}
+              onChange={(e) => Setpayment(e.target.value)}
+              className="w-full rounded-md border border-[#e0e0e0] bg-white py-2 px-6 text-base font-medium  outline-none focus:border-fuchsia-400  focus:shadow-md"
+            >
+              <option>Choose</option>
+              <option value="Cash on delivery">Cash on delivery</option>
+              {/* <option value="Visa">Visa</option> */}
+            </select>
+          </div>
           <div className="mb-2 flex justify-between">
-            <p className="text-gray-700">Number of Items</p>
+            <p className="text-gray-700">Items in cart</p>
             <p className="text-gray-700">{CartQuantity}</p>
           </div>
 

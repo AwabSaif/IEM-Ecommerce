@@ -1,6 +1,7 @@
 const asyncHandler = require("express-async-handler");
-const { Order } = require("../models/orderMode;");
+const { Order } = require("../models/orderMode");
 const { OrderItem } = require("../models/orderItemModel");
+const { Product } = require("../models/productModel");
 
 //get all Order
 const getallOrder = asyncHandler(async (req, res) => {
@@ -35,55 +36,87 @@ const getOrder = asyncHandler(async (req, res) => {
 //create Order
 const createOrder = asyncHandler(async (req, res) => {
   const orderItemsIds = await Promise.all(
-    req.body.orderItems.map(async (orderItem) => {
-      let newOrderItem = new OrderItem({
-        quantity: orderItem.quantity,
-        product: orderItem.product,
-      });
-      newOrderItem = await newOrderItem.save();
-      return newOrderItem._id;
-    })
+      req.body.orderItems.map(async (orderItem) => {
+          let newOrderItem = new OrderItem({
+              quantity: orderItem.quantity,
+              product: orderItem.product,
+          });
+          newOrderItem = await newOrderItem.save();
+          return newOrderItem._id;
+      })
   );
   const orderItemsIdsResolved = await orderItemsIds;
   const totalPrices = await Promise.all(
-    orderItemsIdsResolved.map(async (orderItemId) => {
-      const orderItem = await OrderItem.findById(orderItemId).populate(
-        "product",
-        "price"
-      );
-      const totalPrice = orderItem.product.price * orderItem.quantity;
-      return totalPrice;
-    })
+      orderItemsIdsResolved.map(async (orderItemId) => {
+          const orderItem = await OrderItem.findById(orderItemId).populate("product", "price");
+
+          const totalPrice = orderItem.product.price * orderItem.quantity;
+          return totalPrice;
+      })
   );
   const totalPrice = totalPrices.reduce((a, b) => a + b, 0);
+
+  let updatedCountInStock = await Promise.all(
+      orderItemsIdsResolved.map(async (orderItemId) => {
+          const orderItem = await OrderItem.findById(orderItemId).populate('product', 'countInStock sales');
+
+          // update countInStock
+          const updatedProduct = await Product.findByIdAndUpdate(
+              orderItem.product._id,
+              {
+                  $inc: { countInStock: -orderItem.quantity },
+              },
+              { new: true }
+          );
+
+          // update sales
+          if (updatedProduct) {
+              updatedProduct.sales = (updatedProduct.sales || 0) + orderItem.quantity;
+              await updatedProduct.save();
+          } else {
+              console.error(`Failed to update product stock and sales for order item ${orderItemId}`);
+          }
+
+          return orderItem;
+      })
+  );
+
   const {
-    shippingAddress1,
-    shippingAddress2,
-    city,
-    zip,
-    country,
-    phone,
-    status,
-    user,
+      shippingAddress1,
+      shippingAddress2,
+      city,
+      zip,
+      country,
+      phone,
+      status,
+      user,
+      payment,
+      currency,
   } = req.body;
+
   let order = new Order({
-    orderItems: orderItemsIdsResolved,
-    shippingAddress1,
-    shippingAddress2,
-    city,
-    zip,
-    country,
-    phone,
-    status,
-    totalPrice: totalPrice,
-    user,
+      orderItems: orderItemsIdsResolved,
+      shippingAddress1,
+      shippingAddress2,
+      city,
+      zip,
+      country,
+      phone,
+      status,
+      totalPrice: totalPrice,
+      user,
+      payment,
+      currency,
   });
+
   order = await order.save();
   if (!order) {
-    return res.status(404).send("The order cannot be created!");
+      return res.status(404).send("The order cannot be created!");
   }
+
   res.send(order);
 });
+
 //Update order status
 const updateOrder = asyncHandler(async (req, res) => {
   const order = await Order.findByIdAndUpdate(

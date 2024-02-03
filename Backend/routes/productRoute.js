@@ -9,6 +9,7 @@ const {
   countProduct,
   featuredProduct,
   updateImageProduct,
+  bestSellers,
   uploadOptions,
 } = require("../controllers/productController");
 const multer = require("multer");
@@ -21,6 +22,7 @@ router.put("/:id", uploadOptions.single("image"), updateProduct);
 router.delete("/:id", deleteProduct);
 router.get("/get/count", countProduct);
 router.get("/get/featured/:count", featuredProduct);
+router.get("/get/best-sellers", bestSellers);
 router.put(
   "/gallery-images/:id",
   uploadOptions.array("images", 10),
