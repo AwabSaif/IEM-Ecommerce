@@ -102,7 +102,7 @@ export const MyOrders = () => {
               })
             ) : (
               <div
-                class="flex items-center text-center justify-center rounded-md bg-fuchsia-500 text-white text-sm font-bold px-4 py-3"
+                className="flex items-center text-center justify-center rounded-md bg-fuchsia-500 text-white text-sm font-bold px-4 py-3"
                 role="alert"
               >
                 <p>There are no Orders to display</p>

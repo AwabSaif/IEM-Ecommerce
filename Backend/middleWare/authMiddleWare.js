@@ -17,6 +17,7 @@ function authJwt() {
       { url: /\/api\/users\/forgotpassword\/*/, methods: ["POST"] },
       { url: /\/api\/users\/resetpassword\/*/, methods: ["PUT"] },
       `${api}/users/login`,
+      // `${api}/users/:id`,
       `${api}/users/register`,
       `${api}/users/refresh/token`,
       `${api}/users/updateuser`,
@@ -30,8 +31,30 @@ function authJwt() {
   });
 }
 
-// revoke.js
-async function isRevoked(req, token,done) {
+// revoke
+
+/* async function isRevoked(req, token, done) {
+  try {
+      if (!token.payload.isAdmin) {
+          return true;
+      }
+
+      const foundUser = await User.findById(token.payload.userId);
+
+      if (!foundUser || foundUser.refreshToken !== token) {
+          return true;
+      }
+
+      return false;
+  } catch (error) {
+      console.error("Error in isRevoked:", error);
+      return true;
+  }
+}
+ */
+
+
+ async function isRevoked(req, token,done) {
  
   try {
     if (!token.payload.isAdmin) {
@@ -45,7 +68,7 @@ async function isRevoked(req, token,done) {
     return true;
   }
 }
-
+ 
 
 
 const authErrorHandler = (err, req, res, next) => {

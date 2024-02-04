@@ -140,52 +140,74 @@ const loginUser = asyncHandler(async (req, res) => {
   if (!passwordIsCorrect)
     return res.status(400).json({ message: "Invalid email or password." });
 
-  // Generate JWT token
-  const token = jwt.sign(
+  const accessToken = jwt.sign(
     {
       userId: foundUser.id,
       isAdmin: foundUser.isAdmin,
     },
     process.env.ACCESS_TOKEN_SECRET,
-    { expiresIn: "3d" }
+    { expiresIn: "15m" }
   );
 
+  const refreshToken = jwt.sign(
+    {
+      userId: foundUser.id,
+      isAdmin: foundUser.isAdmin,
+    },
+    process.env.REFRESH_TOKEN_SECRET,
+    { expiresIn: "7d" }
+  );
+  foundUser.refreshToken = refreshToken;
+  await foundUser.save();
+
+  res.cookie("jwt", refreshToken, {
+    httpOnly: true,
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+  });
   res.status(200).json({
-    name:foundUser.name,
+    name: foundUser.name,
     user: foundUser.email,
     roles: foundUser.isAdmin,
-    token: token,
+    token: accessToken,
     id: foundUser._id,
   });
 });
 
 //refresh Token User
-
 const refreshTokenUser = asyncHandler(async (req, res) => {
-  const refreshToken = req.headers.authorization;
-  const cleanedToken = refreshToken.replace("Bearer ", "");
+  const cookies = req.cookies;
+  if (!cookies?.jwt) return res.status(401);
+  const refreshToken = cookies.jwt;
 
+  // console.log(cookies?.jwt);
   jwt.verify(
-    cleanedToken,
-    process.env.ACCESS_TOKEN_SECRET,
+    refreshToken,
+    process.env.REFRESH_TOKEN_SECRET,
     asyncHandler(async (err, decoded) => {
+     
       if (err) return res.status(403).json({ message: "Forbidden", err: err });
-      const foundUser = await User.findOne({ user: decoded.email });
-      const token = jwt.sign(
+
+      const foundUser = await User.findById(decoded?.userId);
+
+      if (!foundUser || foundUser.refreshToken !== refreshToken) {
+        return res.status(401).json({ message: "Invalid refresh token" });
+      }
+
+      const accessToken = jwt.sign(
         {
           userId: foundUser.id,
           isAdmin: foundUser.isAdmin,
         },
         process.env.ACCESS_TOKEN_SECRET,
-        { expiresIn: "3d" }
+        { expiresIn: "15m" }
       );
-
+    
       res.status(200).json({
-        name:foundUser.name,
+        name: foundUser.name,
         user: foundUser.email,
         roles: foundUser.isAdmin,
-        token: token,
-        id: foundUser._id
+        token: accessToken,
+        id: foundUser._id,
       });
     })
   );

@@ -1,42 +1,55 @@
-import React from "react";
+import logo from "../../assets/image/IEM Ecommerce-logo.png";
 
 export const AboutUs = () => {
   return (
-    <article>
-      <h2>No Sidebar</h2>
-
-      <p>
-        Phasellus quam turpis, feugiat sit amet ornare in, hendrerit in lectus.
-        Praesent semper mod quis eget mi. Etiam eu ante risus. Aliquam erat
-        volutpat. Aliquam luctus et mattis lectus sit amet pulvinar. Nam turpis
-        nisi consequat etiam lorem ipsum dolor sit amet nullam.
-      </p>
-
-      <h3>More intriguing information</h3>
-      <p>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas ac
-        quam risus, at tempus justo. Sed dictum rutrum massa eu volutpat.
-        Quisque vitae hendrerit sem. Pellentesque lorem felis, ultricies a
-        bibendum id, bibendum sit amet nisl. Mauris et lorem quam. Maecenas
-        rutrum imperdiet vulputate. Nulla quis nibh ipsum, sed egestas justo.
-        Morbi ut ante mattis orci convallis tempor. Etiam a lacus a lacus
-        pharetra porttitor quis accumsan odio. Sed vel euismod nisi. Etiam
-        convallis rhoncus dui quis euismod. Maecenas lorem tellus, congue et
-        condimentum ac, ullamcorper non sapien. Donec sagittis massa et leo
-        semper a scelerisque metus faucibus. Morbi congue mattis mi. Phasellus
-        sed nisl vitae risus tristique volutpat. Cras rutrum commodo luctus.
-      </p>
-
-      <p>
-        Phasellus odio risus, faucibus et viverra vitae, eleifend ac purus.
-        Praesent mattis, enim quis hendrerit porttitor, sapien tortor viverra
-        magna, sit amet rhoncus nisl lacus nec arcu. Suspendisse laoreet metus
-        ut metus imperdiet interdum aliquam justo tincidunt. Mauris dolor urna,
-        fringilla vel malesuada ac, dignissim eu mi. Praesent mollis massa ac
-        nulla pretium pretium. Maecenas tortor mauris, consectetur pellentesque
-        dapibus eget, tincidunt vitae arcu. Vestibulum purus augue, tincidunt
-        sit amet iaculis id, porta eu purus.
-      </p>
-    </article>
+    <div className="py-16 bg-white">
+      <div className="container m-auto px-6 text-gray-600 md:px-12 xl:px-6">
+        <div className="space-y-6 md:space-y-0 md:flex md:gap-6 lg:items-center lg:gap-12">
+          <div className="md:7/12 lg:w-6/12">
+            <h2 className="text-2xl text-gray-900 font-bold md:text-4xl">
+              Welcome to IEM ECOMMERCE - Your Unique Shopping Destination!
+            </h2>
+            <p className="mt-6 text-gray-600">
+              Diverse Selection: We take pride in offering a unique and diverse
+              range of products that set us apart. Unique designs and
+              high-quality products make our shopping experience distinctive.
+            </p>
+            <p className="mt-4 text-gray-600">
+              Personalized Shopping Experience: We provide customers with a
+              personalized and unique shopping experience. Customize some
+              products to fit your specific needs, adding a personal touch to
+              your purchases.
+            </p>
+            <p className="mt-4 text-gray-600">
+              Supporting Local Products We actively support local products,
+              shining a spotlight on local craftsmen and businesses, making your
+              shopping experience have a local touch.
+            </p>
+            <p className="mt-4 text-gray-600">
+              Quality Over Quantity: Our focus is on providing high-quality
+              products rather than quantity, ensuring you can confidently trust
+              every purchase.
+            </p>
+            <p className="mt-4 text-gray-600">
+              Exceptional Customer Service: Our customer service team is always
+              ready to assist and support, placing customer needs at the heart
+              of our operations.
+            </p>
+            <p className="mt-4 text-xl font-medium text-gray-800">
+              Discover the Difference with IEM ECOMMERCE
+            </p>
+            <p className="mt-4 text-xl text-gray-800">
+              At IEM ECOMMERCE, we strive to deliver a unique shopping
+              experience that stands out. Choose excellence, choose quality,
+              choose IEM ECOMMERCE. Shop securely with peace of mind, with the
+              assurance that your needs will be met perfectly.
+            </p>
+          </div>
+          <div className="md:5/12 lg:w-5/12">
+            <img src={logo} alt={logo} loading="lazy" width="" height="" />
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };

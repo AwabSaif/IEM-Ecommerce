@@ -3,6 +3,7 @@ import useCart from "../../hooks/useCart";
 import axios from "../../api/axios";
 
 const GETPRODUCT_URL = "/api/products";
+
 export const CartPageItems = ({ id, quantity }) => {
   const { increaseCartQuantity, decreaseCartQuantity, removeItemFromCart } =
     useCart();

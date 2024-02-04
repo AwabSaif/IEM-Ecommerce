@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { ProductCard } from "../../components/products/ProductCard";
-import { Product } from "../porduct/Product";
 import axios from "../../api/axios";
 import { Link } from "react-router-dom";
 import logo from "../../assets/image/IEM Ecommerce-logo.png";
@@ -32,7 +31,7 @@ export default function Home() {
     const fetchBestSellers = async () => {
       try {
         const response = await axios.get(GET_BEST_SELLERS_URL);
-        console.log(response.data);
+        // console.log(response.data);
         setBestSellers(response.data);
       } catch (err) {
         if (err.response) {

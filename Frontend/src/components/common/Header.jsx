@@ -13,6 +13,7 @@ import UseToggle from "../../hooks/useToggle";
 import { LuLayoutDashboard } from "react-icons/lu";
 import { GoSearch } from "react-icons/go";
 import useCart from "../../hooks/useCart";
+import { Search } from "../search input/Search";
 
 const activeNavLink = ({ isActive }) => (isActive ? "active" : "");
 
@@ -88,7 +89,7 @@ export const Header = () => {
           </Link>
         </div>
 
-        <div className="hidden lg:flex lg:gap-x-12">
+        <div className="hidden lg:flex lg:gap-x-3">
           <NavLink
             to="/"
             className={`${activeNavLink({
@@ -108,24 +109,16 @@ export const Header = () => {
             Store
           </NavLink>
           <NavLink
-            to="/allcategories"
+            to="/categories"
             className={`${activeNavLink({
-              isActive: pathname === "/allcategories",
+              isActive: pathname === "/categories",
             })} text-sm font-semibold leading-6 text-gray-900   hover:bg-fuchsia-200  hover:font-bold py-2 px-4 rounded-t-2xl`}
             aria-current="page"
           >
             Categories
           </NavLink>
-          <div className="relative">
-            <input
-              type="text"
-              name="q"
-              className="w-[350px] border h-10 shadow p-4 rounded-full"
-              placeholder="search"
-            />
-            <button type="submit">
-              <GoSearch className="text-fuchsia-400 h-5 w-5 absolute top-2.5 right-3 fill-current" />
-            </button>
+          <div className="w-[280px]">
+            <Search />
           </div>
           <div className="relative">
             <button
@@ -134,14 +127,15 @@ export const Header = () => {
               aria-current="page"
               aria-expanded={isMenuOpen}
               onClick={toggleMenu}
-            
-
             >
               More
               <IoIosArrowDown />
             </button>
             {isMenuOpen && (
-              <div  onMouseLeave={toggleMenu} className="absolute -right-[80px] top-full z-10  w-screen max-w-[250px] overflow-hidden rounded-3xl bg-white shadow-lg ring-1 ring-fuchsia-900/5 ">
+              <div
+                onMouseLeave={toggleMenu}
+                className="absolute -right-[80px] top-full z-10  w-screen max-w-[250px] overflow-hidden rounded-3xl bg-white shadow-lg ring-1 ring-fuchsia-900/5 "
+              >
                 <div className="p-4 flex flex-col items-center justify-center">
                   {admin && (
                     <div className=" rounded-lg p-4 text-sm leading-6  hover:bg-fuchsia-200 ">
@@ -153,30 +147,34 @@ export const Header = () => {
                       </Link>
                     </div>
                   )}
-                  <div className=" rounded-lg p-4 text-sm leading-6  hover:bg-fuchsia-200 ">
-                    <Link
-                      to={`/orders/${id}`}
-                      className="block  font-semibold text-gray-900"
-                    >
-                      Orders
-                    </Link>
-                  </div>
-                  <div className=" rounded-lg p-4 text-sm leading-6  hover:bg-fuchsia-200 ">
-                    <Link
-                      to={`edituser/${id}`}
-                      className="block  font-semibold text-gray-900"
-                    >
-                      Profile
-                    </Link>
-                  </div>
-                  <div className=" rounded-lg p-4 text-sm leading-6  hover:bg-fuchsia-200 ">
-                    <button
-                      onClick={signOut}
-                      className="block  font-semibold text-gray-900"
-                    >
-                      Sign out
-                    </button>
-                  </div>
+                  {id && (
+                    <>
+                      <div className=" rounded-lg p-4 text-sm leading-6  hover:bg-fuchsia-200 ">
+                        <Link
+                          to={`/orders/${id}`}
+                          className="block  font-semibold text-gray-900"
+                        >
+                          Orders
+                        </Link>
+                      </div>
+                      <div className=" rounded-lg p-4 text-sm leading-6  hover:bg-fuchsia-200 ">
+                        <Link
+                          to={`edituser/${id}`}
+                          className="block  font-semibold text-gray-900"
+                        >
+                          Profile
+                        </Link>
+                      </div>
+                      <div className=" rounded-lg p-4 text-sm leading-6  hover:bg-fuchsia-200 ">
+                        <button
+                          onClick={signOut}
+                          className="block  font-semibold text-gray-900"
+                        >
+                          Sign out
+                        </button>
+                      </div>
+                    </>
+                  )}
                 </div>
 
                 <Link
@@ -197,7 +195,6 @@ export const Header = () => {
         >
           <button
             onClick={() => handleOpenCart()}
-          
             className="text-sm mr-2 flex p-2 rounded-full border-2 border-fuchsia-500   text-gray-900  hover:bg-fuchsia-200  hover:font-bold   "
           >
             <span className=" absolute mt-2.5 ml-6  bg-fuchsia-500 p-2.5  flex h-2 w-1 items-center justify-center rounded-full text-xs text-white">
@@ -241,16 +238,8 @@ export const Header = () => {
           <div className="mt-6 flow-root">
             <div className="-my-6 divide-y divide-fuchsia-500/10">
               <div className="space-y-2 py-6">
-                <div className="relative mx-2 lg:hidden ">
-                  <input
-                    type="text"
-                    name="q"
-                    className="w-full block  px-3 py-2 text-base font-semibold leading-7 text-gray-900  outline-none  md:w-[300px] border h-10 shadow p-4 rounded-full"
-                    placeholder="search"
-                  />
-                  <button type="submit">
-                    <GoSearch className="text-fuchsia-400  h-5 w-5 absolute top-2.5 right-7 fill-current" />
-                  </button>
+                <div>
+                  <Search />
                 </div>
                 <NavLink
                   to="/"
@@ -271,7 +260,7 @@ export const Header = () => {
                   Store
                 </NavLink>
                 <NavLink
-                  to="/allcategories"
+                  to="/categories"
                   className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900  hover:bg-fuchsia-200 "
                 >
                   Categories
@@ -285,14 +274,12 @@ export const Header = () => {
                   )} flex w-full items-center justify-between rounded-lg py-2 pl-3 pr-3.5 text-base font-semibold leading-7 text-gray-900  hover:bg-fuchsia-200 `}
                   aria-expanded={isMenuOpen}
                   onClick={toggleMenu}
-                
                 >
                   More
                   <IoIosArrowDown />
                 </button>
                 {isMenuOpen && (
-
-                  <div  className="mt-2 space-y-2" id="disclosure-1">
+                  <div className="mt-2 space-y-2" id="disclosure-1">
                     {admin && (
                       <NavLink
                         to="/dashboard"
@@ -301,30 +288,34 @@ export const Header = () => {
                         Dashboard
                       </NavLink>
                     )}
-                    <NavLink
-                      to={`/orders/${id}`}
-                      className=" flex   justify-items-center  rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-gray-900  hover:bg-fuchsia-200 "
-                    >
-                      Orders
-                    </NavLink>
-                    <NavLink
-                      to={`edituser/${id}`}
-                      className=" flex   justify-items-center  rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-gray-900  hover:bg-fuchsia-200 "
-                    >
-                      Profile
-                    </NavLink>
+                    {id && (
+                      <>
+                        <NavLink
+                          to={`/orders/${id}`}
+                          className=" flex   justify-items-center  rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-gray-900  hover:bg-fuchsia-200 "
+                        >
+                          Orders
+                        </NavLink>
+                        <NavLink
+                          to={`edituser/${id}`}
+                          className=" flex   justify-items-center  rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-gray-900  hover:bg-fuchsia-200 "
+                        >
+                          Profile
+                        </NavLink>
+                        <button
+                          onClick={signOut}
+                          className=" flex   justify-items-center  rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-gray-900  hover:bg-fuchsia-200 "
+                        >
+                          Sign out
+                        </button>
+                      </>
+                    )}
                     <NavLink
                       to="/contactus"
                       className=" flex  justify-items-center  rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-gray-900  hover:bg-fuchsia-200 "
                     >
                       Connact us
                     </NavLink>
-                    <button
-                      onClick={signOut}
-                      className=" flex   justify-items-center  rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-gray-900  hover:bg-fuchsia-200 "
-                    >
-                      Sign out
-                    </button>
                   </div>
                 )}
               </div>

@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import axios from "../../api/axios";
 
-import { ProductCard } from "../../components/products/ProductCard";
+import { ProductCard } from "./ProductCard";
+
 const GETPRODUCT_URL = "/api/products";
 export const Product = () => {
   const [products, setProducts] = useState([]);
+
   // get Products
   useEffect(() => {
     const fetchProducts = async () => {
@@ -24,10 +26,7 @@ export const Product = () => {
   }, []);
 
   return (
-    <section
-   
-      className="w-fit mx-auto grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 md:grid-cols-2 justify-items-center justify-center gap-y-20 gap-x-14 mt-10 mb-5"
-    >
+    <section className="w-fit mx-auto grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 md:grid-cols-2 justify-items-center justify-center gap-y-20 gap-x-14 mt-10 mb-5">
       {products
         .slice(0)
         .reverse()

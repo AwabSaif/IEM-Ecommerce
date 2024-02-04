@@ -10,9 +10,16 @@ import {
   Verify,
 } from "./Page/auth/index";
 
+import {
+  AddCategory,
+  Categories,
+  UpdateCategory,
+} from "./components/Categories/index";
+import { CartPage } from "./components/Cart/index";
+
 import { Layout } from "./components/layout/Layout";
-import { Product } from "./Page/porduct/Product";
-import { ContactUs } from "./Page/contactUs/ContactUs";
+
+import { ContactUs } from "./Page/AboutUs/ContactUs";
 import { DashboardLayout } from "./components/dashboard/Layout/DashboardLayout";
 import { Missing } from "./Page/missingPage/Missing";
 import { Unauthorized } from "./Page/missingPage/Unauthorized";
@@ -25,20 +32,20 @@ import { AddUser } from "./components/users/AddUser";
 import { EditUser } from "./components/users/EditUser";
 import { UpdateUser } from "./components/users/UpdateUser";
 import { UpdateProduct } from "./components/products/UpdateProduct";
-import { Categories } from "./components/Categories/Categories";
-import { AddCategory } from "./components/Categories/AddCategory";
-import { UpdateCategory } from "./components/Categories/UpdateCategory";
+
 import { Orders } from "./components/Orders/Orders";
 import { UpdateOrder } from "./components/Orders/UpdateOrder";
 import { CategoriesStore } from "./Page/Categories/CategoriesStore";
 import { Store } from "./Page/Store/Store";
 import { MyOrders } from "./Page/Orders/MyOrders";
-import { CartPage } from "./components/Cart/CartPage";
+
 import { ProductDetails } from "./components/products/ProductDetails";
 import { CheckOut } from "./Page/Orders/CheckOut";
 import { AboutUs } from "./Page/AboutUs/AboutUs";
 import { Policies } from "./Page/AboutUs/Policies";
 import { OrderDetails } from "./components/Orders/OrderDetails";
+import { Documentations } from "./Page/AboutUs/Documentations";
+import { SearchResults } from "./components/search input/SearchResults";
 
 export default function App() {
   return (
@@ -58,19 +65,22 @@ export default function App() {
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="store" element={<Store />} />
+          <Route path="searchresults" element={<SearchResults />} />
+
           <Route path="orders/:id" element={<MyOrders />} />
           <Route path="orderdetails/:id" element={<OrderDetails />} />
-          <Route path="allcategories" element={<CategoriesStore />} />
+          <Route path="categories" element={<CategoriesStore />} />
 
           <Route path="cart" element={<CartPage />} />
           <Route path="checkout" element={<CheckOut />} />
           <Route path="product/:id" element={<ProductDetails />} />
-          
+
           <Route path="edituser/:id" element={<EditUser />} />
           <Route path="changepassword" element={<ChangrPassword />} />
 
           <Route path="aboutus" element={<AboutUs />} />
           <Route path="policies" element={<Policies />} />
+          <Route path="documentations" element={<Documentations />} />
           <Route path="contactus" element={<ContactUs />} />
         </Route>
         {/* potect admin routes */}

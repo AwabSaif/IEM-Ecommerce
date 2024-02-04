@@ -9,7 +9,7 @@ import Cookies from "cookie-universal";
 const LOGIN_URL = "/api/users/login";
 export const Login = () => {
   const { setAuth } = useAuth();
-  
+
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/";
@@ -45,9 +45,9 @@ export const Login = () => {
       const id = response?.data.id;
       const token = response?.data.token;
       const roles = response?.data.roles;
-    
-      setAuth({ name,email, password, roles, token, id });
-      const tokencookie = cookie.set("Bearer", token);
+
+      setAuth({ name, email, roles, token, id });
+
       navigate(from, { replace: true });
     } catch (err) {
       if (!err?.response) {

@@ -30,6 +30,14 @@ export const Footer = () => {
             Contact us
           </Link>
         </li>
+        <li>
+          <Link
+            to="/documentations"
+            className="font-normal transition-colors hover:text-fuchsia-500 focus:text-fuchsia-500"
+          >
+          Documentations
+          </Link>
+        </li>
       </ul>
     </footer>
   );

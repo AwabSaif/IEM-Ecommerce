@@ -7,17 +7,15 @@ const useRefreshToken = () => {
 
   const cookie = new Cookies();
 
-  const getToken = cookie.get("Bearer");
-
   const refresh = async () => {
     try {
-      const response = await axios.get("/api/users/refresh/token", {
-        headers: {
-          Accept: "application/json",
-          Authorization: getToken,
-        },
-      });
+         const response = await axios.get("/api/users/refresh/token", {
+      
+          withCredentials: true,
+      });  
 
+
+      console.log(response.data);
       setAuth(() => {
         const token = response.data.token;
         const tokencookie = cookie.set("Bearer", token);

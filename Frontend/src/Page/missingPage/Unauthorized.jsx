@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 export const Unauthorized = () => {
   const navigate = useNavigate();
 
-  const goBack = () => navigate(-1);
+  const goBack = () => navigate("/");
   return (
     <section className="flex items-center h-screen p-16 bg-gray-50 dark:bg-gray-700">
       <div className="container flex flex-col items-center ">
@@ -18,7 +18,7 @@ export const Unauthorized = () => {
             onClick={goBack}
             className="px-8 py-4 text-xl font-semibold rounded bg-fuchsia-500 hover:bg-fuchsia-700 text-white"
           >
-            Go Back
+            Go Home
           </button>
         </div>
       </div>
