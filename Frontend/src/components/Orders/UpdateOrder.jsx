@@ -45,7 +45,7 @@ export const UpdateOrder = () => {
           },
           withCredentials: true,
         });
-        console.log(response.data);
+        // console.log(response.data);
         SetOrders(response.data);
         setOrderItems(response.data.orderItems);
         setTotalPrice(response.data.totalPrice);

@@ -5,20 +5,16 @@ import Cookies from "cookie-universal";
 const useRefreshToken = () => {
   const { setAuth, auth } = useAuth();
 
-  const cookie = new Cookies();
-
   const refresh = async () => {
     try {
-         const response = await axios.get("/api/users/refresh/token", {
-      
-          withCredentials: true,
-      });  
+      const response = await axios.get("/api/users/refresh/token", {
+        withCredentials: true,
+      });
 
-
-      console.log(response.data);
       setAuth(() => {
         const token = response.data.token;
-        const tokencookie = cookie.set("Bearer", token);
+        /*  const tokencookie = cookie.set("Bearer", token); */
+
         return {
           name: response.data.name,
           email: response.data.email,

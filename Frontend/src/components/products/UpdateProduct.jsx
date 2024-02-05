@@ -148,8 +148,8 @@ export const UpdateProduct = () => {
           const selectedCategory = categoryList.find(
             (category) => category.id === response.data.category
           );
+          setProductId(response.data.id);
           setCategory(response.data.category.id);
-
           setImagePreviewServer(response.data.image);
           setImagesPreviewServer(response.data.images);
         })
@@ -187,8 +187,8 @@ export const UpdateProduct = () => {
         },
         withCredentials: true,
       });
-      // console.log(response);
-      setProductId(response.data.id);
+      // console.log(response.data);
+    
 
       setSuccessMessage("Product updated successfully");
       setIsLoading(false);

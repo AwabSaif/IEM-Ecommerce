@@ -17,20 +17,22 @@ const contactUsRoute = require("./routes/contactUsRoute");
 const app = express();
 
 // app.use(cors());
-app.use(cors({
-  origin: 'http://localhost:5173',
-  credentials: true,
-}));
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
+);
 
 //Middlewares
 app.use(cookieParser());
 app.use(express.json());
 app.use(morgan("tiny"));
-app.use(authJwt());
+// app.use(authJwt());
 app.use(express.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(authErrorHandler);
-app.use('/public/uploads', express.static(__dirname + '/public/uploads'));
+app.use("/public/uploads", express.static(__dirname + "/public/uploads"));
 
 //Routes Middleware
 const api = process.env.API_URL;
@@ -41,13 +43,10 @@ app.use(`${api}/orders`, orderRoute);
 app.use(`${api}/iem-contact-us`, contactUsRoute);
 
 //Routes
-/* app.get("/", (req, res) => {
-  //   res.send("home page");
-    res.sendFile(__dirname +"/public/index.html")
-  });
-   */
-app.get("/", (req, res) => {
-  res.send("home page");
+
+app.use(express.static("public/dist"));
+app.get("*", (req, res) => {
+  res.sendFile(__dirname + "/public/dist/index.html");
 });
 
 //Errer MiddleWare
