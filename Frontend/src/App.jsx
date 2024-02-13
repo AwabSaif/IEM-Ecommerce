@@ -1,5 +1,5 @@
 import Home from "./Page/home/Home";
-import Dashbord from "./Page/dashboard/Dashbord";
+import {Dashboard} from "./Page/dashboard/DashBord";
 import { Routes, Route } from "react-router-dom";
 import {
   Register,
@@ -44,7 +44,6 @@ import { CheckOut } from "./Page/Orders/CheckOut";
 import { AboutUs } from "./Page/AboutUs/AboutUs";
 import { Policies } from "./Page/AboutUs/Policies";
 import { OrderDetails } from "./components/Orders/OrderDetails";
-import { Documentations } from "./Page/AboutUs/Documentations";
 import { SearchResults } from "./components/search input/SearchResults";
 
 export default function App() {
@@ -80,13 +79,13 @@ export default function App() {
 
           <Route path="aboutus" element={<AboutUs />} />
           <Route path="policies" element={<Policies />} />
-          <Route path="documentations" element={<Documentations />} />
+
           <Route path="contactus" element={<ContactUs />} />
         </Route>
         {/* potect admin routes */}
         <Route element={<RequireAuth />}>
           <Route path="/dashboard" element={<DashboardLayout />}>
-            <Route index element={<Dashbord />} />
+            <Route index element={<Dashboard />} />
             {/* Orders */}
             <Route path="orders" element={<Orders />} />
             <Route path="orderdetails/:id" element={<UpdateOrder />} />

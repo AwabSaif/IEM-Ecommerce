@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import logo from "../../assets/image/IEM Ecommerce-logo.png";
 
 const GETPRODUCT_URL = "/api/products";
-const GET_BEST_SELLERS_URL = "/api/products//get/best-sellers";
+const GET_BEST_SELLERS_URL = "/api/products/get/best-sellers";
 export default function Home() {
   const [products, setProducts] = useState([]);
   const [bestSellers, setBestSellers] = useState([]);
@@ -27,6 +27,7 @@ export default function Home() {
     };
     fetchProducts();
   }, []);
+
   useEffect(() => {
     const fetchBestSellers = async () => {
       try {

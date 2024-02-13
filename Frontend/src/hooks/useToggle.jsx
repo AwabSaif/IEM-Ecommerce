@@ -1,8 +1,6 @@
 import { useState }  from 'react'
 import useEffectOnUpdate from "./useEffectOnUpdate"
  
-
-
 export default function UseToggle(
     initialValue = false,
     onToggle = () => { }

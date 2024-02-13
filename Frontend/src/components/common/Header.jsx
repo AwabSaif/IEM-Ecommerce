@@ -2,18 +2,16 @@ import { NavLink, Link, useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import useLogout from "../../hooks/useLogout";
 import useAuth from "../../hooks/useAuth";
+import UseToggle from "../../hooks/UseToggle";
+import useCart from "../../hooks/useCart";
+import { Search } from "../search input/Search";
 
 import logoImage from "../../assets/image/IEM Ecommerce-logo.png";
 import { HiOutlinePhone } from "react-icons/hi2";
-import { BsCart2, BsCartPlus } from "react-icons/bs";
-import { IoIosArrowDown, IoMdClose, IoIosLogOut } from "react-icons/io";
+import { BsCart2 } from "react-icons/bs";
+import { IoIosArrowDown, IoMdClose } from "react-icons/io";
 import { HiOutlineLogin } from "react-icons/hi";
 import { GrMenu } from "react-icons/gr";
-import UseToggle from "../../hooks/useToggle";
-import { LuLayoutDashboard } from "react-icons/lu";
-import { GoSearch } from "react-icons/go";
-import useCart from "../../hooks/useCart";
-import { Search } from "../search input/Search";
 
 const activeNavLink = ({ isActive }) => (isActive ? "active" : "");
 

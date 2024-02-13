@@ -1,9 +1,10 @@
 const asyncHandler = require("express-async-handler");
-const { Product } = require("../models/productModel");
-const { Category } = require("../models/categoryModel");
+const { Product } = require("../models/productModel"); // Import Product model
+const { Category } = require("../models/categoryModel"); // Import Category model
 const mongoose = require("mongoose");
 const multer = require("multer");
 
+// Define accepted file types for images
 const FILE_TYPE_MAP = {
   "image/png": "png",
   "image/jpeg": "jpeg",
@@ -11,10 +12,10 @@ const FILE_TYPE_MAP = {
   png: "png",
 };
 
+// Configure multer storage for file uploads
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     const isValid = FILE_TYPE_MAP[file.mimetype];
-
     cb(null, "public/uploads");
   },
   filename: function (req, file, cb) {
@@ -23,9 +24,9 @@ const storage = multer.diskStorage({
     cb(null, `${fileName}-${Date.now()}.png`);
   },
 });
-const uploadOptions = multer({ storage: storage });
+const uploadOptions = multer({ storage: storage }); // Set upload options
 
-//get all products
+// Middleware to get all products
 const getallProducts = asyncHandler(async (req, res) => {
   let filter = {};
   if (req.query.categories) {
@@ -40,7 +41,7 @@ const getallProducts = asyncHandler(async (req, res) => {
   res.send(productList);
 });
 
-//get product
+// Middleware to get a single product
 const getProduct = asyncHandler(async (req, res) => {
   const product = await Product.findById(req.params.id).populate("category");
 
@@ -50,9 +51,9 @@ const getProduct = asyncHandler(async (req, res) => {
   res.send(product);
 });
 
-//create product
-
+// Middleware to create a product
 const createProduct = asyncHandler(async (req, res) => {
+  // Validate category
   if (!req.body.category) {
     return res.status(400).send("Invalid Category");
   }
@@ -60,12 +61,16 @@ const createProduct = asyncHandler(async (req, res) => {
   if (!category) {
     return res.status(400).send("Invalid Category");
   }
+  
+  // Check if image exists in the request
   const file = req.file;
   if (!file) return res.status(400).send("No image in the request");
 
+  // Generate file name and base path
   const fileName = file.filename;
   const basePath = `${req.protocol}://${req.get("host")}/public/uploads/`;
 
+  // Extract product details from request body
   const {
     name,
     description,
@@ -78,11 +83,14 @@ const createProduct = asyncHandler(async (req, res) => {
     numReviews,
     isFeatured,
   } = req.body;
-  const skuExists = await Product.findOne({ sku });
 
+  // Check if SKU already exists
+  const skuExists = await Product.findOne({ sku });
   if (skuExists) {
     return res.status(409).json({ message: "Sku already exists" });
   }
+
+  // Create new product instance
   let product = new Product({
     name,
     description,
@@ -98,6 +106,7 @@ const createProduct = asyncHandler(async (req, res) => {
     isFeatured,
   });
 
+  // Save product to database
   product = await product.save();
 
   if (!product) return res.status(500).send("The product cannot be created");
@@ -105,12 +114,14 @@ const createProduct = asyncHandler(async (req, res) => {
   res.send(product);
 });
 
-//Update product
+// Middleware to update a product
 const updateProduct = asyncHandler(async (req, res) => {
   try {
+    // Validate product ID
     if (!mongoose.isValidObjectId(req.params.id)) {
       res.status(400).send("Invalid Product Id");
     }
+    // Validate category
     if (!req.body.category) {
       return res.status(400).send("Invalid Category");
     }
@@ -119,12 +130,15 @@ const updateProduct = asyncHandler(async (req, res) => {
       return res.status(400).send("Invalid Category");
     }
 
+    // Check if image exists in the request
     const file = req.file;
     if (!file) return res.status(400).send("No image in the request");
 
+    // Generate file name and base path
     const fileName = file.filename;
     const basePath = `${req.protocol}://${req.get("host")}/public/uploads/`;
 
+    // Extract product details from request body
     const {
       name,
       description,
@@ -137,15 +151,14 @@ const updateProduct = asyncHandler(async (req, res) => {
       numReviews,
       isFeatured,
     } = req.body;
-    const existingProductWithSku = await Product.findOne({ sku })
-      .where("_id")
-      .ne(req.params.id);
 
+    // Check if SKU already exists in another product
+    const existingProductWithSku = await Product.findOne({ sku }).where("_id").ne(req.params.id);
     if (existingProductWithSku) {
-      return res
-        .status(409)
-        .json({ message: "Sku already exists in another product" });
+      return res.status(409).json({ message: "Sku already exists in another product" });
     }
+
+    // Update product in the database
     const product = await Product.findByIdAndUpdate(
       req.params.id,
       {
@@ -174,7 +187,7 @@ const updateProduct = asyncHandler(async (req, res) => {
   }
 });
 
-//delete product
+// Middleware to delete a product
 const deleteProduct = asyncHandler(async (req, res) => {
   if (!mongoose.isValidObjectId(req.params.id)) {
     res.status(400).send("Invalid Product Id");
@@ -195,7 +208,7 @@ const deleteProduct = asyncHandler(async (req, res) => {
   }
 });
 
-//Product count
+// Middleware to count products
 const countProduct = asyncHandler(async (req, res) => {
   try {
     const productCount = await Product.countDocuments();
@@ -209,7 +222,8 @@ const countProduct = asyncHandler(async (req, res) => {
     res.status(500).json({ success: false, error: err });
   }
 });
-//Product featured
+
+// Middleware to get featured products
 const featuredProduct = asyncHandler(async (req, res) => {
   try {
     const count = req.params.count ? req.params.count : 0;
@@ -224,7 +238,8 @@ const featuredProduct = asyncHandler(async (req, res) => {
     res.status(500).json({ success: false });
   }
 });
-//update image
+
+// Middleware to update product images
 const updateImageProduct = asyncHandler(async (req, res) => {
   if (!mongoose.isValidObjectId(req.params.id)) {
     return res.status(400).send("Invalid Product Id");
@@ -252,7 +267,8 @@ const updateImageProduct = asyncHandler(async (req, res) => {
 
   res.send(product);
 });
-//bestSellers
+
+// Middleware to get best selling products
 const bestSellers = asyncHandler(async (req, res) => {
   try {
     const products = await Product.find().sort({ sales: -1 }).limit(8);
@@ -262,6 +278,7 @@ const bestSellers = asyncHandler(async (req, res) => {
   }
 });
 
+// Export middleware functions
 module.exports = {
   getallProducts,
   getProduct,

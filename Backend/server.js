@@ -1,60 +1,61 @@
-const dotenv = require("dotenv").config();
-const express = require("express");
-const connectionDB = require("./DB/connectionDB");
-const bodyParser = require("body-parser");
-const cors = require("cors");
-const cookieParser = require("cookie-parser");
-const morgan = require("morgan");
+// Import required modules
+const dotenv = require("dotenv").config(); // Load environment variables
+const express = require("express"); // Express framework
+const connectionDB = require("./DB/connectionDB"); // Database connection
+const bodyParser = require("body-parser"); // Parse incoming request bodies
+const cors = require("cors"); // Cross-Origin Resource Sharing
+const cookieParser = require("cookie-parser"); // Parse cookie headers
+const morgan = require("morgan"); // HTTP request logger
 
-const { authJwt, authErrorHandler } = require("./middleWare/authMiddleWare");
-const errorHandler = require("./middleWare/errerMiddleWare");
+// Import middleware
+const { authJwt, authErrorHandler } = require("./middleWare/authMiddleWare"); // JWT authentication middleware
+const errorHandler = require("./middleWare/errerMiddleWare"); // Error handling middleware
+
+// Import routes
 const userRoute = require("./routes/userRoute");
 const categoryRoute = require("./routes/categoryRoute");
 const productRoute = require("./routes/productRoute");
 const orderRoute = require("./routes/orderRoute");
 const contactUsRoute = require("./routes/contactUsRoute");
 
+// Initialize Express application
 const app = express();
 
-// app.use(cors());
+// Enable CORS
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: "http://localhost:5173" /* [
+      "http://localhost:5173",
+      "https://iemecommerce.onrender.com",
+      "https://ieme-commerce.netlify.app",
+    ], */,
     credentials: true,
   })
 );
 
-//Middlewares
-app.use(cookieParser());
-app.use(express.json());
-app.use(morgan("tiny"));
-// app.use(authJwt());
-app.use(express.urlencoded({ extended: false }));
-app.use(bodyParser.json());
-app.use(authErrorHandler);
-app.use("/public/uploads", express.static(__dirname + "/public/uploads"));
+// Middlewares
+app.use(cookieParser()); // Parse cookie headers
+app.use(express.json()); // Parse JSON bodies
+app.use(morgan("tiny")); // Log HTTP requests
+app.use(authJwt()); // JWT authentication
+app.use(express.urlencoded({ extended: false })); // Parse URL-encoded bodies
+app.use(bodyParser.json()); // Parse JSON bodies
+app.use(authErrorHandler); // Authentication error handler
+app.use("/public/uploads", express.static(__dirname + "/public/uploads")); // Serve static files
 
-//Routes Middleware
-const api = process.env.API_URL;
+// Routes middleware
+const api = process.env.API_URL; // API base URL
 app.use(`${api}/users`, userRoute);
 app.use(`${api}/categories`, categoryRoute);
 app.use(`${api}/products`, productRoute);
 app.use(`${api}/orders`, orderRoute);
 app.use(`${api}/iem-contact-us`, contactUsRoute);
 
-//Routes
-
-app.use(express.static("public/dist"));
-app.get("*", (req, res) => {
-  res.sendFile(__dirname + "/public/dist/index.html");
-});
-
-//Errer MiddleWare
+// Error handling middleware
 app.use(errorHandler);
 
-// start server
-const PORT = process.env.PORT;
-
+// Start server
+const PORT = process.env.PORT; // Port number
 const server = app.listen(PORT, () => {
   try {
     console.log(`IEM Server Running on port ${PORT}...`);
