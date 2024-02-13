@@ -8,15 +8,18 @@ import { useLocation, useNavigate } from "react-router-dom";
 const REGISTER_URL = "/api/users";
 
 export const AddUser = () => {
+  // Authentication hook
   const { auth } = useAuth();
   const token = auth.token;
-  const errRef = useRef();
+  const errRef = useRef(); // Reference for error element
 
-  //navigate
+  // Navigation hook
   const navigate = useNavigate();
   const handleGoBack = () => {
     navigate(-1);
   };
+
+  // State variables for user data
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -34,18 +37,22 @@ export const AddUser = () => {
   const [zip, setZip] = useState("");
   const [apartment, setApartment] = useState("");
 
+  // Error and success messages
   const [errMsg, setErrMsg] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
+  // Clear error message on input change
   useEffect(() => {
     setErrMsg("");
   }, [username, email, phone, password, matchPassword]);
 
+  // Check if passwords match
   useEffect(() => {
     const match = password === matchPassword;
     setValidMatch(match);
   }, [password, matchPassword]);
 
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -64,6 +71,7 @@ export const AddUser = () => {
         apartment,
       };
 
+      // Send request to create user
       const response = await axios.post(REGISTER_URL, formFile, {
         headers: {
           Accept: "application/json",
@@ -71,6 +79,8 @@ export const AddUser = () => {
         },
         withCredentials: true,
       });
+
+      // Display success message and reset form
       setSuccessMessage("User created successfully");
       setUsername("");
       setEmail("");
@@ -84,8 +94,8 @@ export const AddUser = () => {
       setCity("");
       setZip("");
       setApartment("");
-      // console.log("user created");
     } catch (err) {
+      // Display error message
       if (!err?.response) {
         setErrMsg("Server not responding");
       } else {
@@ -110,6 +120,7 @@ export const AddUser = () => {
         </div>
         <form onSubmit={handleSubmit}>
           <h3 className="mb-4  -ml-10 text-2xl font-medium ">Add user</h3>
+          {/* Error and success messages */}
           <div
             ref={errRef}
             className={
@@ -127,6 +138,9 @@ export const AddUser = () => {
               {successMessage}
             </div>
           )}
+
+          {/* Form inputs */}
+          {/* Username input */}
           <div className="mb-5">
             <label
               htmlFor="username"
@@ -134,7 +148,6 @@ export const AddUser = () => {
             >
               User Name
             </label>
-
             <input
               onChange={(e) => setUsername(e.target.value)}
               type="text"
@@ -145,6 +158,7 @@ export const AddUser = () => {
               className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium  outline-none focus:border-fuchsia-400  focus:shadow-md"
             />
           </div>
+          {/* Email input */}
           <div className="mb-5">
             <label htmlFor="email" className="mb-3 block text-base font-medium">
               Email
@@ -159,6 +173,7 @@ export const AddUser = () => {
               className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium  outline-none focus:border-fuchsia-400  focus:shadow-md"
             />
           </div>
+          {/* Phone input */}
           <div className="mb-5">
             <label htmlFor="phone" className="mb-3 block text-base font-medium">
               Phone Number
@@ -174,7 +189,9 @@ export const AddUser = () => {
             />
           </div>
 
+          {/* Password inputs */}
           <div className="mb-5 pt-3">
+            {/* Password input */}
             <div className="-mx-3 flex flex-wrap">
               <div className="w-full px-3 sm:w-1/2">
                 <div className="mb-5 relative">
@@ -194,6 +211,7 @@ export const AddUser = () => {
                     required
                     className=" w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium  outline-none focus:border-fuchsia-400  focus:shadow-md"
                   />
+                  {/* Show password button */}
                   <div
                     className="absolute inset-y-0 right-0 pr-2 mt-8 flex items-center text-sm leading-5 cursor-pointer"
                     onClick={() => setShowPassword(!showPassword)}
@@ -210,6 +228,7 @@ export const AddUser = () => {
                   </div>
                 </div>
               </div>
+              {/* Confirm password input */}
               <div className="w-full px-3 sm:w-1/2">
                 <div className="mb-5 relative">
                   <label
@@ -230,6 +249,7 @@ export const AddUser = () => {
                     onFocus={() => setMatchFocus(true)}
                     onBlur={() => setMatchFocus(false)}
                   />
+                  {/* Show confirm password button */}
                   <div
                     className="absolute inset-y-0 right-0 pr-2 mt-8 flex items-center text-sm leading-5 cursor-pointer"
                     onClick={() => setShowMatchPassword(!showMatchPassword)}
@@ -245,6 +265,7 @@ export const AddUser = () => {
                     )}
                   </div>
                 </div>
+                {/* Confirm password note */}
                 <div
                   id="confirmnote"
                   className={
@@ -262,9 +283,11 @@ export const AddUser = () => {
             </div>
           </div>
 
+          {/* Admin and verified checkboxes */}
           <div className="-mx-3 flex flex-wrap">
             <div className="w-full px-3 sm:w-1/2">
               <div className="mb-5">
+                {/* Admin checkbox */}
                 <div className="inline-flex items-center">
                   <label
                     className="relative flex items-center p-3 rounded-full cursor-pointer"
@@ -293,6 +316,7 @@ export const AddUser = () => {
             </div>
             <div className="w-full px-3 sm:w-1/2">
               <div className="mb-5">
+                {/* Verified checkbox */}
                 <div className="inline-flex items-center">
                   <label
                     className="relative flex items-center p-3 rounded-full cursor-pointer"
@@ -320,11 +344,14 @@ export const AddUser = () => {
               </div>
             </div>
           </div>
+
+          {/* Address details */}
           <div className="mb-5 pt-3">
             <label className="mb-5 block text-base font-semibold text-[#07074D] sm:text-xl">
               Address Details
             </label>
             <div className="-mx-3 flex flex-wrap">
+              {/* Country input */}
               <div className="w-full px-3 sm:w-1/2">
                 <div className="mb-5">
                   <input
@@ -338,6 +365,7 @@ export const AddUser = () => {
                   />
                 </div>
               </div>
+              {/* City input */}
               <div className="w-full px-3 sm:w-1/2">
                 <div className="mb-5">
                   <input
@@ -351,6 +379,7 @@ export const AddUser = () => {
                   />
                 </div>
               </div>
+              {/* Street input */}
               <div className="w-full px-3 sm:w-1/2">
                 <div className="mb-5">
                   <input
@@ -364,6 +393,7 @@ export const AddUser = () => {
                   />
                 </div>
               </div>
+              {/* Zip code input */}
               <div className="w-full px-3 sm:w-1/2">
                 <div className="mb-5">
                   <input
@@ -377,6 +407,7 @@ export const AddUser = () => {
                   />
                 </div>
               </div>
+              {/* Apartment input */}
               <div className="w-full px-3 sm:w-1/2">
                 <div className="mb-5">
                   <input
@@ -393,6 +424,7 @@ export const AddUser = () => {
             </div>
           </div>
 
+          {/* Submit button */}
           <div>
             <button className="hover:shadow-htmlForm w-full rounded-md bg-fuchsia-500 py-3 px-8 text-center text-base font-semibold text-white outline-none">
               Create user

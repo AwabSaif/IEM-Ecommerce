@@ -1,37 +1,50 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, Link, useLocation } from "react-router-dom";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
 import useAuth from "../../hooks/useAuth";
 import image from "../../assets/image/IEM Ecommerce-logo.png";
-import axios from "../../api/axios";
 import Cookies from "cookie-universal";
+import axios from "../../api/axios";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
+// URL for login API endpoint
 const LOGIN_URL = "/api/users/login";
-export const Login = () => {
-  const { setAuth } = useAuth();
 
+// Login component
+export const Login = () => {
+  // Custom hook for authentication
+  const { setAuth } = useAuth();
+  const cookie = new Cookies();
+
+  // React Router hooks for navigation
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/";
 
+  // Refs for input elements
   const userRef = useRef();
   const errRef = useRef();
 
+  // State variables
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [errMsg, setErrMsg] = useState("");
-  const cookie = new Cookies();
+
+  // Focus on the email input when the component mounts
   useEffect(() => {
     userRef.current.focus();
   }, []);
+
+  // Clear error message when email or password changes
   useEffect(() => {
     setErrMsg("");
   }, [email, password]);
 
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      // Send login request to the server
       const response = await axios.post(
         LOGIN_URL,
         JSON.stringify({ email, password }),
@@ -41,20 +54,28 @@ export const Login = () => {
         }
       );
 
+      // Extract user data from the response
       const name = response?.data.name;
       const id = response?.data.id;
       const token = response?.data.token;
       const roles = response?.data.roles;
 
+      // Set JWT token in cookie
+      const tokencookie = cookie.set('jwt', token);
+
+      // Set authentication data in the context
       setAuth({ name, email, roles, token, id });
 
+      // Navigate to the previous or home page
       navigate(from, { replace: true });
     } catch (err) {
+      // Handle error responses from the server
       if (!err?.response) {
         setErrMsg("Server not responding");
       } else {
         setErrMsg(err.response.data.message);
       }
+      // Focus on the error message for accessibility
       errRef.current.focus();
     }
   };

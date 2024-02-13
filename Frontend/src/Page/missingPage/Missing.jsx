@@ -1,17 +1,22 @@
-import React from 'react'
+import React from 'react';
 
+// Component for rendering a 404 error page when a page is not found
 export const Missing = () => {
   return (
     <section className="flex items-center h-screen p-16 bg-gray-50 dark:bg-gray-700">
-    <div className="container flex flex-col items-center ">
+      <div className="container flex flex-col items-center ">
         <div className="flex flex-col gap-6 max-w-md text-center">
-            <h2 className="font-extrabold text-9xl text-gray-600">
-                <span className="sr-only">Error</span>404
-            </h2>
-            <p className="text-2xl md:text-3xl dark:text-gray-400">Sorry, we couldn't find this page.</p>
-            <a href="/" className="px-8 py-4 text-xl font-semibold rounded bg-fuchsia-500 hover:bg-fuchsia-700 text-white">Back to homepage</a>
+          {/* Heading for the error message */}
+          <h2 className="font-extrabold text-9xl text-gray-600">
+            {/* Accessibility text for screen readers */}
+            <span className="sr-only">Error</span>404
+          </h2>
+          {/* Error message */}
+          <p className="text-2xl md:text-3xl dark:text-gray-400">Sorry, we couldn't find this page.</p>
+          {/* Link to navigate back to the homepage */}
+          <a href="/" className="px-8 py-4 text-xl font-semibold rounded bg-fuchsia-500 hover:bg-fuchsia-700 text-white">Back to homepage</a>
         </div>
-    </div>
-</section>
-  )
-}
+      </div>
+    </section>
+  );
+};

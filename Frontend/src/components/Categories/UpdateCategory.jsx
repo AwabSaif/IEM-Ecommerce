@@ -9,29 +9,34 @@ const REGISTER_URL = "/api/categories/";
 const EDITCATEGORY_URL = "/api/categories/";
 
 export const UpdateCategory = () => {
-  //auth
+  // Authentication
   const { auth } = useAuth();
   const token = auth.token;
-  //id from link
+
+  // Get category ID from URL params
   const { id } = useParams();
 
-  //error
+  // Error handling
   const errRef = useRef();
   const [errMsg, setErrMsg] = useState("");
-  //navigate link
+
+  // Navigation
   const navigate = useNavigate();
   const handleGoBack = () => {
     navigate(-1);
   };
-  //form
+
+  // Form state
   const [category, setCategory] = useState({});
   const [name, setName] = useState("");
   const [color, setColor] = useState("#d946ef");
   const [icon, setIcon] = useState("");
   const [showIcon, setShowIcon] = useState("");
-  //message success
+
+  // Success message
   const [successMessage, setSuccessMessage] = useState("");
-  //preview input icon
+
+  // Preview input icon
   const [imagePreview, setImagePreview] = useState(null);
   const handleImageChange = (e) => {
     const selectedImage = e.target.files[0];
@@ -39,9 +44,11 @@ export const UpdateCategory = () => {
     const previewUrl = URL.createObjectURL(selectedImage);
     setImagePreview(previewUrl);
   };
-  //loading
+
+  // Loading state
   const [isLoading, setIsLoading] = useState(false);
-  //input icon
+
+  // Input icon
   const { acceptedFiles, getRootProps, getInputProps, isDragActive } =
     useDropzone({
       noClick: true,
@@ -52,7 +59,7 @@ export const UpdateCategory = () => {
     </li>
   ));
 
-  //set error
+  // Set error message
   useEffect(() => {
     setErrMsg("");
   }, [name, color, icon]);
@@ -66,6 +73,7 @@ export const UpdateCategory = () => {
             Accept: "application/json",
             Authorization: "Bearer " + token,
           },
+          withCredentials: true,
         });
         setCategory(response.data);
       } catch (err) {
@@ -88,7 +96,7 @@ export const UpdateCategory = () => {
     }
   }, [category]);
 
-  //submit form
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -107,9 +115,9 @@ export const UpdateCategory = () => {
         },
         withCredentials: true,
       });
-      // console.log(response);
+
       setIsLoading(false);
-      setSuccessMessage("Category Updated successfully");
+      setSuccessMessage("Category updated successfully");
       setName("");
       setColor("");
       setIcon("");
@@ -143,6 +151,7 @@ export const UpdateCategory = () => {
           <h3 className="mb-4  -ml-10 text-2xl font-medium ">
             Update Category
           </h3>
+          {/* Error message */}
           <div
             ref={errRef}
             className={
@@ -155,16 +164,17 @@ export const UpdateCategory = () => {
           >
             <span className="block sm:inline">{errMsg}</span>
           </div>
+          {/* Success message */}
           {successMessage && (
             <div className=" bg-fuchsia-100 border border-fuchsia-400 text-fuchsia-700 px-2 py-2 mb-2  rounded relative">
               {successMessage}
             </div>
           )}
+          {/* Category Name input */}
           <div className="mb-5">
             <label htmlFor="name" className="mb-3 block text-base font-medium">
               Category Name
             </label>
-
             <input
               onChange={(e) => setName(e.target.value)}
               type="text"
@@ -175,6 +185,7 @@ export const UpdateCategory = () => {
               className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium  outline-none focus:border-fuchsia-400  focus:shadow-md"
             />
           </div>
+          {/* Color input */}
           <div className="mb-5">
             <label htmlFor="color" className="mb-3 block text-base font-medium">
               Color
@@ -189,6 +200,7 @@ export const UpdateCategory = () => {
               title="Choose your color"
             />
           </div>
+          {/* Current Icon */}
           <div className="flex  justify-between items-center">
             <div className=" -ml-11 p-4 max-w-72 bg-white w-max bg-whtie m-auto rounded-lg">
               <label
@@ -205,6 +217,7 @@ export const UpdateCategory = () => {
                 />
               </label>
             </div>
+            {/* Category Icon */}
             <div className="-mt-4">
               <div className="-ml-11 p-4 max-w-72 bg-white w-max bg-whtie m-auto rounded-lg">
                 <label
@@ -213,7 +226,7 @@ export const UpdateCategory = () => {
                 >
                   Category icon
                 </label>
-
+                {/* Upload icon */}
                 {!imagePreview && (
                   <div className="ml-7">
                     <label
@@ -240,6 +253,7 @@ export const UpdateCategory = () => {
                     </label>
                   </div>
                 )}
+                {/* Preview uploaded icon */}
                 <div className="max-w-52 ml-7">
                   {imagePreview && (
                     <label className="mx-auto  cursor-pointer flex w-full max-w-lg flex-col items-center rounded-xl border-2 border-dashed border-fuchsia-400 bg-white p-6 text-center">
@@ -265,6 +279,7 @@ export const UpdateCategory = () => {
               </div>
             </div>
           </div>
+          {/* Submit button */}
           <div>
             {isLoading ? (
               <button className="hover:shadow-htmlForm w-full rounded-md bg-fuchsia-500 py-3 px-8 text-center text-base font-semibold text-white outline-none">

@@ -21,14 +21,20 @@ const contactUsRoute = require("./routes/contactUsRoute");
 // Initialize Express application
 const app = express();
 
+
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*'); 
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  next();
+});
 // Enable CORS
 app.use(
   cors({
-    origin: "http://localhost:5173" /* [
+    origin: [
       "http://localhost:5173",
       "https://iemecommerce.onrender.com",
       "https://ieme-commerce.netlify.app",
-    ], */,
+    ],
     credentials: true,
   })
 );

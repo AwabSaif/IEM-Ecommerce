@@ -7,24 +7,25 @@ import { MdKeyboardArrowDown } from "react-icons/md";
 import { IoIosSearch } from "react-icons/io";
 import { FaRegEdit } from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link,  useNavigate } from "react-router-dom";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
-import { IoCloseCircleOutline, IoPrintOutline } from "react-icons/io5";
-import { OrderPrintComponent } from "./OrderPrintComponent";
+import { IoCloseCircleOutline} from "react-icons/io5";
 
-export const Orders = () => {
+
+export const Orders = () => {  // Authentication
   const { auth } = useAuth();
   const token = auth.token;
 
+  // Ref for printing
   const componentRef = useRef();
 
- //navigate
- const navigate = useNavigate();
- const handleGoBack = () => {
-   navigate(-1);
- };
+  // Navigation
+  const navigate = useNavigate();
+  const handleGoBack = () => {
+    navigate(-1);
+  };
 
-  //search
+  // Search functionality
   const [searchTerm, setSearchTerm] = useState("");
 
   const handleSearch = (value) => {
@@ -32,7 +33,7 @@ export const Orders = () => {
     SetItemOffset(0);
   };
 
-  //Paginate
+  // Pagination
   const [currentItems, SetCurrentItems] = useState(null);
   const [pageCount, SetPageCount] = useState(0);
   const [itemOffset, SetItemOffset] = useState(0);
@@ -40,16 +41,21 @@ export const Orders = () => {
 
   const [orders, SetOrders] = useState([]);
   const endOffset = itemOffset + itemsPerPage;
+
   useEffect(() => {
+    // Set current items based on pagination
     SetCurrentItems(orders.slice(itemOffset, endOffset));
+    // Set total page count
     SetPageCount(Math.ceil(orders.length / itemsPerPage));
   }, [itemOffset, itemsPerPage, orders]);
 
+  // Handle page click for pagination
   const handlePageClick = (e) => {
     const newOffset = (e.selected * itemsPerPage) % orders.length;
     SetItemOffset(newOffset);
   };
 
+  // Remove order functionality
   const removeOrders = async (id) => {
     try {
       await axios.delete(`/api/orders/${id}`, {
@@ -58,16 +64,19 @@ export const Orders = () => {
           Authorization: "Bearer " + token,
         },
       });
-
+      // Update orders after removal
       const updatedOrders = orders.filter((order) => order.id !== id);
       SetOrders(updatedOrders);
     } catch (error) {
       console.error("Error removing order:", error);
     }
   };
+
   useEffect(() => {
     let isMounted = true;
     const controller = new AbortController();
+
+    // Fetch orders from API
     const getOrders = async () => {
       try {
         const response = await axios.get("/api/orders", {
@@ -78,20 +87,25 @@ export const Orders = () => {
           withCredentials: true,
           signal: controller.signal,
         });
-        // console.log(response.data);
+
+        // Filter orders based on search term
         const filteredOrders = response.data.filter((order) => {
           const { orderNumber } = order;
           const searchValue = searchTerm;
           return orderNumber.toString().includes(searchValue);
         });
 
+        // Update state with filtered orders
         isMounted && SetOrders(filteredOrders);
       } catch (error) {
         console.error("Error fetching Orders:", error);
       }
     };
 
+    // Call API to get orders
     getOrders();
+
+    // Cleanup function
     return () => {
       isMounted = false;
       controller.abort();

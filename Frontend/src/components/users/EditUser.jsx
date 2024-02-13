@@ -1,31 +1,35 @@
 import { useEffect, useRef, useState } from "react";
-import axios from "../../api/axios";
-import useAuth from "../../hooks/useAuth";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { IoCloseCircleOutline } from "react-icons/io5";
-import { ChanePassword } from "./ChanePassword";
-const GETUSER_URL = "/api/users/";
-const EDITUSER_URL = "/api/users/updateuser";
+import axios from "../../api/axios"; // Importing Axios for API calls
+import useAuth from "../../hooks/useAuth"; // Importing custom hook for authentication
+import { useLocation, useNavigate, useParams } from "react-router-dom"; // Importing hooks for routing
+import { IoCloseCircleOutline } from "react-icons/io5"; // Importing close icon from React Icons
+import { ChanePassword } from "./ChanePassword"; // Importing component for changing password
+
+const GETUSER_URL = "/api/users/"; // Endpoint for getting user details
+const EDITUSER_URL = "/api/users/updateuser"; // Endpoint for updating user details
 
 export const EditUser = () => {
-  //auth
+  // Authentication
   const { auth } = useAuth();
   const token = auth.token;
   const curuser = auth.id;
-  //id from link
+
+  // User ID from URL params
   const { id } = useParams();
 
-  //set error
+  // Ref for error handling
   const errRef = useRef();
-  //navigate
+
+  // Navigation
   const navigate = useNavigate();
   const handleGoBack = () => {
     navigate(-1);
   };
-  //loading page
+
+  // Loading state
   const [isLoading, setIsLoading] = useState(false);
 
-  //form
+  // Form fields
   const [user, setUser] = useState({});
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -36,11 +40,14 @@ export const EditUser = () => {
   const [zip, setZip] = useState("");
   const [apartment, setApartment] = useState("");
 
-  //message
+  // Error and success messages
   const [errMsg, setErrMsg] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
-  //show modal password
+
+  // Modal state for password change
   const [showModal, setShowModal] = useState(false);
+
+  // Fetch user data on component mount
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -49,8 +56,8 @@ export const EditUser = () => {
             Accept: "application/json",
             Authorization: "Bearer " + token,
           },
+          withCredentials: true,
         });
-        // console.log(response.data?);?
         setUser(response.data);
       } catch (err) {
         console.log(err);
@@ -58,9 +65,9 @@ export const EditUser = () => {
     };
 
     fetchUser();
- 
   }, []);
 
+  // Update form fields when user data is fetched
   useEffect(() => {
     if (user.id) {
       setUsername(user.name);
@@ -74,10 +81,12 @@ export const EditUser = () => {
     }
   }, [user]);
 
+  // Clear error message when form fields change
   useEffect(() => {
     setErrMsg("");
   }, [username, email, phone]);
 
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -101,7 +110,7 @@ export const EditUser = () => {
         },
         withCredentials: true,
       });
-      // console.log(response);
+
       setIsLoading(false);
       setSuccessMessage("User updated successfully");
     } catch (err) {
@@ -114,7 +123,6 @@ export const EditUser = () => {
       errRef.current.focus();
     }
   };
-
   return (
     <div className="flex items-center justify-center p-12">
       <div className="mx-auto w-full max-w-[850px] bg-white">

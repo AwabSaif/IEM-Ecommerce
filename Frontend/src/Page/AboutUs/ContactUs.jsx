@@ -1,19 +1,23 @@
 import React, { useState } from "react";
 import axios from "../../api/axios";
 
+// Define the API endpoint URL for contacting us
 const CONTACTUS_URL = "/api/iem-contact-us";
 
 export const ContactUs = () => {
+  // Define state variables to store form input values and loading status
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
-  const [isloading, setIsloading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
+  // Function to handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsloading(true);
+    setIsLoading(true);
     try {
+      // Send a POST request to the contact us endpoint with form data
       const response = await axios.post(
         CONTACTUS_URL,
         JSON.stringify({ name, email, subject, message }),
@@ -22,8 +26,9 @@ export const ContactUs = () => {
           withCredentials: true,
         }
       );
+      // If the request is successful, reset form fields and display success message
       if (response.data.success) {
-        setIsloading(false);
+        setIsLoading(false);
         setName("");
         setEmail("");
         setSubject("");
@@ -31,16 +36,17 @@ export const ContactUs = () => {
         alert("Your message was sent successfully");
       }
     } catch (err) {
-      setIsloading(false);
+      // If an error occurs, handle it appropriately
+      setIsLoading(false);
       if (!err.response) {
-        setErrMsg("Server not responding");
-        alert("Not sent");
+        alert("Server not responding");
       } else {
-        setErrMsg(err.response.data.message);
         alert("Not sent");
       }
     }
   };
+
+  // Render the contact us form
   return (
     <section className="bg-white">
       <div className="py-8 lg:py-16 px-4 mx-auto max-w-screen-md ">
@@ -48,7 +54,9 @@ export const ContactUs = () => {
           Contact Us
         </h2>
 
+        {/* Contact form */}
         <form onSubmit={handleSubmit} className="space-y-8  ">
+          {/* Name input */}
           <div>
             <label
               htmlFor="name"
@@ -66,6 +74,8 @@ export const ContactUs = () => {
               required
             />
           </div>
+
+          {/* Email input */}
           <div>
             <label
               htmlFor="email"
@@ -84,6 +94,7 @@ export const ContactUs = () => {
             />
           </div>
 
+          {/* Subject input */}
           <div>
             <label
               htmlFor="subject"
@@ -101,6 +112,8 @@ export const ContactUs = () => {
               required
             />
           </div>
+
+          {/* Message input */}
           <div className="sm:col-span-2">
             <label
               htmlFor="message"
@@ -117,7 +130,10 @@ export const ContactUs = () => {
               onChange={(e) => setMessage(e.target.value)}
             ></textarea>
           </div>
-          {isloading ? (
+
+          {/* Submit button */}
+          {isLoading ? (
+            // Display loading button if form is submitting
             <button className="hover:shadow-htmlForm w-full rounded-md hover:bg-fuchsia-400  bg-fuchsia-500 py-3 px-8 text-center text-base font-semibold text-white outline-none">
               <svg
                 aria-hidden="true"
@@ -139,6 +155,7 @@ export const ContactUs = () => {
               Loading...
             </button>
           ) : (
+            // Display regular submit button
             <button className="hover:shadow-htmlForm w-full rounded-md hover:bg-fuchsia-400  bg-fuchsia-500 py-3 px-8 text-center text-base font-semibold text-white outline-none">
               Send message
             </button>

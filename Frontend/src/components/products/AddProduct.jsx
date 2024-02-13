@@ -7,11 +7,12 @@ import { IoCloudUploadOutline, IoCloseCircleOutline } from "react-icons/io5";
 
 import { ProductGallery } from "./ProductGallery";
 
+// API endpoints
 const GET_CATEGORY_URL = "/api/categories";
-
 const PRODUCT_URL = "/api/products";
 
 export const AddProduct = () => {
+  // Authentication hook
   const { auth } = useAuth();
   const token = auth.token;
   const errRef = useRef();
@@ -20,6 +21,8 @@ export const AddProduct = () => {
   const handleGoBack = () => {
     navigate(-1);
   };
+
+  // State for form data
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -32,38 +35,49 @@ export const AddProduct = () => {
     image: null,
   });
 
+  // State for category list
   const [categoryList, setCategoryList] = useState([]);
+  
+  // State for selected category
   const [category, setCategory] = useState({
     id: "",
     value: "",
   });
 
-  const { acceptedFiles, getRootProps, getInputProps, isDragActive } =
-    useDropzone({
-      noClick: true,
-    });
+  // File dropzone setup
+  const { acceptedFiles, getRootProps, getInputProps, isDragActive } = useDropzone({
+    noClick: true,
+  });
 
+  // Handling file selection
   const files = acceptedFiles.map((file) => (
     <li key={file.path}>
       {file.path} - {(file.size / 1024 / 1024).toFixed(2)} MB
     </li>
   ));
 
+  // State for image preview
   const [imagePreview, setImagePreview] = useState(null);
 
+  // Loading state
   const [isLoading, setIsLoading] = useState(false);
 
+  // Error and success messages
   const [errMsg, setErrMsg] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
-  //show modal password
+  // State for modal visibility
   const [showModal, setShowModal] = useState(false);
 
+  // State for product ID
   const [productId, setProductId] = useState("");
+
+  // Effect to clear error message on form data change
   useEffect(() => {
     setErrMsg("");
   }, [formData]);
 
+  // Effect to fetch categories on component mount
   useEffect(() => {
     axios
       .get(GET_CATEGORY_URL)
@@ -80,6 +94,7 @@ export const AddProduct = () => {
       });
   }, []);
 
+  // Handling input change
   const handleInputChange = (e) => {
     setFormData({
       ...formData,
@@ -87,6 +102,7 @@ export const AddProduct = () => {
     });
   };
 
+  // Handling image selection
   const handleImageChange = (e) => {
     const selectedImage = e.target.files[0];
     setFormData({
@@ -98,6 +114,7 @@ export const AddProduct = () => {
     setImagePreview(previewUrl);
   };
 
+  // Handling category selection
   const handleCategoryChange = (e) => {
     const selectedCategoryId = e.target.value;
     const selectedCategory = categoryList.find(
@@ -115,6 +132,7 @@ export const AddProduct = () => {
     });
   };
 
+  // Handling form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);

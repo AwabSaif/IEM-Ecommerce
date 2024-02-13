@@ -8,34 +8,43 @@ import { useDropzone } from "react-dropzone";
 const REGISTER_URL = "/api/categories";
 
 export const AddCategory = () => {
-  //auth
+  // Authentication
   const { auth } = useAuth();
   const token = auth.token;
-  //error
+
+  // Error handling
   const errRef = useRef();
   const [errMsg, setErrMsg] = useState("");
-  //navigate link
+
+  // Navigation
   const navigate = useNavigate();
   const handleGoBack = () => {
     navigate(-1);
   };
-  //form
+
+  // Form state
   const [name, setName] = useState("");
   const [color, setColor] = useState("#d946ef");
   const [icon, setIcon] = useState("");
-  //message success
+
+  // Success message
   const [successMessage, setSuccessMessage] = useState("");
-  //preview input icon
+
+  // Preview input icon
   const [imagePreview, setImagePreview] = useState(null);
+  
+  // Function to handle image change
   const handleImageChange = (e) => {
     const selectedImage = e.target.files[0];
     setIcon(selectedImage);
     const previewUrl = URL.createObjectURL(selectedImage);
     setImagePreview(previewUrl);
   };
-  //loading
+
+  // Loading state
   const [isLoading, setIsLoading] = useState(false);
-  //input icon
+
+  // Dropzone setup
   const { acceptedFiles, getRootProps, getInputProps, isDragActive } =
     useDropzone({
       noClick: true,
@@ -46,11 +55,12 @@ export const AddCategory = () => {
     </li>
   ));
 
-  //set error
+  // Clear error message when name, color, or icon changes
   useEffect(() => {
     setErrMsg("");
   }, [name, color, icon]);
-  //submit form
+
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -69,7 +79,7 @@ export const AddCategory = () => {
         },
         withCredentials: true,
       });
-      // console.log(response);
+
       setIsLoading(false);
       setSuccessMessage("Category created successfully");
       setName("");

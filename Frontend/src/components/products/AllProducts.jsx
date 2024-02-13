@@ -9,48 +9,60 @@ import { Link, useNavigate } from "react-router-dom";
 import ReactPaginate from "react-paginate";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { IoCloseCircleOutline } from "react-icons/io5";
+
 export const AllProducts = () => {
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState([]); // State for storing products data
   const { auth } = useAuth();
   const token = auth.token;
-  //search
+
+  // State for search term
   const [searchTerm, setSearchTerm] = useState("");
 
+  // Function to handle search
   const handleSearch = (value) => {
     setSearchTerm(value);
     SetItemOffset(0);
   };
 
   const navigate = useNavigate();
+
+  // Function to navigate back
   const handleGoBack = () => {
     navigate(-1);
   };
-  // minStock
+
+  // State for minimum stock
   const [minStock, setMinStock] = useState(() => {
     const storedMinStock = localStorage.getItem("minStock");
     return storedMinStock ? parseInt(storedMinStock) : 5;
   });
+
+  // Effect to update local storage when minimum stock changes
   useEffect(() => {
     localStorage.setItem("minStock", minStock.toString());
   }, [minStock]);
 
-  //Paginate
+  // State for pagination
   const [currentItems, SetCurrentItems] = useState(null);
   const [pageCount, SetPageCount] = useState(0);
   const [itemOffset, SetItemOffset] = useState(0);
   const [itemsPerPage, setItemsPerPage] = useState(5);
 
   const endOffset = itemOffset + itemsPerPage;
+
+  // Effect to update current items and page count when products or pagination settings change
   useEffect(() => {
     SetCurrentItems(products.slice(itemOffset, endOffset));
     SetPageCount(Math.ceil(products.length / itemsPerPage));
   }, [itemOffset, itemsPerPage, products]);
 
+  // Function to handle page click in pagination
   const handlePageClick = (e) => {
     const newOffset = (e.selected * itemsPerPage) % products.length;
     SetItemOffset(newOffset);
   };
 
+  // Effect to fetch products data
   useEffect(() => {
     let isMounted = true;
     const controller = new AbortController();
@@ -87,6 +99,7 @@ export const AllProducts = () => {
     };
   }, [searchTerm, token]);
 
+  // Function to remove a product
   const removeProduct = async (id) => {
     try {
       await axios.delete(`/api/products/${id}`, {
@@ -192,7 +205,7 @@ export const AllProducts = () => {
                   </thead>
                   <tbody>
                     {products.length > 0 ? (
-                   currentItems.map((product) => {
+                      currentItems.map((product) => {
                         return (
                           <tr key={product?.id}>
                             <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">

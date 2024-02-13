@@ -5,50 +5,54 @@ import axios from "../../api/axios";
 
 import { useParams } from "react-router-dom";
 
+// Regular expression to validate password format
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 
+// API endpoint for resetting password
 const RESETPASSWORD_URL = "api/users/resetpassword/";
 
 export const ResetPassword = () => {
-  const errRef = useRef();
-  const token = useParams();
+  const errRef = useRef(); // Reference for error message element
+  const token = useParams(); // Get token from URL parameters
 
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [validPassword, setValidPassword] = useState(false);
-  const [passwordFocus, setPasswordFocus] = useState(false);
+  const [password, setPassword] = useState(""); // State for password input
+  const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
+  const [validPassword, setValidPassword] = useState(false); // State to track password validity
+  const [passwordFocus, setPasswordFocus] = useState(false); // State to track password input focus
 
-  const [matchPassword, setMatchPassword] = useState("");
-  const [showMatchPassword, setShowMatchPassword] = useState(false);
-  const [validMatch, setValidMatch] = useState(false);
-  const [matchFocus, setMatchFocus] = useState(false);
+  const [matchPassword, setMatchPassword] = useState(""); // State for confirm password input
+  const [showMatchPassword, setShowMatchPassword] = useState(false); // State to toggle confirm password visibility
+  const [validMatch, setValidMatch] = useState(false); // State to track confirm password validity
+  const [matchFocus, setMatchFocus] = useState(false); // State to track confirm password input focus
 
-  const [errMsg, setErrMsg] = useState("");
-  const [success, setSuccess] = useState(false);
+  const [errMsg, setErrMsg] = useState(""); // State for error message
+  const [success, setSuccess] = useState(false); // State to track successful password reset
 
+  // Effect to validate password format and match
   useEffect(() => {
-    const result = PWD_REGEX.test(password);
-    setValidPassword(result);
-    const match = password === matchPassword;
-    setValidMatch(match);
+    const result = PWD_REGEX.test(password); // Check if password matches regex pattern
+    setValidPassword(result); // Set password validity state
+    const match = password === matchPassword; // Check if password matches confirm password
+    setValidMatch(match); // Set confirm password validity state
   }, [password, matchPassword]);
 
+  // Effect to clear error message on password or confirm password change
   useEffect(() => {
-    setErrMsg("");
+    setErrMsg(""); // Clear error message
   }, [password, matchPassword]);
 
+  // Function to handle form submission
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Prevent default form submission behavior
 
-    //if button enabled with js hack
-
-    const v2 = PWD_REGEX.test(password);
+    const v2 = PWD_REGEX.test(password); // Validate password format
     if (!v2) {
-      setErrMsg("Invalid login");
+      setErrMsg("Invalid login"); // Set error message for invalid password format
       return;
     }
-    console.log(token.resetToken);
+
     try {
+      // Send reset password request to API
       const response = await axios.put(
         RESETPASSWORD_URL + token.resetToken,
         JSON.stringify({ password, resetToken: token.resetToken }),
@@ -56,19 +60,20 @@ export const ResetPassword = () => {
           headers: { "Content-Type": "application/json" },
         }
       );
-      console.log(response.data);
-      console.log(JSON.stringify(response));
-      setSuccess(true);
+      console.log(response.data); // Log response data
+      console.log(JSON.stringify(response)); // Log response
+      setSuccess(true); // Set success state to true
     } catch (err) {
       if (!err?.response) {
-        setErrMsg("Server not responding");
+        setErrMsg("Server not responding"); // Set error message for server not responding
       } else {
-        console.log(err);
-        setErrMsg("Failed to register");
+        console.log(err); // Log error
+        setErrMsg("Failed to register"); // Set error message for failed registration
       }
-      errRef.current.focus();
+      errRef.current.focus(); // Focus on error message element
     }
   };
+
   return (
     <>
       {success ? (
@@ -152,15 +157,10 @@ export const ResetPassword = () => {
                   <FaInfoCircle />
                   8 to 24 characters.
                   <br />
-                  Must include uppercase and lowercase letters,a number, and a
+                  Must include uppercase and lowercase letters, a number, and a
                   special character.
                   <br />
-                  Allowed special characters:
-                  <span aria-label="exclamation mark">!</span>
-                  <span aria-label="at code">@</span>
-                  <span aria-label="hashtag">#</span>
-                  <span aria-label="dollarsign">$</span>
-                  <span aria-label="percent">%</span>
+                  Allowed special characters: ! @ # $ %
                 </p>
               </div>
             </div>

@@ -1,7 +1,9 @@
 const nodemailer = require("nodemailer");
 
+// Function to send contact us email
 const contactUsEmail = async (name, email, subject, message) => {
   try {
+    // Create Email Transporter
     const transporter = nodemailer.createTransport({
       host: process.env.EMAIL_HOST,
       port: 587,
@@ -16,10 +18,11 @@ const contactUsEmail = async (name, email, subject, message) => {
 
     // Options for sending email
     const mailOptions = {
-      from: email,
-      to: process.env.EMAIL_USER,
-      subject: `${subject} from ${email}`,
-      html: `
+      from: email, // Sender's email address
+      to: process.env.EMAIL_USER, // Receiver's email address
+      subject: `${subject} from ${email}`, // Email subject
+      // HTML content for the email
+      html:`
       <!DOCTYPE html>
       <html lang="en">
       <head>
@@ -66,9 +69,9 @@ const contactUsEmail = async (name, email, subject, message) => {
       </html>`,
     };
 
-    const info = await transporter.sendMail(mailOptions);
+    const info = await transporter.sendMail(mailOptions); // Send email
   } catch (err) {
-    console.error("Email failed to send", err);
+    console.error("Email failed to send", err); // Log error if email fails to send
   }
 };
 

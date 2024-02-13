@@ -1,7 +1,9 @@
 import { Link } from "react-router-dom";
 
+// Footer component
 export const Footer = () => {
   return (
+      // Footer section
     <footer className="flex mt-36 w-full flex-row flex-wrap items-center justify-center gap-y-6 gap-x-12 border-t border-fuchsia-gray-50 py-6 text-center md:justify-between">
       <div className="font-normal pr-3">
         &copy; 2023 IEM ECOMMERCE-Awab Saif

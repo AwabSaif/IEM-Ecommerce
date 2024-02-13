@@ -7,17 +7,19 @@ const GETPRODUCT_URL = "/api/products";
 export const Product = () => {
   const [products, setProducts] = useState([]);
 
-  // get Products
+  // Fetch products from the API
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get(GETPRODUCT_URL);
-        // console.log(response.data);
+        const response = await axios.get(GETPRODUCT_URL, { withCredentials: true });
+        // Set the fetched products to the state
         setProducts(response.data);
       } catch (err) {
         if (err.response) {
+          // Log the error response if available
           console.log(err?.response.data);
         } else {
+          // Log the error message if no response is available
           console.log(`Error: ${err.message}`);
         }
       }
@@ -27,6 +29,7 @@ export const Product = () => {
 
   return (
     <section className="w-fit mx-auto grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 md:grid-cols-2 justify-items-center justify-center gap-y-20 gap-x-14 mt-10 mb-5">
+      {/* Map through the products array and render ProductCard component for each product */}
       {products
         .slice(0)
         .reverse()

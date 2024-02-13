@@ -10,21 +10,21 @@ import { Rating } from "./Rating";
 
 const GETPRODUCT_URL = "/api/products/";
 export const ProductDetails = () => {
-  //go back
+  // Go back
   const navigate = useNavigate();
   const handleGoBack = () => {
     navigate(-1);
   };
-  //id from params
+
+  // Get product id from params
   const { id } = useParams();
 
-  // get Products
+  // Get product details
   const [product, setProduct] = useState([]);
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get(GETPRODUCT_URL + id);
-        // console.log(response.data);
+        const response = await axios.get(GETPRODUCT_URL + id, { withCredentials: true });
         setProduct(response.data);
       } catch (err) {
         if (err?.response) {
@@ -35,26 +35,28 @@ export const ProductDetails = () => {
       }
     };
     fetchProducts();
-  }, [product.id]);
-  //image view
+  }, [id]); // Dependency array should include 'id' instead of 'product.id'
+
+  // Image view
   const [currentImage, setCurrentImage] = useState(product.image);
 
   const handleThumbnailClick = (image) => {
     setCurrentImage(image);
   };
-  //nav description
+
+  // Navigate description tabs
   const [activeTab, setActiveTab] = useState("description");
   const handleTabChange = (tab) => {
     setActiveTab(tab);
   };
-  // add to cart
-  const { getItemsQuantity, increaseCartQuantity, decreaseCartQuantity } =
-    useCart();
 
+  // Add to cart functionality
+  const { getItemsQuantity, increaseCartQuantity, decreaseCartQuantity } = useCart();
   const quantity = getItemsQuantity(id);
+
   return (
     <section className="py-12 sm:py-16">
-      <div className="relative ">
+      <div className="relative">
         <button
           className={`absolute cursor-pointer -mt-6 white mr-10 -right-1 rounded-full  `}
           onClick={handleGoBack}
@@ -67,7 +69,7 @@ export const ProductDetails = () => {
       <div className="container mx-auto px-4">
         <div className="lg:col-gap-12 xl:col-gap-16 mt-8 grid grid-cols-1 gap-12 lg:mt-12 lg:grid-cols-5 lg:gap-16">
           <div className="lg:col-span-3 lg:row-end-1">
-            <div className="lg:flex lg:items-start ">
+            <div className="lg:flex lg:items-start">
               <div className="lg:order-2 lg:ml-5">
                 <div className="max-w-xl overflow-hidden rounded-lg">
                   <img
@@ -120,6 +122,7 @@ export const ProductDetails = () => {
             <div className="mt-5 flex items-center">
               <div className="flex items-center">
                 <div className="mt-1 flex flex-row justify-start items-center">
+                  {/* Display star ratings */}
                   {product.rating ? (
                     [...Array(Math.floor(product.rating))].map((_, index) => (
                       <span
@@ -148,12 +151,13 @@ export const ProductDetails = () => {
             </div>
 
             <div className="mt-5 space-y-2">
+              {/* Display rich description */}
               <p className="flex items-center text-left text-sm font-medium text-gray-600">
                 {product.richDescription}
               </p>
             </div>
 
-            <div className="mt-5 flex  items-center justify-between space-y-4  py-4 sm:space-y-0">
+            <div className="mt-5 flex items-center justify-between space-y-4  py-4 sm:space-y-0">
               <div className="flex items-end">
                 <p className="text-md font-bold">Brand</p>
               </div>
@@ -167,6 +171,7 @@ export const ProductDetails = () => {
                 <h1 className="text-3xl font-bold">${product.price}</h1>
               </div>
 
+              {/* Render add to cart button or out of stock */}
               {quantity === 0 ? (
                 product.countInStock > 0 ? (
                   <button
@@ -202,13 +207,13 @@ export const ProductDetails = () => {
                     >
                       +
                     </button>
-                    {/*  */}
                   </div>
                 </div>
               )}
             </div>
 
             <div className="mt-8 space-y-2">
+              {/* Display SKU and categories */}
               <p className="flex items-center text-left text-sm font-medium text-gray-600">
                 SKU: {product.sku}
               </p>
@@ -218,6 +223,7 @@ export const ProductDetails = () => {
             </div>
           </div>
 
+          {/* Product description */}
           <div className="lg:col-span-3">
             <div className="border-b border-gray-300">
               <p className="flex text-xl gap-4">Description</p>
@@ -233,61 +239,3 @@ export const ProductDetails = () => {
     </section>
   );
 };
-
-/* 
-
-          <div className="lg:col-span-3">
-            <div className="border-b border-gray-300">
-              <nav className="flex gap-4">
-                Description
-                {/*      <Link
-                 
-                   to="#description"
-                  className={`border-b-2 ${
-                    activeTab === "description"
-                      ? "border-fuchsia-900 py-4 text-sm font-medium text-gray-900 hover:border-gray-400 hover:text-gray-800"
-                      : "border-transparent py-4 text-sm font-medium text-gray-600"
-                  }`}
-                  activeClassName="border-b-2 border-fuchsia-900"
-                  onClick={() => handleTabChange("description")} 
-                >
-                  Description
-                </Link> 
-                       <Link
-                  to="#reviews"
-                  className={`inline-flex items-center border-b-2 ${
-                    activeTab === "reviews"
-                      ? "border-fuchsia-900"
-                      : "border-transparent"
-                  } py-4 text-sm font-medium text-gray-600`}
-                  activeClassName="border-b-2 border-fuchsia-900"
-                  onClick={() => handleTabChange("reviews")}
-                >
-                  Reviews
-                  <span className="ml-2 block rounded-full bg-fuchsia-500 px-2 py-px text-xs font-bold text-fuchsia-50">
-                    {product.numReviews}
-                  </span>
-                </Link> 
-                </nav>
-                </div>
-    
-                <div className=" flow-root ">
-                  <div
-                    id="description"
-                       className={`${activeTab === "reviews" ? "hidden" : ""}`} 
-                  >
-                    <p>{product.description}</p>
-                  </div>
-                </div>
-    
-                   <div className=" flow-root ">
-                  <div
-                    id="reviews"
-                    className={` ${activeTab === "description" ? "hidden" : ""}`}
-                  >
-                    <p>
-                      reviews <Rating reviews={product.numReviews} />
-                    </p>
-                  </div>
-                </div> 
-              </div> */

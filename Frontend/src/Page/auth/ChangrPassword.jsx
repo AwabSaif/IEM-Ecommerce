@@ -4,26 +4,34 @@ import { FaInfoCircle } from "react-icons/fa";
 import axios from "../../api/axios";
 import { useParams } from "react-router-dom";
 
+// Regular expression for password validation
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 
+// API endpoint for changing password
 const CHANGEPASSWORD_URL = "api/user/changepassword";
 
 export const ChangrPassword = () => {
+  // Ref for error message
   const errRef = useRef();
+  // Get token from URL parameters
   const token = useParams();
 
+  // State variables for old password, new password, and match password
   const [oldPassword, setOldPassword] = useState("");
   const [password, setPassword] = useState("");
+  const [matchPassword, setMatchPassword] = useState("");
+
+  // State variables for password validation and focus
   const [validPassword, setValidPassword] = useState(false);
   const [passwordFocus, setPasswordFocus] = useState(false);
-
-  const [matchPassword, setMatchPassword] = useState("");
   const [validMatch, setValidMatch] = useState(false);
   const [matchFocus, setMatchFocus] = useState(false);
 
+  // State variables for error message and success status
   const [errMsg, setErrMsg] = useState("");
   const [success, setSuccess] = useState(false);
 
+  // Effect to validate password and match password
   useEffect(() => {
     const result = PWD_REGEX.test(password);
     setValidPassword(result);
@@ -31,22 +39,24 @@ export const ChangrPassword = () => {
     setValidMatch(match);
   }, [password, matchPassword]);
 
+  // Effect to clear error message when password changes
   useEffect(() => {
     setErrMsg("");
   }, [password, matchPassword]);
 
+  // Function to handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    //if button enabled with js hack
-
+    // Validate password with regex
     const v2 = PWD_REGEX.test(password);
     if (!v2) {
-      setErrMsg("Invalid login");
+      setErrMsg("Invalid password format");
       return;
     }
-    console.log(token.resetToken);
+
     try {
+      // Send password change request to API
       const response = await axios.patch(
         CHANGEPASSWORD_URL,
         JSON.stringify({ oldPassword, password }),
@@ -54,35 +64,38 @@ export const ChangrPassword = () => {
           headers: { "Content-Type": "application/json" },
         }
       );
+      // Log response and set success status
       console.log(response.data);
-      console.log(JSON.stringify(response));
       setSuccess(true);
     } catch (err) {
+      // Handle errors from API response
       if (!err?.response) {
         setErrMsg("Server not responding");
       } else {
         console.log(err);
-        setErrMsg("Registration error");
+        setErrMsg("Error changing password");
       }
+      // Focus on error message
       errRef.current.focus();
     }
   };
+
   return (
     <>
-      <PageMenu />
+      {/* PageMenu component */}
+      {/* Conditional rendering based on success status */}
       {success ? (
         <section className="flex flex-col items-center justify-center h-screen mx-5 my-2 space-y-10 md:flex-row md:space-y-0 md:space-x-16 md:mx-0 md:my-0">
           <div className="flex-row  items-center">
             <h2 className="mb-4 text-lg font-medium">
               Your password has been reset
             </h2>
-
             <p>
               <a
                 className="items-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4   rounded-full"
                 href="/login"
               >
-                sign in
+                Sign in
               </a>
             </p>
           </div>
@@ -96,6 +109,7 @@ export const ChangrPassword = () => {
             <div className="flex-row  items-center">
               <h3 className="mb-4 text-lg font-medium">Change Password</h3>
             </div>
+            {/* Error message display */}
             <div
               ref={errRef}
               className={
@@ -108,6 +122,7 @@ export const ChangrPassword = () => {
             >
               <span className="block sm:inline">{errMsg}</span>
             </div>
+            {/* Old password input */}
             <input
               className="w-full px-4 py-2 mt-4 text-sm border border-gray-300 border-solid rounded"
               type="password"
@@ -116,6 +131,7 @@ export const ChangrPassword = () => {
               onChange={(e) => setOldPassword(e.target.value)}
               required
             />
+            {/* New password input */}
             <input
               className="w-full px-4 py-2 mt-4 text-sm border border-gray-300 border-solid rounded"
               type="password"
@@ -128,6 +144,7 @@ export const ChangrPassword = () => {
               onFocus={() => setPasswordFocus(true)}
               onBlur={() => setPasswordFocus(false)}
             />
+            {/* Password strength indicator */}
             <div
               id="pwdnote"
               className={
@@ -151,9 +168,10 @@ export const ChangrPassword = () => {
                 <span aria-label="percent">%</span>
               </p>
             </div>
+            {/* Confirm password input */}
             <input
               className="w-full px-4 py-2 mt-4 text-sm border border-gray-300 border-solid rounded"
-              placeholder="confirm password"
+              placeholder="Confirm Password"
               type="password"
               id="confirm-Pass"
               onChange={(e) => setMatchPassword(e.target.value)}
@@ -163,6 +181,7 @@ export const ChangrPassword = () => {
               onFocus={() => setMatchFocus(true)}
               onBlur={() => setMatchFocus(false)}
             />
+            {/* Confirm password note */}
             <div
               id="confirmnote"
               className={
@@ -176,7 +195,7 @@ export const ChangrPassword = () => {
                 Must match the password entry field.
               </p>
             </div>
-
+            {/* Submit button */}
             <div className="text-center m-4 md:text-right">
               <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4   rounded-full">
                 Submit

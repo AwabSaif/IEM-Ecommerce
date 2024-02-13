@@ -5,7 +5,7 @@ import { FaRegEdit } from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import axios from "../../api/axios";
 import useAuth from "../../hooks/useAuth";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
 import ReactPaginate from "react-paginate";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { IoCloseCircleOutline } from "react-icons/io5";

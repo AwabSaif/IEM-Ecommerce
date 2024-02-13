@@ -3,9 +3,11 @@ import moment from "moment";
 import { HiOutlineUserGroup } from "react-icons/hi2";
 
 export const Users = ({ users }) => {
+  // State variables to hold the number of users for the current and previous months
   const [currentMonthUsers, setCurrentMonthUsers] = useState(0);
   const [previousMonthUsers, setPreviousMonthUsers] = useState(0);
 
+  // useEffect to calculate the number of users for the current month
   useEffect(() => {
     const currentMonthStart = moment().startOf("month").format("YYYY-MM-DD");
     const currentMonthEnd = moment().endOf("month").format("YYYY-MM-DD");
@@ -22,6 +24,7 @@ export const Users = ({ users }) => {
     setCurrentMonthUsers(totalCurrentMonthUsers);
   }, [users]);
 
+  // useEffect to calculate the number of users for the previous month
   useEffect(() => {
     const previousMonthStart = moment()
       .subtract(1, "months")
@@ -44,9 +47,11 @@ export const Users = ({ users }) => {
     setPreviousMonthUsers(totalPreviousMonthUsers);
   }, [users]);
 
+  // Calculate the percentage difference between current and previous month users
   const percentageDifference =
     ((currentMonthUsers - previousMonthUsers) / previousMonthUsers) * 100;
 
+  // JSX to render the component
   return (
     <div className="relative flex flex-col bg-clip-border rounded-xl bg-white text-gray-700 shadow-md">
       <div className="bg-clip-border text-2xl mx-4 rounded-xl overflow-hidden bg-gradient-to-tr from-fuchsia-500 to-fuchsia-300 text-white shadow-fuchsia-500/40 shadow-lg absolute -mt-4 grid h-16 w-16 place-items-center">

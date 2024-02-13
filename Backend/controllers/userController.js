@@ -206,7 +206,7 @@ const refreshTokenUser = asyncHandler(async (req, res) => {
   const cookies = req.cookies;
   if (!cookies?.jwt) return res.status(401);
   const refreshToken = cookies.jwt;
-
+console.log(refreshToken);
   jwt.verify(
     refreshToken,
     process.env.REFRESH_TOKEN_SECRET,

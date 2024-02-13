@@ -7,26 +7,28 @@ import useAuth from "../../hooks/useAuth";
 const PRODUCT_IMAGES_URL = "/api/products/gallery-images/";
 
 export const ProductGallery = ({ productId }) => {
-  //auth
+  // Authentication
   const { auth } = useAuth();
   const token = auth.token;
-//error
+
+  // Error handling
   const errRef = useRef();
   const [errMsg, setErrMsg] = useState("");
 
-  //loading
+  // Loading state
   const [uploading, setUploading] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  //message success
+
+  // Success message
   const [successMessage, setSuccessMessage] = useState("");
-  
-  //form
+
+  // Form data
   const [formData, setFormData] = useState({
     images: [],
   });
   const [files, setFiles] = useState([]);
 
-  //input images
+  // Input images
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     accept: "images/*",
     maxFiles: 10,
@@ -41,13 +43,12 @@ export const ProductGallery = ({ productId }) => {
     },
   });
 
-  //set message error
+  // Clear error message on form data change
   useEffect(() => {
     setErrMsg("");
   }, [formData]);
 
-
-  //send data
+  // Handle image upload
   const handleImageUpload = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -98,6 +99,7 @@ export const ProductGallery = ({ productId }) => {
   return (
     <section className="mt-6 text-cyan-800">
       <form onSubmit={handleImageUpload}>
+        {/* Error message */}
         <div
           ref={errRef}
           className={
@@ -110,6 +112,7 @@ export const ProductGallery = ({ productId }) => {
         >
           <span className="block sm:inline">{errMsg}</span>
         </div>
+        {/* Success message */}
         {successMessage && (
           <div className="bg-fuchsia-100 border border-fuchsia-400 text-fuchsia-700 px-2 py-2 mb-2  rounded relative">
             {successMessage}
@@ -123,7 +126,7 @@ export const ProductGallery = ({ productId }) => {
             >
               Add product images gallery
             </label>
-
+            {/* Dropzone for uploading images */}
             {!files.length && (
               <div className="absolute pointer-events-auto ml-7">
                 <label
@@ -148,7 +151,7 @@ export const ProductGallery = ({ productId }) => {
                 </label>
               </div>
             )}
-
+            {/* Display uploaded images */}
             {files.length > 0 && (
               <div className="max-w-52 absolute pointer-events-auto ml-7">
                 <label className="mx-auto py-10 cursor-pointer flex  w-[350px] md:w-[500px] lg:w-[550px] flex-col items-center rounded-xl border-2 border-dashed border-fuchsia-400 bg-white text-center">
@@ -173,7 +176,7 @@ export const ProductGallery = ({ productId }) => {
                 </label>
               </div>
             )}
-
+            {/* Loading spinner */}
             {uploading && (
               <div className="flex items-center justify-center mt-4">
                 <div className="loader"></div>
@@ -183,6 +186,7 @@ export const ProductGallery = ({ productId }) => {
           </div>
         </div>
         <div className=" relative">
+          {/* Submit button */}
           {isLoading ? (
             <button className="absolute bottom-1 -mb-60 ml-36 hover:shadow-htmlForm w-full rounded-md bg-fuchsia-500 py-3 px-15 text-center text-base font-semibold text-white outline-none">
               Uploading...

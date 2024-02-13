@@ -2,29 +2,31 @@ import React, { useEffect, useRef, useState } from "react";
 import { FaCheck, FaInfoCircle, FaEye, FaEyeSlash } from "react-icons/fa";
 import axios from "../../api/axios";
 import useAuth from "../../hooks/useAuth";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import {  useNavigate, useParams } from "react-router-dom";
 import { IoCloseCircleOutline } from "react-icons/io5";
 const EDITUSER_URL = "/api/users/";
 
 export const UpdateUser = () => {
-  //auth
+  // Authentication
   const { auth } = useAuth();
   const token = auth.token;
-  //id from link
+
+  // Get user ID from URL params
   const { id } = useParams();
 
-  //set error
+  // Reference to error message element
   const errRef = useRef();
 
-  //navigate
+  // Navigation hook
   const navigate = useNavigate();
   const handleGoBack = () => {
     navigate(-1);
   };
-  //loading page
+
+  // Loading state
   const [isLoading, setIsLoading] = useState(false);
 
-  //form
+  // Form state
   const [user, setUser] = useState({});
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -43,10 +45,11 @@ export const UpdateUser = () => {
   const [zip, setZip] = useState("");
   const [apartment, setApartment] = useState("");
 
-  //message
+  // Error and success messages
   const [errMsg, setErrMsg] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
+  // Fetch user data
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -55,6 +58,7 @@ export const UpdateUser = () => {
             Accept: "application/json",
             Authorization: "Bearer " + token,
           },
+          withCredentials: true,
         });
         setUser(response.data);
         setAdmin(response.data.isAdmin);
@@ -68,6 +72,7 @@ export const UpdateUser = () => {
     }
   }, [user.id]);
 
+  // Set form fields with user data
   useEffect(() => {
     if (user.id) {
       setUsername(user.name);
@@ -83,15 +88,18 @@ export const UpdateUser = () => {
     }
   }, [user]);
 
+  // Reset error message on input change
   useEffect(() => {
     setErrMsg("");
   }, [username, email, phone, password, matchPassword]);
 
+  // Check if password matches confirm password
   useEffect(() => {
     const match = password === matchPassword;
     setValidMatch(match);
   }, [password, matchPassword]);
 
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -119,7 +127,6 @@ export const UpdateUser = () => {
         },
         withCredentials: true,
       });
-      //   console.log(response);
       setIsLoading(false);
       setSuccessMessage("User updated successfully");
     } catch (err) {
@@ -132,6 +139,7 @@ export const UpdateUser = () => {
       errRef.current.focus();
     }
   };
+
   return (
     <div className="flex items-center justify-center p-12">
       <div className="mx-auto w-full max-w-[850px] bg-white">

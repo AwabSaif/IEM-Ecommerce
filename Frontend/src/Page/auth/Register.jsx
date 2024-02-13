@@ -3,45 +3,46 @@ import axios from "../../api/axios";
 import image from "../../assets/image/IEM Ecommerce-logo.png";
 import { FaInfoCircle, FaEye, FaEyeSlash } from "react-icons/fa";
 
+// Regular expressions for email and password validation
 const USER_REGEX =
   /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 const REGISTER_URL = "/api/users/register";
 
 export const Register = () => {
+  // Refs for focusing on elements and displaying error messages
   const userRef = useRef();
   const errRef = useRef();
 
+  // State variables for form fields and validation
   const [username, setUsername] = useState("");
-
   const [email, setEmail] = useState("");
   const [validMail, setvalidMail] = useState(false);
   const [emailFocus, setEmailFocus] = useState(false);
-
   const [phone, setPhone] = useState("");
-
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [validPassword, setValidPassword] = useState(false);
   const [passwordFocus, setPasswordFocus] = useState(false);
-
   const [matchPassword, setMatchPassword] = useState("");
   const [showMatchPassword, setShowMatchPassword] = useState(false);
   const [validMatch, setValidMatch] = useState(false);
   const [matchFocus, setMatchFocus] = useState(false);
-
   const [errMsg, setErrMsg] = useState("");
   const [success, setSuccess] = useState(false);
 
+  // Focus on the username input field on component mount
   useEffect(() => {
     userRef.current.focus();
   }, []);
 
+  // Validate email format when email state changes
   useEffect(() => {
     const result = USER_REGEX.test(email);
     setvalidMail(result);
   }, [email]);
 
+  // Validate password format and match when password state changes
   useEffect(() => {
     const result = PWD_REGEX.test(password);
     setValidPassword(result);
@@ -49,14 +50,16 @@ export const Register = () => {
     setValidMatch(match);
   }, [password, matchPassword]);
 
+  // Reset error message when any form field changes
   useEffect(() => {
     setErrMsg("");
   }, [username, email, phone, password, matchPassword]);
 
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    //if button enabled with js hack
+    // Validate email and password formats
     const v1 = USER_REGEX.test(email);
     const v2 = PWD_REGEX.test(password);
     if (!v1 || !v2) {
@@ -66,6 +69,7 @@ export const Register = () => {
 
     try {
       setErrMsg(null);
+      // Send registration data to server
       const response = await axios.post(
         REGISTER_URL,
         JSON.stringify({
@@ -79,8 +83,9 @@ export const Register = () => {
           withCredentials: true,
         }
       );
-      setSuccess(true);
+      setSuccess(true); // Set success state to true after successful registration
     } catch (err) {
+      // Handle server or validation errors
       if (!err?.response) {
         setErrMsg("Server not responding");
       } else {
@@ -89,9 +94,11 @@ export const Register = () => {
       errRef.current.focus();
     }
   };
+
   return (
     <>
       {success ? (
+        // Display success message after registration
         <section className="flex items-center justify-center h-screen">
           <div className="flex items-center justify-center border rounded-lg shadow relative max-w-lg">
             <div className="p-6 pt-0 text-center">
@@ -108,6 +115,7 @@ export const Register = () => {
           </div>
         </section>
       ) : (
+        // Display registration form
         <section className="flex flex-col items-center justify-center h-screen mx-5 my-2 space-y-10 md:flex-row md:space-y-0 md:space-x-16 md:mx-0 md:my-0">
           <div className="max-w-sm md:w-1/3">
             <img src={image} alt={image} />
@@ -126,6 +134,7 @@ export const Register = () => {
             >
               <span className="block sm:inline">{errMsg}</span>
             </div>
+            {/* User Name Input */}
             <div>
               <label htmlFor="username">User Name</label>
               <input
@@ -137,6 +146,7 @@ export const Register = () => {
                 placeholder="User Name"
               />
             </div>
+            {/* Email Input */}
             <div className="mt-2">
               <label htmlFor="email">Email</label>
               <input
@@ -153,6 +163,7 @@ export const Register = () => {
                 onFocus={() => setEmailFocus(true)}
                 onBlur={() => setEmailFocus(false)}
               />
+              {/* Email validation message */}
               <div
                 className={
                   emailFocus && email && !validMail
@@ -168,6 +179,7 @@ export const Register = () => {
                 </p>
               </div>
             </div>
+            {/* Phone Input */}
             <div className="mt-2 ">
               <label htmlFor="phone">Phone Number</label>
               <input
@@ -180,6 +192,7 @@ export const Register = () => {
                 required
               />
             </div>
+            {/* Password Input */}
             <div className="mt-2 " x-data="{ show: true }">
               <label htmlFor="password">Password</label>
               <div className="relative">
@@ -195,6 +208,7 @@ export const Register = () => {
                   onFocus={() => setPasswordFocus(true)}
                   onBlur={() => setPasswordFocus(false)}
                 />
+                {/* Toggle password visibility */}
                 <div
                   className="absolute  inset-y-0 right-0 pr-2  flex items-center text-sm  leading-5 cursor-pointer"
                   onClick={() => setShowPassword(!showPassword)}
@@ -210,7 +224,7 @@ export const Register = () => {
                   )}
                 </div>
               </div>
-
+              {/* Password validation message */}
               <div
                 id="pwdnote"
                 className={
@@ -223,18 +237,14 @@ export const Register = () => {
                   <FaInfoCircle />
                   8 to 24 characters.
                   <br />
-                  Must include uppercase and lowercase letters,a number, and a
+                  Must include uppercase and lowercase letters, a number, and a
                   special character.
                   <br />
-                  Allowed special characters:
-                  <span aria-label="exclamation mark">!</span>
-                  <span aria-label="at code">@</span>
-                  <span aria-label="hashtag">#</span>
-                  <span aria-label="dollarsign">$</span>
-                  <span aria-label="percent">%</span>
+                  Allowed special characters: !@#$%
                 </p>
               </div>
             </div>
+            {/* Confirm Password Input */}
             <div className="mt-2">
               <label htmlFor="confirm-Pass">Confirm Password</label>
               <div className="relative">
@@ -250,6 +260,7 @@ export const Register = () => {
                   onFocus={() => setMatchFocus(true)}
                   onBlur={() => setMatchFocus(false)}
                 />
+                {/* Toggle confirm password visibility */}
                 <div
                   className="absolute inset-y-0 right-0 pr-2  flex items-center text-sm leading-5 cursor-pointer"
                   onClick={() => setShowMatchPassword(!showMatchPassword)}
@@ -265,6 +276,7 @@ export const Register = () => {
                   )}
                 </div>
               </div>
+              {/* Confirm password validation message */}
               <div
                 id="confirmnote"
                 className={
@@ -280,6 +292,7 @@ export const Register = () => {
               </div>
             </div>
 
+            {/* Link to Sign In */}
             <div className="mt-4 text-sm font-semibold text-slate-500 md:text-left">
               Do you have account?{" "}
               <a
@@ -289,6 +302,7 @@ export const Register = () => {
                 sign in
               </a>
             </div>
+            {/* Submit Button */}
             <div className="text-center m-4 md:text-right">
               <button
                 className="bg-fuchsia-500 hover:bg-fuchsia-700 text-white font-bold py-2 px-4 disabled:bg-fuchsia-300  rounded-full"

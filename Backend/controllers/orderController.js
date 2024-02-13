@@ -3,19 +3,25 @@ const { Order } = require("../models/orderMode");
 const { OrderItem } = require("../models/orderItemModel");
 const { Product } = require("../models/productModel");
 
-//get all Order
+// Get all orders
 const getallOrder = asyncHandler(async (req, res) => {
+  // Retrieve all orders from the database and populate the 'user' field with only 'name'
   const orderList = await Order.find()
     .populate("user", "name")
     .sort({ dateOrdered: -1 });
 
+  // Check if there are any orders
   if (!orderList) {
+    // If no orders found, send a server error response
     res.status(500).json({ success: false });
   }
+  // If orders found, send the order list in the response
   res.status(200).send(orderList);
 });
-//get  Order
+
+// Get a specific order by ID
 const getOrder = asyncHandler(async (req, res) => {
+  // Retrieve the order with the given ID and populate 'user' with additional details
   const order = await Order.findById(req.params.id)
     .populate("user", "name email city street zip apartment")
     .populate({
@@ -26,15 +32,19 @@ const getOrder = asyncHandler(async (req, res) => {
       },
     });
 
+  // Check if the order exists
   if (!order) {
+    // If order not found, send a server error response
     res.status(500).json({ success: false });
   } else {
+    // If order found, send the order details in the response
     res.send(order);
   }
 });
 
-//create Order
+// Create a new order
 const createOrder = asyncHandler(async (req, res) => {
+  // Extract order items from the request body and save them to the database
   const orderItemsIds = await Promise.all(
       req.body.orderItems.map(async (orderItem) => {
           let newOrderItem = new OrderItem({
@@ -45,9 +55,10 @@ const createOrder = asyncHandler(async (req, res) => {
           return newOrderItem._id;
       })
   );
-  const orderItemsIdsResolved = await orderItemsIds;
+
+  // Calculate total price for the order based on order items
   const totalPrices = await Promise.all(
-      orderItemsIdsResolved.map(async (orderItemId) => {
+      orderItemsIds.map(async (orderItemId) => {
           const orderItem = await OrderItem.findById(orderItemId).populate("product", "price");
 
           const totalPrice = orderItem.product.price * orderItem.quantity;
@@ -56,11 +67,11 @@ const createOrder = asyncHandler(async (req, res) => {
   );
   const totalPrice = totalPrices.reduce((a, b) => a + b, 0);
 
+  // Update stock count and sales for each ordered product
   let updatedCountInStock = await Promise.all(
-      orderItemsIdsResolved.map(async (orderItemId) => {
+      orderItemsIds.map(async (orderItemId) => {
           const orderItem = await OrderItem.findById(orderItemId).populate('product', 'countInStock sales');
 
-          // update countInStock
           const updatedProduct = await Product.findByIdAndUpdate(
               orderItem.product._id,
               {
@@ -69,7 +80,6 @@ const createOrder = asyncHandler(async (req, res) => {
               { new: true }
           );
 
-          // update sales
           if (updatedProduct) {
               updatedProduct.sales = (updatedProduct.sales || 0) + orderItem.quantity;
               await updatedProduct.save();
@@ -81,6 +91,7 @@ const createOrder = asyncHandler(async (req, res) => {
       })
   );
 
+  // Create a new order instance and save it to the database
   const {
       shippingAddress1,
       shippingAddress2,
@@ -95,7 +106,7 @@ const createOrder = asyncHandler(async (req, res) => {
   } = req.body;
 
   let order = new Order({
-      orderItems: orderItemsIdsResolved,
+      orderItems: orderItemsIds,
       shippingAddress1,
       shippingAddress2,
       city,
@@ -110,6 +121,8 @@ const createOrder = asyncHandler(async (req, res) => {
   });
 
   order = await order.save();
+
+  // Check if the order is successfully created and send response accordingly
   if (!order) {
       return res.status(404).send("The order cannot be created!");
   }
@@ -117,8 +130,9 @@ const createOrder = asyncHandler(async (req, res) => {
   res.send(order);
 });
 
-//Update order status
+// Update order status
 const updateOrder = asyncHandler(async (req, res) => {
+  // Find and update the order status by ID
   const order = await Order.findByIdAndUpdate(
     req.params.id,
     {
@@ -127,17 +141,22 @@ const updateOrder = asyncHandler(async (req, res) => {
     { new: true }
   );
 
+  // Check if the order exists and send response accordingly
   if (!order) {
     return res.status(500).send("The order cannot be updated!");
   }
   res.send(order);
 });
 
-//delete order
+// Delete an order
 const deleteOrder = asyncHandler(async (req, res) => {
   try {
+    // Find and delete the order by ID
     const order = await Order.findByIdAndDelete(req.params.id);
+
+    // Check if the order exists
     if (order) {
+      // Delete associated order items
       const deleteOrderItemsPromises = order.orderItems.map(
         async (orderItem) => {
           await OrderItem.findByIdAndDelete(orderItem);
@@ -146,43 +165,54 @@ const deleteOrder = asyncHandler(async (req, res) => {
 
       await Promise.all(deleteOrderItemsPromises);
 
+      // Send success message if the order is deleted
       res.status(200).json({ success: true, message: "The order is deleted!" });
     } else {
+      // Send error message if the order is not found
       res.status(404).json({ success: false, message: "Order not found!" });
     }
   } catch (err) {
+    // Send server error response if an error occurs during deletion
     res.status(500).json({ success: false, error: err.message });
   }
 });
 
-//get totalsales
+// Get total sales
 const totalSales = asyncHandler(async (req, res) => {
+  // Calculate total sales by aggregating order prices
   const totalSales = await Order.aggregate([
     { $group: { _id: null, totalSales: { $sum: "$totalPrice" } } },
   ]);
   if (!totalSales) {
+    // Send error response if total sales cannot be generated
     return res.status(400).send("The order sales cannot be generated");
   }
+  // Send total sales in the response
   res.send({ totalSales: totalSales.pop().totalSales });
 });
 
-//Order count
+// Get count of orders
 const countOrder = asyncHandler(async (req, res) => {
   try {
+    // Count total number of orders
     const orderCount = await Order.countDocuments();
 
     if (!orderCount) {
+      // Send server error response if no orders found
       return res.status(500).json({ success: false });
     }
 
+    // Send order count in the response
     res.send({ orderCount: orderCount });
   } catch (err) {
+    // Send server error response if an error occurs
     res.status(500).json({ success: false, error: err });
   }
 });
 
-//Get Order user /get/userorders/:userid
+// Get orders by user ID
 const getUserOrders = asyncHandler(async (req, res) => {
+  // Retrieve orders associated with the specified user ID
   const userOrderList = await Order.find({ user: req.params.userid })
     .populate({
       path: "orderItems",
@@ -193,9 +223,12 @@ const getUserOrders = asyncHandler(async (req, res) => {
     })
     .sort({ dateOrdered: -1 });
 
+  // Check if user orders exist
   if (!userOrderList) {
+    // Send server error response if no orders found
     res.status(500).json({ success: false });
   }
+  // Send user orders in the response
   res.send(userOrderList);
 });
 

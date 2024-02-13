@@ -9,43 +9,48 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import ReactPaginate from "react-paginate";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { IoCloseCircleOutline } from "react-icons/io5";
-
 export const Categories = () => {
-  const [categories, SetCategories] = useState([]);
-  const { auth } = useAuth();
-  const token = auth.token;
+  // State variables
+  const [categories, SetCategories] = useState([]); // State for categories data
+  const { auth } = useAuth(); // Custom hook for authentication
+  const token = auth.token; // Token for authentication
 
-  //navigate
-  const navigate = useNavigate();
+  // Navigation
+  const navigate = useNavigate(); // Hook for navigation
   const handleGoBack = () => {
-    navigate(-1);
+    navigate(-1); // Function to navigate back
   };
-  //search
-  const [searchTerm, setSearchTerm] = useState("");
+
+  // Search functionality
+  const [searchTerm, setSearchTerm] = useState(""); // State for search term
 
   const handleSearch = (value) => {
-    setSearchTerm(value);
-    SetItemOffset(0);
+    setSearchTerm(value); // Function to handle search term change
+    SetItemOffset(0); // Resetting item offset when search term changes
   };
 
-  //Paginate
-  const [currentItems, SetCurrentItems] = useState(null);
-  const [pageCount, SetPageCount] = useState(0);
-  const [itemOffset, SetItemOffset] = useState(0);
-  const [itemsPerPage, setItemsPerPage] = useState(5);
+  // Pagination
+  const [currentItems, SetCurrentItems] = useState(null); // State for current items to display
+  const [pageCount, SetPageCount] = useState(0); // State for total number of pages
+  const [itemOffset, SetItemOffset] = useState(0); // State for item offset
+  const [itemsPerPage, setItemsPerPage] = useState(5); // State for items per page
 
-  const endOffset = itemOffset + itemsPerPage;
+  const endOffset = itemOffset + itemsPerPage; // Calculating end offset
+
   useEffect(() => {
+    // Effect hook to update current items and page count when item offset or items per page change
     SetCurrentItems(categories.slice(itemOffset, endOffset).reverse());
     SetPageCount(Math.ceil(categories.length / itemsPerPage));
   }, [itemOffset, itemsPerPage, categories]);
 
   const handlePageClick = (e) => {
+    // Function to handle page click event
     const newOffset = (e.selected * itemsPerPage) % categories.length;
     SetItemOffset(newOffset);
   };
 
   const removecategory = async (id) => {
+    // Function to remove a category
     try {
       await axios.delete(`/api/categories/${id}`, {
         headers: {
@@ -54,13 +59,16 @@ export const Categories = () => {
         },
       });
 
+      // Updating categories state after removing the category
       const updatedCategories = categories.filter((category) => category.id !== id);
       SetCategories(updatedCategories);
     } catch (error) {
       console.error("Error removing category:", error);
     }
   };
+
   useEffect(() => {
+    // Effect hook to fetch categories data
     let isMounted = true;
     const controller = new AbortController();
     const getCategories = async () => {
@@ -74,6 +82,7 @@ export const Categories = () => {
           signal: controller.signal,
         });
 
+        // Filtering categories based on search term
         const filtered = response.data.filter((category) => {
           const { name } = category;
           const searchValue = searchTerm.toLowerCase();
@@ -89,6 +98,7 @@ export const Categories = () => {
     };
 
     getCategories();
+
     return () => {
       isMounted = false;
       controller.abort();

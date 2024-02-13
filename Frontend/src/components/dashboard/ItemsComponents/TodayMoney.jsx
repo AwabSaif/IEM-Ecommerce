@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from "react";
 import moment from "moment";
 import { FaMoneyBill1Wave, FaMoneyBillTrendUp } from "react-icons/fa6";
+
+/**
+ * Component to display today's sales and the percentage difference compared to yesterday.
+ * - Array of order objects containing information about each order.
+ * - JSX Element representing today's money component.
+ */
 export const TodayMoney = ({ orders }) => {
   const [dailySales, setDailySales] = useState(0);
   const [yesterdaySales, setYesterdaySales] = useState(0);
@@ -8,6 +14,7 @@ export const TodayMoney = ({ orders }) => {
   useEffect(() => {
     const todayDate = moment().format("YYYY-MM-DD");
 
+    // Calculate total sales for today
     const totalSales = orders.reduce((acc, order) => {
       const orderDate = moment(order.dateOrdered).format("YYYY-MM-DD");
       if (orderDate === todayDate) {
@@ -20,6 +27,7 @@ export const TodayMoney = ({ orders }) => {
 
     const yesterdayDate = moment().subtract(1, "days").format("YYYY-MM-DD");
 
+    // Calculate total sales for yesterday
     const yesterdayTotalSales = orders.reduce((acc, order) => {
       const orderDate = moment(order.dateOrdered).format("YYYY-MM-DD");
       if (orderDate === yesterdayDate) {
@@ -31,7 +39,9 @@ export const TodayMoney = ({ orders }) => {
     setYesterdaySales(yesterdayTotalSales);
   }, [orders]);
 
+  // Calculate the difference in sales between today and yesterday
   const salesDifference = dailySales - yesterdaySales;
+  // Calculate the percentage difference in sales
   const percentageDifference = (
     (salesDifference / yesterdaySales) *
     100

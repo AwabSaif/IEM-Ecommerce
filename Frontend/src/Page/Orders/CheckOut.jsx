@@ -5,40 +5,48 @@ import { CartPageItems } from "../../components/Cart/CartPageItems";
 import useCart from "../../hooks/useCart";
 import { BsArrowLeftCircleFill } from "react-icons/bs";
 import useAuth from "../../hooks/useAuth";
+
+// URL to fetch products
 const GETPRODUCT_URL = "/api/products";
 
 export const CheckOut = () => {
-  //auth
+  // Authentication
   const { auth } = useAuth();
   const token = auth.token;
   const user = auth.id;
 
-  //set error
+  // Ref for error message
   const errRef = useRef();
 
-  //navigate
+  // Navigation
   const navigate = useNavigate();
   const handleGoBack = () => {
     navigate(-1);
   };
-  //message
+
+  // State for error and success messages
   const [errMsg, setErrMsg] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
-  //loading page
+
+  // Loading state
   const [isloading, setIsloading] = useState(false);
 
-  //get data
+  // State for product data
   const [products, setProducts] = useState([]);
+
+  // Cart related hooks
   const {
     cartItems,
     CartQuantity,
     getItemsQuantity,
     handleRemoveCartAfterOrder,
   } = useCart();
+
+  // Fetching products
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get(GETPRODUCT_URL);
+        const response = await axios.get(GETPRODUCT_URL, { withCredentials: true });
         setProducts(response.data);
       } catch (err) {
         if (err?.response) {
@@ -50,8 +58,8 @@ export const CheckOut = () => {
     };
     fetchProducts();
   }, []);
-  //from
 
+  // Form state for order
   const [orderItems, setOrderItems] = useState([]);
   const [shippingAddress1, SetShippingAddress1] = useState("");
   const [shippingAddress2, setShippingAddress2] = useState("");
@@ -61,6 +69,7 @@ export const CheckOut = () => {
   const [zip, setZip] = useState("");
   const [payment, Setpayment] = useState("");
 
+  // Update order items when cart items change
   useEffect(() => {
     const updatedOrderItems = cartItems.map((cartItem) => {
       return {
@@ -71,6 +80,7 @@ export const CheckOut = () => {
     setOrderItems(updatedOrderItems);
   }, [cartItems]);
 
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsloading(true);
@@ -97,7 +107,6 @@ export const CheckOut = () => {
         user,
         payment,
       };
-      console.log(payment);
       const response = await axios.post("/api/orders", formFile, {
         headers: {
           Accept: "application/json",
@@ -105,12 +114,10 @@ export const CheckOut = () => {
         },
         withCredentials: true,
       });
-
-      // console.log(response.data);
       setSuccessMessage("order created successfully");
       setIsloading(false);
       handleRemoveCartAfterOrder();
-      setOrderItems("");
+      setOrderItems([]);
       Setpayment("");
       setZip("");
       setCity("");

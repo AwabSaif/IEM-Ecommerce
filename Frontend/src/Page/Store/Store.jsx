@@ -1,6 +1,12 @@
 import React from "react";
 import { Product } from "../../components/products/Product";
 
+/**
+ * Store Component
+ *
+ * This component represents the main store page.
+ * It displays all available products.
+ */
 export const Store = () => {
   return (
     <div className="w-fit mx-auto justify-items-center justify-center gap-y-20 gap-x-14 mt-10 mb-5">
