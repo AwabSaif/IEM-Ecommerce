@@ -15,7 +15,7 @@ export default function Home() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get(GETPRODUCT_URL, { withCredentials: true });
+        const response = await axios.get(GETPRODUCT_URL);
         setProducts(response.data);
       } catch (err) {
         if (err.response) {
@@ -32,7 +32,7 @@ export default function Home() {
   useEffect(() => {
     const fetchBestSellers = async () => {
       try {
-        const response = await axios.get(GET_BEST_SELLERS_URL, { withCredentials: true });
+        const response = await axios.get(GET_BEST_SELLERS_URL);
         setBestSellers(response.data);
       } catch (err) {
         if (err.response) {
@@ -65,7 +65,7 @@ export default function Home() {
             <p className="mt-2 text-sm md:text-lg">For limited time only!</p>
             {/* Shop Now button */}
             <Link
-              to={`/product/65bbc7e1b59c1711ec812775`}
+              to={`/product/65cbe8aedefb7025eece4727`}
               className="text-lg md:text-2xl rounded-md bg-fuchsia-500 text-white py-2 px-5 mt-10 hover:bg-zinc-800"
             >
               Shop Now
@@ -75,7 +75,7 @@ export default function Home() {
           <div className="order-1 lg:order-2">
             <img
               className="h-80 w-80 object-cover lg:w-[500px] lg:h-[500px]"
-              src="https://iemecommerce-api.onrender.com/public/uploads/fcaa780235bbb7d93774bb5b87f0af57d3bdff5f_612014-1707848820106.png"
+              src="http://localhost:5000/public/uploads/petracare-Vichy-17-1707862190199.png"
             />
           </div>
         </div>
