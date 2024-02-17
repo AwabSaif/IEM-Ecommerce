@@ -271,13 +271,13 @@ export const UpdateOrder = () => {
                         </div>
                       </div>
                       {/* Barcode */}
-                      <div className=" hidden print:flex items-center  flex-col">
+                     <div className=" hidden print:flex items-center  flex-col">
                         <Barcode
                           width={1.5}
                           height={29}
-                          value={orders.orderNumber}
+                          value={orders?.orderNumber}
                         />
-                      </div>
+                      </div> 
                     </div>
                   </div>
                 </div>

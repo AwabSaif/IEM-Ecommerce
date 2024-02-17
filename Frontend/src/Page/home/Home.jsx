@@ -10,7 +10,6 @@ const GET_BEST_SELLERS_URL = "/api/products/get/best-sellers";
 export default function Home() {
   const [products, setProducts] = useState([]);
   const [bestSellers, setBestSellers] = useState([]);
-
   // Function to fetch products when the component mounts
   useEffect(() => {
     const fetchProducts = async () => {

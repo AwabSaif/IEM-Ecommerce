@@ -5,6 +5,7 @@ import useAuth from "../../hooks/useAuth";
 const RequireAuth = () => {
   // Fetch authentication status using custom hook
   const { auth } = useAuth();
+
   // Get the current location
   const location = useLocation();
 

@@ -25,7 +25,7 @@ const useRefreshToken = () => {
       setAuth(() => {
         const token = response.data.token;
         // Setting JWT token in the cookie
-        const tokencookie = cookie.set('jwt', token);
+        // const tokencookie = cookie.set('jwt', token);
         // Returning updated authentication object
         return {
           name: response.data.name,

@@ -61,7 +61,7 @@ export const Login = () => {
       const roles = response?.data.roles;
 
       // Set JWT token in cookie
-      const tokencookie = cookie.set('jwt', token);
+      // const tokencookie = cookie.set('jwt', token);
 
       // Set authentication data in the context
       setAuth({ name, email, roles, token, id });

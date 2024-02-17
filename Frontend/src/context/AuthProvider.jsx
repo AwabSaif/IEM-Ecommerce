@@ -9,6 +9,7 @@ const AuthContext = createContext({});
 export const AuthProvider = ({ children }) => {
   // Declaring state variable 'auth' using useState() hook with initial value of an empty object
   const [auth, setAuth] = useState({});
+  // console.log(auth);
   
   // Returning JSX markup
   return (

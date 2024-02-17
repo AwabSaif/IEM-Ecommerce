@@ -11,7 +11,7 @@ const GETPRODUCT_URL = "/api/products";
 // Component for the shopping cart
 export const Cart = ({ isCartOpen }) => {
   // State variables
-  const [products, setProducts] = useState([]);
+  const [products  , setProducts] = useState([]);
   const { cartItems, handleCloseCart, getItemsQuantity } = useCart();
 
   // Fetch products data from the server
