@@ -2,6 +2,7 @@
 import axios from "axios";
 
 // Base URL for API endpoints
+// const BASE_URL = "https://iemecommerce-api.onrender.com";
 // Local development URL
 const BASE_URL = "http://localhost:5000";
 

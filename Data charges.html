@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>عرض Miro</title>
+  <style>
+    #miro-frame {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</head>
+<body>
+
+  <iframe id="miro-frame"src="https://miro.com/app/live-embed/uXjVN9Lnezk=/?moveToViewport=-11920,-973,23553,11377&embedId=128304513349" frameborder="0" scrolling="no" allow="fullscreen; clipboard-read; clipboard-write" allowfullscreen></iframe>
+  <button id="resize-button">Size</button>
+  <script>
+    const iframe = document.getElementById('miro-frame');
+    const resizeButton = document.getElementById('resize-button');
+
+    resizeButton.addEventListener('click', () => {
+      iframe.style.width = '500px';
+      iframe.style.height = '500px';
+    });
+  </script>
+</body>
+</html>

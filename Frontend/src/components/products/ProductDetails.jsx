@@ -24,7 +24,7 @@ export const ProductDetails = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get(GETPRODUCT_URL + id, { withCredentials: true });
+        const response = await axios.get(GETPRODUCT_URL + id);
         setProduct(response.data);
       } catch (err) {
         if (err?.response) {

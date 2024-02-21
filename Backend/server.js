@@ -30,7 +30,7 @@ app.use((req, res, next) => {
   );
   next();
 });
-app.use(
+ app.use(
   cors({
     origin: [
       "http://localhost:5173",
@@ -39,7 +39,9 @@ app.use(
     ],
     credentials: true,
   })
-);
+); 
+/* app.use(cors());
+app.options("*", cors()); */
 
 // Middlewares
 app.use(cookieParser()); // Parse cookie headers
