@@ -50,10 +50,10 @@ export const Login = () => {
         JSON.stringify({ email, password }),
         {
           headers: { "Content-Type": "application/json" },
-          withCredentials: true,
+          //  
         }
       );
-
+      // console.log(response.data)
       // Extract user data from the response
       const name = response?.data.name;
       const id = response?.data.id;

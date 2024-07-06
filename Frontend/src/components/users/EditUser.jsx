@@ -56,7 +56,7 @@ export const EditUser = () => {
             Accept: "application/json",
             Authorization: "Bearer " + token,
           },
-          withCredentials: true,
+           
         });
         setUser(response.data);
       } catch (err) {
@@ -108,7 +108,7 @@ export const EditUser = () => {
           Accept: "application/json",
           Authorization: "Bearer " + token,
         },
-        withCredentials: true,
+         
       });
 
       setIsLoading(false);

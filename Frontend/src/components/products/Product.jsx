@@ -11,7 +11,7 @@ export const Product = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get(GETPRODUCT_URL, { withCredentials: true });
+        const response = await axios.get(GETPRODUCT_URL  );
         // Set the fetched products to the state
         setProducts(response.data);
       } catch (err) {

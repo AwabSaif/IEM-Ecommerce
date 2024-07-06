@@ -73,7 +73,7 @@ export const UpdateCategory = () => {
             Accept: "application/json",
             Authorization: "Bearer " + token,
           },
-          withCredentials: true,
+           
         });
         setCategory(response.data);
       } catch (err) {
@@ -113,7 +113,7 @@ export const UpdateCategory = () => {
           Accept: "application/json",
           Authorization: "Bearer " + token,
         },
-        withCredentials: true,
+         
       });
 
       setIsLoading(false);

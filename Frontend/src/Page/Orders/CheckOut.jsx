@@ -46,7 +46,7 @@ export const CheckOut = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get(GETPRODUCT_URL, { withCredentials: true });
+        const response = await axios.get(GETPRODUCT_URL  );
         setProducts(response.data);
       } catch (err) {
         if (err?.response) {
@@ -112,7 +112,7 @@ export const CheckOut = () => {
           Accept: "application/json",
           Authorization: "Bearer " + token,
         },
-        withCredentials: true,
+         
       });
       setSuccessMessage("order created successfully");
       setIsloading(false);

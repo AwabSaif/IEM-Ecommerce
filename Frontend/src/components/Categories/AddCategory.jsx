@@ -77,7 +77,7 @@ export const AddCategory = () => {
           Accept: "application/json",
           Authorization: "Bearer " + token,
         },
-        withCredentials: true,
+         
       });
 
       setIsLoading(false);

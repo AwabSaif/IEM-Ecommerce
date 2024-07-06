@@ -49,7 +49,7 @@ export const UpdateOrder = () => {
             Accept: "application/json",
             Authorization: "Bearer " + token,
           },
-          withCredentials: true,
+           
         });
         setOrders(response.data);
         setOrderItems(response.data.orderItems);
@@ -77,7 +77,7 @@ export const UpdateOrder = () => {
           Accept: "application/json",
           Authorization: "Bearer " + token,
         },
-        withCredentials: true,
+         
       });
       setSuccessMessage(
         `Order Status Updated to ${response.data.status} successfully`

@@ -62,7 +62,7 @@ export const ChanePassword = () => {
           Accept: "application/json",
           Authorization: "Bearer " + token,
         },
-        withCredentials: true,
+         
       });
       // console.log(response);
       setSuccessMessage("Password updated successfully");

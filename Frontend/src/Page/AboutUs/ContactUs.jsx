@@ -23,7 +23,7 @@ export const ContactUs = () => {
         JSON.stringify({ name, email, subject, message }),
         {
           headers: { "Content-Type": "application/json" },
-          withCredentials: true,
+           
         }
       );
       // If the request is successful, reset form fields and display success message

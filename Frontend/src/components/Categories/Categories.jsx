@@ -78,7 +78,7 @@ export const Categories = () => {
             Accept: "application/json",
             Authorization: "Bearer " + token,
           },
-          withCredentials: true,
+           
           signal: controller.signal,
         });
 

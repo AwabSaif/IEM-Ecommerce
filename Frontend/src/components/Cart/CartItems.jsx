@@ -21,7 +21,7 @@ export const CartItems = ({ id, quantity }) => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get(GETPRODUCT_URL , { withCredentials: true });
+        const response = await axios.get(GETPRODUCT_URL   );
         // Set the fetched product data to state
         setProducts(response.data);
       } catch (err) {

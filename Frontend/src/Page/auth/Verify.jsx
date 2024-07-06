@@ -27,7 +27,7 @@ export const Verify = () => {
   const verifyToken = async (token) => {
     try {
       // Send GET request to confirm account with provided token
-      const response = await axios.get(CONFIRM_ACCOUNT + token, { withCredentials: true });
+      const response = await axios.get(CONFIRM_ACCOUNT + token  );
       
       // If successful response received, set verification status to true
       setIsVerified(true);

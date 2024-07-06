@@ -31,7 +31,7 @@ export const MyOrders = () => {
             Accept: "application/json",
             Authorization: "Bearer " + token,
           },
-          withCredentials: true,
+           
         });
         setOrders(response.data);
       } catch (error) {

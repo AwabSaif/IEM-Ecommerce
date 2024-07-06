@@ -185,7 +185,7 @@ export const UpdateProduct = () => {
           Accept: "application/json",
           Authorization: "Bearer " + token,
         },
-        withCredentials: true,
+         
       });
       // console.log(response.data);
     

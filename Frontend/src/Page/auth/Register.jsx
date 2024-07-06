@@ -80,7 +80,7 @@ export const Register = () => {
         }),
         {
           headers: { "Content-Type": "application/json" },
-          withCredentials: true,
+           
         }
       );
       setSuccess(true); // Set success state to true after successful registration

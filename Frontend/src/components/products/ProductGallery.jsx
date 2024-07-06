@@ -72,7 +72,7 @@ export const ProductGallery = ({ productId }) => {
             Accept: "application/json",
             Authorization: "Bearer " + token,
           },
-          withCredentials: true,
+           
         }
       );
       setFiles([]);

@@ -21,7 +21,7 @@ export const SearchProvider = ({ children }) => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get(GETPRODUCT_URL, { withCredentials: true });
+        const response = await axios.get(GETPRODUCT_URL  );
         setGetProducts(response.data);
       } catch (err) {
         // Handling errors

@@ -17,7 +17,7 @@ export const CategoriesStore = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await axios.get(GET_CATEGORIES_URL, { withCredentials: true }); // Fetch categories from the server
+        const response = await axios.get(GET_CATEGORIES_URL  ); // Fetch categories from the server
         setCategories(response.data); // Set categories in state
       } catch (err) {
         // Handle errors
@@ -35,7 +35,7 @@ export const CategoriesStore = () => {
   useEffect(() => {
     const getProducts = async () => {
       try {
-        const response = await axios.get(GET_PRODUCT_URL, { withCredentials: true }); // Fetch products from the server
+        const response = await axios.get(GET_PRODUCT_URL  ); // Fetch products from the server
         setProducts(response.data); // Set all products in state
 
         // Filter products based on selected category

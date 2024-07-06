@@ -28,7 +28,7 @@ export const DashboardItems = () => {
             Accept: "application/json",
             Authorization: "Bearer " + token,
           },
-          withCredentials: true,
+           
         });
 
         SetOrders(response.data);
@@ -53,7 +53,7 @@ export const DashboardItems = () => {
             Accept: "application/json",
             Authorization: "Bearer " + token,
           },
-          withCredentials: true,
+           
         });
 
         SetUsers(response.data);
@@ -78,7 +78,7 @@ export const DashboardItems = () => {
             Accept: "application/json",
             Authorization: "Bearer " + token,
           },
-          withCredentials: true,
+           
         });
 
         SetProducts(response.data);

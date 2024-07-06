@@ -18,7 +18,7 @@ const useRefreshToken = () => {
       // Making a GET request to the server to refresh token
       const response = await axios.get("/api/users/refresh/token", {
         // Including credentials in the request ( cookies)
-        withCredentials: true,
+         
       });
       // console.log(response.data);
       // Updating authentication state with the new token

@@ -24,7 +24,7 @@ const useLogout = () => {
           Authorization: "Bearer " + token,
         },
         // Including credentials in the request (cookies, for authentication)
-        withCredentials: true,
+         
       });
     } catch (err) {
       // Handling any errors that occur during the logout process

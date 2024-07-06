@@ -22,7 +22,7 @@ const contactUsRoute = require("./routes/contactUsRoute");
 const app = express();
 
 // Enable CORS
-app.use((req, res, next) => {
+/* app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
   res.header(
     "Access-Control-Allow-Headers",
@@ -39,15 +39,15 @@ app.use((req, res, next) => {
     ],
     credentials: true,
   })
-); 
-/* app.use(cors());
-app.options("*", cors()); */
+);  */
+app.use(cors());
+app.options("*", cors()); 
 
 // Middlewares
 app.use(cookieParser()); // Parse cookie headers
 app.use(express.json()); // Parse JSON bodies
 app.use(morgan("tiny")); // Log HTTP requests
-app.use(authJwt()); // JWT authentication
+// app.use(authJwt()); // JWT authentication
 app.use(express.urlencoded({ extended: false })); // Parse URL-encoded bodies
 app.use(bodyParser.json()); // Parse JSON bodies
 app.use(authErrorHandler); // Authentication error handler

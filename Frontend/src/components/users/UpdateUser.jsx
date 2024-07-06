@@ -58,7 +58,7 @@ export const UpdateUser = () => {
             Accept: "application/json",
             Authorization: "Bearer " + token,
           },
-          withCredentials: true,
+           
         });
         setUser(response.data);
         setAdmin(response.data.isAdmin);
@@ -125,7 +125,7 @@ export const UpdateUser = () => {
           Accept: "application/json",
           Authorization: "Bearer " + token,
         },
-        withCredentials: true,
+         
       });
       setIsLoading(false);
       setSuccessMessage("User updated successfully");

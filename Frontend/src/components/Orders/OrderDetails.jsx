@@ -38,7 +38,7 @@ export const OrderDetails = () => {
             Accept: "application/json",
             Authorization: "Bearer " + token,
           },
-          withCredentials: true,
+           
         });
         // Set orders data to state
         SetOrders(response.data);

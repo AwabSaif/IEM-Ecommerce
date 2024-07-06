@@ -155,7 +155,7 @@ export const AddProduct = () => {
           Accept: "application/json",
           Authorization: "Bearer " + token,
         },
-        withCredentials: true,
+         
       });
       setProductId(response.data.id);
       setSuccessMessage("Product created successfully");

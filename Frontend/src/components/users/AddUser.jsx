@@ -77,7 +77,7 @@ export const AddUser = () => {
           Accept: "application/json",
           Authorization: "Bearer " + token,
         },
-        withCredentials: true,
+         
       });
 
       // Display success message and reset form
