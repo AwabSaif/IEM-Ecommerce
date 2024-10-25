@@ -12,11 +12,20 @@
   "dependencies": {
     "@heroicons/react": "^2.1.1",
     "axios": "^1.6.3",
+    "cookie-universal": "^2.2.2",
+    "dotenv": "^16.4.2",
+    "moment": "^2.30.1",
     "react": "^18.2.0",
+    "react-barcode": "^1.4.6",
     "react-dom": "^18.2.0",
+    "react-dropzone": "^14.2.3",
+    "react-dropzone-uploader": "^2.11.0",
     "react-icons": "^4.12.0",
+    "react-paginate": "^8.2.0",
     "react-router-dom": "^6.21.1",
-    "react-scripts": "^5.0.1"
+    "react-scripts": "^5.0.1",
+    "react-to-print": "^2.14.15",
+    "tw-elements-react": "^1.0.0-alpha2"
   },
   "devDependencies": {
     "@types/react": "^18.2.43",

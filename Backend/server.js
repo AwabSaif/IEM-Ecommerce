@@ -1,48 +1,71 @@
-const dotenv = require("dotenv").config();
-const express = require("express");
-const mongoose = require("mongoose");
-const bodyParser = require("body-parser");
-const cors = require("cors");
+// Import required modules
+const dotenv = require("dotenv").config(); // Load environment variables
+const express = require("express"); // Express framework
+const connectionDB = require("./DB/connectionDB"); // Database connection
+const bodyParser = require("body-parser"); // Parse incoming request bodies
+const cors = require("cors"); // Cross-Origin Resource Sharing
+const cookieParser = require("cookie-parser"); // Parse cookie headers
+const morgan = require("morgan"); // HTTP request logger
+
+// Import middleware
+const { authJwt, authErrorHandler } = require("./middleWare/authMiddleWare"); // JWT authentication middleware
+const errorHandler = require("./middleWare/errerMiddleWare"); // Error handling middleware
+
+// Import routes
 const userRoute = require("./routes/userRoute");
-const errorHandler = require('./middleWare/errerMiddleWare')
-const cookieParser = require("cookie-parser")
+const categoryRoute = require("./routes/categoryRoute");
+const productRoute = require("./routes/productRoute");
+const orderRoute = require("./routes/orderRoute");
+const contactUsRoute = require("./routes/contactUsRoute");
 
-
+// Initialize Express application
 const app = express();
 
-//Middlewares
-app.use(express.json());
-app.use(cookieParser())
-app.use(express.urlencoded({ extended: false }));
-app.use(bodyParser.json());
-app.use(cors());
-
-
-//Routes Middleware
-app.use("/api/user", userRoute)
-
-
-//Routes
-app.get("/", (req, res) => {
-  res.send("home page");
+// Enable CORS
+/* app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  next();
 });
+ app.use(
+  cors({
+    origin: [
+      "http://localhost:5173",
+      "https://iemecommerce.onrender.com",
+      "https://ieme-commerce.netlify.app",
+    ],
+    credentials: true,
+  })
+);  */
+app.use(cors());
+app.options("*", cors()); 
 
-//Errer MiddleWare 
+// Middlewares
+app.use(cookieParser()); // Parse cookie headers
+app.use(express.json()); // Parse JSON bodies
+app.use(morgan("tiny")); // Log HTTP requests
+// app.use(authJwt()); // JWT authentication
+app.use(express.urlencoded({ extended: false })); // Parse URL-encoded bodies
+app.use(bodyParser.json()); // Parse JSON bodies
+app.use(authErrorHandler); // Authentication error handler
+app.use("/public/uploads", express.static(__dirname + "/public/uploads")); // Serve static files
+
+// Routes middleware
+const api = process.env.API_URL; // API base URL
+app.use(`${api}/users`, userRoute);
+app.use(`${api}/categories`, categoryRoute);
+app.use(`${api}/products`, productRoute);
+app.use(`${api}/orders`, orderRoute);
+app.use(`${api}/iem-contact-us`, contactUsRoute);
+
+// Error handling middleware
 app.use(errorHandler);
 
-//Connrct to DB and start server
-const PORT = process.env.PORT || 5000;
-
-mongoose.connect(process.env.MONGODB_URI, {});
-const db = mongoose.connection;
-
-db.on("error", () => {
-  console.log("Connection Error");
-});
-db.once("open", () => {
-  console.log("Connected to DB !");
-});
-
+// Start server
+const PORT = process.env.PORT; // Port number
 const server = app.listen(PORT, () => {
   try {
     console.log(`IEM Server Running on port ${PORT}...`);

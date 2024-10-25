@@ -1,13 +1,19 @@
-import React from "react"
+import React, { useEffect, useRef } from "react";
 
+// Custom hook to run effect only on update
 export default function useEffectOnUpdate(effectFunction, deps) {
-    const firstRender = React.useRef(true)
+    // Ref to track first render
+    const firstRender = useRef(true);
     
-    React.useEffect(() => {
+    // useEffect hook to run effect only on update
+    useEffect(() => {
+        // Check if it's not the first render
         if (firstRender.current) {
-            firstRender.current = false
+            // If it's the first render, set firstRender to false
+            firstRender.current = false;
         } else {
-            effectFunction()
+            // If it's not the first render, execute the effect function
+            effectFunction();
         }
-    }, deps)
+    }, deps); // Dependency array passed to useEffect
 }

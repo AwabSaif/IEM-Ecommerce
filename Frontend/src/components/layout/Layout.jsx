@@ -1,15 +1,19 @@
-import React from 'react'
-import { Footer } from '../footer/Footer'
-import { Header } from '../header/Header'
+import { Outlet } from "react-router-dom";
+import { Footer } from "../common/Footer";
+import { Header } from "../common/Header";
 
-export const Layout = ({children}) => {
+// Layout component responsible for rendering header, children components, and footer
+export const Layout = ({ children }) => {
   return (
     <>
-        <Header/>
-        <div className='min-h-[80vh]'>
-            {children}
-        </div>
-        <Footer/>
+      {/* Render the Header component */}
+      <Header />
+
+      {/* Outlet component renders nested child routes */}
+      <Outlet className="min-h-[80vh]" />
+
+      {/* Render the Footer component */}
+      <Footer />
     </>
-  )
-}
+  );
+};
