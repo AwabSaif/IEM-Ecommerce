@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState, useContext } from "react";
-import image from "../../assets/image/Awab Saif-logos_transparent.png";
+import image from "../../assets/image/IEM Ecommerce-logo.png";
 import axios from "../../api/axios";
 import AuthContext from "../../context/AuthProvider";
 

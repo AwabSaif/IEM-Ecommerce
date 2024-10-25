@@ -4,7 +4,7 @@ import { MdSpaceDashboard } from "react-icons/md";
 import { IoIosArrowDown, IoMdClose, IoIosLogOut } from "react-icons/io";
 import { HiOutlineLogin } from "react-icons/hi";
 import { GrMenu } from "react-icons/gr";
-import logoImage from "../../assets/image/Awab Saif-logos_transparent.png";
+import logoImage from "../../assets/image/IEM Ecommerce-logo.png";
 import UseToggle from "../../hooks/useToggle";
 import { useState } from "react";
 

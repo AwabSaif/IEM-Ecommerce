@@ -1,5 +1,5 @@
 
-import image from "../../assets/image/Awab Saif-logos_transparent.png";
+import image from "../../assets/image/IEM Ecommerce-logo.png";
 
 
 export default function Home() {

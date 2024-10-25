@@ -20,11 +20,11 @@ router.post("/register", registerUser);
 // login route
 router.post("/login", loginUser);
 router.get("/logout", logout);
-con
+
 // User pofile
 router.get("/getuser", protect, getUser);
 router.get("/loggedin", loggedinStatus);
-router.patch("/updateuser", protect,updateUser);
+router.patch("/updateuser/:id", protect,updateUser);
 
 // Password stauts
 router.patch("/changepassword", protect,changePassword);
